@@ -6,12 +6,14 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
 controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.campingFactor = 0.25;
-        controls.enableZoom = true;
+controls.enableDamping = true;
+controls.campingFactor = 0.25;
+controls.enableZoom = true;
 
-var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-var material = new THREE.MeshNormalMaterial();
+var geometry = new THREE.SphereGeometry( 5, 32, 32 );;
+// var material = new THREE.MeshNormalMaterial();
+var texture = new THREE.TextureLoader().load( "Assets/map.jpg" );
+var material = new THREE.MeshBasicMaterial( { map: texture } );
 var cube = new THREE.Mesh( geometry, material );
 scene.add( cube );
 
@@ -19,8 +21,18 @@ camera.position.z = 5;
 
 var animate = function () {
   requestAnimationFrame( animate );
-
   renderer.render( scene, camera );
 };
 
 animate();
+
+window.addEventListener( 'resize', onWindowResize, false );
+
+function onWindowResize(){
+
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+
+}

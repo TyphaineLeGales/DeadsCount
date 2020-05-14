@@ -54,9 +54,8 @@ function onClick() {
   for ( var i = 0; i < intersects.length; i++ ) {
     if( intersects[ i ].object.name != "globe") {
       intersects[ i ].object.material.color.set(0x0000ff);
+      createInstances(intersects[ i ].object.position);
     }
-    console.log(intersects[i]);
-
   }
 
 }
@@ -71,12 +70,29 @@ function createDots () {
   {
       var materialInstance = new THREE.MeshBasicMaterial({color: 0xff0000});
       materialInstance.side = THREE.DoubleSide;
-      var geometryIntance = new THREE.CircleGeometry(0.2, 16);
+      var dotGeo = new THREE.CircleGeometry(0.2, 16);
       var v = geometry.vertices[i];
       var pos = new THREE.Vector3(v.x, v.y, v.z);
-      var circle = new THREE.Mesh(geometryIntance,materialInstance);
+      var circle = new THREE.Mesh(dotGeo,materialInstance);
       circle.position.copy(pos);
       circle.lookAt(globe.position);
       scene.add(circle);
+  }
+}
+
+function createInstances (dotPos) {
+  console.log("function is being called");
+  var dir = new THREE.Vector3();
+  dir.copy(dotPos).normalize();
+  console.log(dir);
+  var dotGeo = new THREE.SphereGeometry(0.2, 16);
+  var materialInstance = new THREE.MeshBasicMaterial({color: 0xff0000});
+  materialInstance.side = THREE.DoubleSide;
+  for(var i = 1; i < 10; i +=0.02) {
+    var dot = new THREE.Mesh(dotGeo, materialInstance);
+    console.log(dir.addScalar (i));
+    dot.position.copy(dotPos.addScalar (i)) ;
+    scene.add(dot);
+
   }
 }

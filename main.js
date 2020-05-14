@@ -23,6 +23,8 @@ scene.add( globe );
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
 
+var _instanceSpacing = 10;
+
 
 createDots();
 animate();
@@ -54,7 +56,9 @@ function onClick() {
   for ( var i = 0; i < intersects.length; i++ ) {
     if( intersects[ i ].object.name != "globe") {
       intersects[ i ].object.material.color.set(0x0000ff);
+      intersects[i].object.userData = "isActive";
       createInstances(intersects[ i ].object.position);
+      console.log( intersects[i].object.userData);
     }
   }
 
@@ -88,10 +92,10 @@ function createInstances (dotPos) {
   var dotGeo = new THREE.SphereGeometry(0.2, 16);
   var materialInstance = new THREE.MeshBasicMaterial({color: 0xff0000});
   materialInstance.side = THREE.DoubleSide;
-  for(var i = 1; i < 10; i +=0.02) {
+  for(var i = 1; i < 10; i += 1) {
     var dot = new THREE.Mesh(dotGeo, materialInstance);
     console.log(dir.addScalar (i));
-    dot.position.copy(dotPos.addScalar (i)) ;
+    dot.position.copy(dotPos.addScalar (i/_instanceSpacing)) ;
     scene.add(dot);
 
   }

@@ -55,10 +55,19 @@ function onClick() {
 
   for ( var i = 0; i < intersects.length; i++ ) {
     if( intersects[ i ].object.name != "globe") {
-      intersects[ i ].object.material.color.set(0x0000ff);
-      intersects[i].object.userData = "isActive";
-      createInstances(intersects[ i ].object.position);
-      console.log( intersects[i].object.userData);
+      if( intersects[i].object.userData != "isActive") {
+        intersects[ i ].object.material.color.set(0x0000ff);
+        intersects[i].object.userData = "isActive";
+        createInstances(intersects[ i ].object);
+      } else {
+        //delete instances
+        intersects[ i ].object.material.color.set(0x00ff00);
+          // for(var i = 0; i <  intersects[ i ].object.children.length; i++) {
+        intersects[i].object.userData = "";
+          //   // scene.remove(intersects[ i ].object.children[i]);
+          // }
+        console.log(intersects[ i ].object);
+      }
     }
   }
 
@@ -84,19 +93,17 @@ function createDots () {
   }
 }
 
-function createInstances (dotPos) {
+function createInstances (dot) {
   console.log("function is being called");
   var dir = new THREE.Vector3();
-  dir.copy(dotPos).normalize();
+  dir.copy(dot.position).normalize();
   console.log(dir);
   var dotGeo = new THREE.SphereGeometry(0.2, 16);
   var materialInstance = new THREE.MeshBasicMaterial({color: 0xff0000});
   materialInstance.side = THREE.DoubleSide;
   for(var i = 1; i < 10; i += 1) {
-    var dot = new THREE.Mesh(dotGeo, materialInstance);
-    console.log(dir.addScalar (i));
-    dot.position.copy(dotPos.addScalar (i/_instanceSpacing)) ;
-    scene.add(dot);
-
+    var dotInst = new THREE.Mesh(dotGeo, materialInstance);
+    dot.add(dotInst);
+    dotInst.position.addScalar(i/_instanceSpacing);
   }
 }

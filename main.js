@@ -25,10 +25,8 @@ var mouse = new THREE.Vector2();
 
 var _instanceSpacing = 10;
 
-
 createDots();
 animate();
-
 
 window.addEventListener( 'resize', onWindowResize, false );
 window.addEventListener( 'mousemove', onMouseMove, false );
@@ -54,19 +52,22 @@ function onClick() {
   var intersects = raycaster.intersectObjects( scene.children );
 
   for ( var i = 0; i < intersects.length; i++ ) {
-    if( intersects[ i ].object.name != "globe") {
-      if( intersects[i].object.userData != "isActive") {
-        intersects[ i ].object.material.color.set(0x0000ff);
-        intersects[i].object.userData = "isActive";
-        createInstances(intersects[ i ].object);
+    var clickedObj = intersects[ i ].object;
+    if( clickedObj.name != "globe") {
+      if( clickedObj.userData != "isActive") {
+        clickedObj.material.color.set(0x0000ff);
+        clickedObj.userData = "isActive";
+        createInstances(clickedObj);
+        console.log(clickedObj);
+
       } else {
-        //delete instances
+        //toggle debug
         intersects[ i ].object.material.color.set(0x00ff00);
-          // for(var i = 0; i <  intersects[ i ].object.children.length; i++) {
+
+        //delete instances
+        deleteInstances(clickedObj);
         intersects[i].object.userData = "";
-          //   // scene.remove(intersects[ i ].object.children[i]);
-          // }
-        console.log(intersects[ i ].object);
+        console.log(clickedObj);
       }
     }
   }
@@ -94,16 +95,23 @@ function createDots () {
 }
 
 function createInstances (dot) {
-  console.log("function is being called");
   var dir = new THREE.Vector3();
   dir.copy(dot.position).normalize();
-  console.log(dir);
   var dotGeo = new THREE.SphereGeometry(0.2, 16);
   var materialInstance = new THREE.MeshBasicMaterial({color: 0xff0000});
   materialInstance.side = THREE.DoubleSide;
-  for(var i = 1; i < 10; i += 1) {
+  for(var i = 0; i < 5; i += 1) {
     var dotInst = new THREE.Mesh(dotGeo, materialInstance);
     dot.add(dotInst);
-    dotInst.position.addScalar(i/_instanceSpacing);
+    dotInst.position.copy(dir.addScalar(i/_instanceSpacing));
+  }
+  console.log(dot.children.length);
+}
+
+function deleteInstances (dot) {
+  var dotInstances = dot.children;
+  var instAmount = dotInstances.length;
+  for(var i = 0; i <  instAmount; i++) {
+    dot.remove(dotInstances[0]);
   }
 }

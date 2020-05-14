@@ -10,25 +10,31 @@ controls.enableDamping = true;
 controls.campingFactor = 0.25;
 controls.enableZoom = true;
 
-var geometry = new THREE.SphereGeometry( 5, 32, 32 );
+var geometry = new THREE.SphereGeometry( 5, 8, 8);
 var texture = new THREE.TextureLoader().load( "Assets/map.jpg" );
 texture.minFilter = THREE.NearestFilter;
-var material = new THREE.MeshBasicMaterial( { map: texture } );
+var material = new THREE.MeshBasicMaterial( { map: texture} );
 var cube = new THREE.Mesh( geometry, material );
 scene.add( cube );
 
 camera.position.z = 10;
 
+var faces = geometry.faces;
+console.log(faces);
+
 var materialInstance = new THREE.MeshNormalMaterial();
-var geometryIntance = new THREE.SphereGeometry(0.5, 8, 8);
+materialInstance.side = THREE.DoubleSide;
+var geometryIntance = new THREE.CircleGeometry(0.5, 8);
 // for (var i = 0; i < geometry.vertices.length; i++)
 for (var i = 0; i <geometry.vertices.length; i++)
 {
     var v = geometry.vertices[i];
     var pos = new THREE.Vector3(v.x, v.y, v.z);
-    var sphere = new THREE.Mesh(geometryIntance,materialInstance);
-    sphere.position.copy(pos);
-    scene.add(sphere);
+    var circle = new THREE.Mesh(geometryIntance,materialInstance);
+    // circle.doubleSided = true;
+    circle.position.copy(pos);
+    circle.lookAt(cube.position);
+    scene.add(circle);
     // do stuff with v...
 
 }

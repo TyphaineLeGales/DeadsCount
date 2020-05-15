@@ -9,5 +9,21 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/99/three.js"></script>
   <script src="js/OrbitControls.js"></script>
   <script src="main.js"></script>
+  <script type="x-shader/x-vertex" id="vertexShader">
+    void main() {
+      vec4 p = vec4( position, 1. );
+      //modelViewMatrix  =  position of mesh within our scene
+      // projectionMatrix = camera's relationship to the model within the scene
+      //gl_Position gives the ultimate rendered posiiton of the vertex inside our scene
+
+      vec4 modelViewPosition = modelViewMatrix * p;
+      gl_Position = projectionMatrix * modelViewPosition;
+    }
+  </script>
+  <script type="x-shader/x-fragment" id="fragmentShader">
+  void main() {
+    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+  }
+  </script>
 </body>
 </html>

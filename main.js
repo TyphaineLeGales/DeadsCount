@@ -98,10 +98,10 @@ function createInstances (dot) {
   var dotGeo = new THREE.CircleGeometry(0.2, 16);
   // var materialInstance = new THREE.MeshBasicMaterial({color: 0xff0000});
   // materialInstance.side = THREE.DoubleSide;
-   _material = new THREE.ShaderMaterial( { vertexShader: glslify('./dot.vert'),fragmentShader: glslify('./dot.frag'),flatShading: true});
-
+   _material = new THREE.ShaderMaterial( { vertexShader: document.getElementById( 'vertexShader' ).textContent, fragmentShader: document.getElementById( 'fragmentShader' ).textContent,flatShading: true});
+   _material.side = THREE.DoubleSide;
   for(var i = 0; i < 15; i += 1) {
-    var dotInst = new THREE.Mesh(dotGeo, materialInstance);
+    var dotInst = new THREE.Mesh(dotGeo, _material);
     dot.add(dotInst);
     dotInst.position.x -= i/_instanceSpacing;
     dotInst.position.y -= i/_instanceSpacing;

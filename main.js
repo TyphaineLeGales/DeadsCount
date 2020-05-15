@@ -58,16 +58,14 @@ function onClick() {
         clickedObj.material.color.set(0x0000ff);
         clickedObj.userData = "isActive";
         createInstances(clickedObj);
-        console.log(clickedObj);
 
       } else {
         //toggle debug
-        intersects[ i ].object.material.color.set(0x00ff00);
+        intersects[ i ].object.material.color.set(0xff0000);
 
         //delete instances
         deleteInstances(clickedObj);
         intersects[i].object.userData = "";
-        console.log(clickedObj);
       }
     }
   }
@@ -97,15 +95,19 @@ function createDots () {
 function createInstances (dot) {
   var dir = new THREE.Vector3();
   dir.copy(dot.position).normalize();
-  var dotGeo = new THREE.SphereGeometry(0.2, 16);
-  var materialInstance = new THREE.MeshBasicMaterial({color: 0xff0000});
-  materialInstance.side = THREE.DoubleSide;
-  for(var i = 0; i < 5; i += 1) {
+  var dotGeo = new THREE.CircleGeometry(0.2, 16);
+  // var materialInstance = new THREE.MeshBasicMaterial({color: 0xff0000});
+  // materialInstance.side = THREE.DoubleSide;
+   _material = new THREE.ShaderMaterial( { vertexShader: glslify('./dot.vert'),fragmentShader: glslify('./dot.frag'),flatShading: true});
+
+  for(var i = 0; i < 15; i += 1) {
     var dotInst = new THREE.Mesh(dotGeo, materialInstance);
     dot.add(dotInst);
-    dotInst.position.copy(dir.addScalar(i/_instanceSpacing));
+    dotInst.position.x -= i/_instanceSpacing;
+    dotInst.position.y -= i/_instanceSpacing;
+    dotInst.position.z -= i/_instanceSpacing;
+    console.log(dotInst.position);
   }
-  console.log(dot.children.length);
 }
 
 function deleteInstances (dot) {

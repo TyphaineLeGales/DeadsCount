@@ -14,6 +14,8 @@ camera.position.z = 10;
 
 
 var geometry = new THREE.SphereGeometry( 5, 8, 8);
+geometry.computeVertexNormals();
+console.log(geometry.faces[0].vertexNormals);
 var texture = new THREE.TextureLoader().load( "Assets/map.jpg" );
 texture.minFilter = THREE.NearestFilter;
 var material = new THREE.MeshBasicMaterial( { map: texture} );
@@ -21,8 +23,8 @@ var globe = new THREE.Mesh( geometry, material );
 globe.name = "globe";
 scene.add( globe );
 // globe.computeVertexNormals();
-var helper = new VertexNormalsHelper( globe, 2, 0x00ff00, 1 );
-scene.add(helper);
+// var helper = new VertexNormalsHelper( globe, 2, 0x00ff00, 1 );
+// scene.add(helper);
 
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
@@ -76,6 +78,7 @@ function onClick() {
   // calculate objects intersecting the picking ray
   var intersects = raycaster.intersectObjects( scene.children );
 
+  if(intersects[0]) {
 
     var clickedObj = intersects[ 0 ].object;
     if( clickedObj.name != "globe") {
@@ -92,6 +95,8 @@ function onClick() {
         deleteInstances(clickedObj);
         intersects[0].object.userData.state = "";
       }
+  }
+
     }
 
 
@@ -106,36 +111,47 @@ function render () {
 
 
 function createDots () {
-  for (var i = 0; i <geometry.vertices.length; i++)
+  for (var k= 0; k <geometry.vertices.length; k++)
   {
       var materialInstance = new THREE.MeshBasicMaterial({color: 0xff0000});
       materialInstance.side = THREE.DoubleSide;
       var dotGeo = new THREE.CircleGeometry(0.2, 16);
-      var v = geometry.vertices[i];
+      var v = geometry.vertices[k];
       var pos = new THREE.Vector3(v.x, v.y, v.z);
       var circle = new THREE.Mesh(dotGeo,materialInstance);
       circle.position.copy(pos);
       circle.lookAt(globe.position);
-      circle.userData.quantity = i*5;
+      circle.userData.quantity = k*5;
+
+      //compute vertice normal and store it as userData
+      // for(var i = 0, l = geometry.faces.length; i < l; i ++) {
+      //   var face = geometry.faces[i];
+      //   for ( var j = 0, jl = face.vertexNormals.length; j < jl; j ++ ) {
+
+      //     var normal = face.vertexNormals[ j ];
+      //     circle.userData.vertNorm =  new THREE.Vector3();
+      //     circle.userData.vertNorm.copy( normal ).applyMatrix3( _normalMatrix ).normalize()
+      //   }
+      // }
+
+
       scene.add(circle);
   }
 }
 
 function createInstances (dot) {
   var dotGeo = new THREE.CircleGeometry(0.2, 16);
-   _instMat = new THREE.ShaderMaterial( { uniforms:uniforms, vertexShader: document.getElementById( 'vertexShader' ).textContent, fragmentShader: document.getElementById( 'fragmentShader' ).textContent,flatShading: true});
+   // _instMat = new THREE.ShaderMaterial( { uniforms:uniforms, vertexShader: document.getElementById( 'vertexShader' ).textContent, fragmentShader: document.getElementById( 'fragmentShader' ).textContent,flatShading: true});
+   _instMat = new THREE.MeshBasicMaterial( {color : 0xff0000});
    _instMat.side = THREE.DoubleSide;
    _instMat.needsUpdate = true
 
-  var dir = new THREE.Vector3();
-  dir.copy(dot.position).normalize();
 
   for(var i = 0; i < dot.userData.quantity; i += 1) {
-    var dotInst = new THREE.Mesh(dotGeo, _instMat);
-    dot.add(dotInst);
-    dotInst.position.x -= i/guiControls.instanceSpacing;
-    dotInst.position.y -= i/guiControls.instanceSpacing;
-    dotInst.position.z -= i/guiControls.instanceSpacing;
+        var dotInst = new THREE.Mesh(dotGeo, _instMat);
+        scene.add(dotInst);
+        dotInst.position.copy(dot.position).multiplyScalar( i/guiControls.instanceSpacing);
+        dotInst.lookAt(globe.position);
   }
 }
 

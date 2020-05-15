@@ -43,7 +43,7 @@ var guiControls = new function () {
 }
 
 datGUI.add(guiControls, 'instanceSpacing', 1, 50);
-datGUI.add(guiControls, 'amountOfInst', 1, 50);
+datGUI.add(guiControls, 'amountOfInst', 1, 1000);
 
 createDots();
 render();
@@ -76,9 +76,9 @@ function onClick() {
   for ( var i = 0; i < intersects.length; i++ ) {
     var clickedObj = intersects[ i ].object;
     if( clickedObj.name != "globe") {
-      if( clickedObj.userData != "isActive") {
+      if( clickedObj.userData.state != "isActive") {
         clickedObj.material.color.set(0x0000ff);
-        clickedObj.userData = "isActive";
+        clickedObj.userData.state = "isActive";
         createInstances(clickedObj);
 
       } else {
@@ -87,7 +87,7 @@ function onClick() {
 
         //delete instances
         deleteInstances(clickedObj);
-        intersects[i].object.userData = "";
+        intersects[i].object.userData.state = "";
       }
     }
   }
@@ -113,6 +113,7 @@ function createDots () {
       var circle = new THREE.Mesh(dotGeo,materialInstance);
       circle.position.copy(pos);
       circle.lookAt(globe.position);
+      circle.userData.quantity = i*5;
       scene.add(circle);
   }
 }
@@ -126,7 +127,7 @@ function createInstances (dot) {
   var dir = new THREE.Vector3();
   dir.copy(dot.position).normalize();
 
-  for(var i = 0; i < guiControls.amountOfInst; i += 1) {
+  for(var i = 0; i < dot.userData.quantity; i += 1) {
     var dotInst = new THREE.Mesh(dotGeo, _instMat);
     dot.add(dotInst);
     dotInst.position.x -= i/guiControls.instanceSpacing;

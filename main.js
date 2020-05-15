@@ -12,6 +12,7 @@ controls.campingFactor = 0.25;
 controls.enableZoom = true;
 camera.position.z = 10;
 
+
 var geometry = new THREE.SphereGeometry( 5, 8, 8);
 var texture = new THREE.TextureLoader().load( "Assets/map.jpg" );
 texture.minFilter = THREE.NearestFilter;
@@ -26,8 +27,17 @@ var uniforms;
 var _instanceSpacing = 10;
 var clock = new THREE.Clock(); //units a second
 var dt = 0;
-
 var _instMat;
+var _amountOfInst = 15;
+
+var datGUI = new dat.GUI();
+var guiControls = new function () {
+  this.instanceSpacing = 10;
+  this.amountOfInst = 15
+}
+
+datGUI.add(guiControls, 'instanceSpacing', 1, 50);
+datGUI.add(guiControls, 'amountOfInst', 1, 50);
 
 createDots();
 render();
@@ -78,7 +88,7 @@ function onClick() {
 function render () {
   requestAnimationFrame( render );
   dt += clock.getDelta();
-  console.log(dt);
+  // console.log(dt%1);
   if(_instMat) {
    _instMat.uniforms.u_time.value = dt;
   }
@@ -102,9 +112,7 @@ function createDots () {
 }
 
 function createInstances (dot) {
-  var dir = new THREE.Vector3();
-  dir.copy(dot.position).normalize();
-  var dotGeo = new THREE.SphereGeometry(0.2, 16);
+  var dotGeo = new THREE.CircleGeometry(0.2, 16);
   uniforms = {
                 u_time: { type: "f", value: 1.0 }, // Time in seconds since load
                 u_resolution: { type: "v2", value: new THREE.Vector2() }, // Canvas size
@@ -113,13 +121,16 @@ function createInstances (dot) {
    _instMat = new THREE.ShaderMaterial( { uniforms:uniforms, vertexShader: document.getElementById( 'vertexShader' ).textContent, fragmentShader: document.getElementById( 'fragmentShader' ).textContent,flatShading: true});
    _instMat.side = THREE.DoubleSide;
    _instMat.needsUpdate = true
-  for(var i = 0; i < 15; i += 1) {
+
+  var dir = new THREE.Vector3();
+  dir.copy(dot.position).normalize();
+
+  for(var i = 0; i < guiControls.amountOfInst; i += 1) {
     var dotInst = new THREE.Mesh(dotGeo, _instMat);
     dot.add(dotInst);
-    dotInst.position.x -= i/_instanceSpacing;
-    dotInst.position.y -= i/_instanceSpacing;
-    dotInst.position.z -= i/_instanceSpacing;
-    console.log(dotInst.position);
+    dotInst.position.x -= i/guiControls.instanceSpacing;
+    dotInst.position.y -= i/guiControls.instanceSpacing;
+    dotInst.position.z -= i/guiControls.instanceSpacing;
   }
 }
 

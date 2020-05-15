@@ -20,6 +20,9 @@ var material = new THREE.MeshBasicMaterial( { map: texture} );
 var globe = new THREE.Mesh( geometry, material );
 globe.name = "globe";
 scene.add( globe );
+// globe.computeVertexNormals();
+var helper = new VertexNormalsHelper( globe, 2, 0x00ff00, 1 );
+scene.add(helper);
 
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
@@ -73,8 +76,8 @@ function onClick() {
   // calculate objects intersecting the picking ray
   var intersects = raycaster.intersectObjects( scene.children );
 
-  for ( var i = 0; i < intersects.length; i++ ) {
-    var clickedObj = intersects[ i ].object;
+
+    var clickedObj = intersects[ 0 ].object;
     if( clickedObj.name != "globe") {
       if( clickedObj.userData.state != "isActive") {
         clickedObj.material.color.set(0x0000ff);
@@ -83,14 +86,14 @@ function onClick() {
 
       } else {
         //toggle debug
-        intersects[ i ].object.material.color.set(0xff0000);
+        intersects[ 0 ].object.material.color.set(0xff0000);
 
         //delete instances
         deleteInstances(clickedObj);
-        intersects[i].object.userData.state = "";
+        intersects[0].object.userData.state = "";
       }
     }
-  }
+
 
 }
 function render () {

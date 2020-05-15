@@ -86,6 +86,7 @@ function onClick() {
         clickedObj.material.color.set(0x0000ff);
         clickedObj.userData.state = "isActive";
         createInstances(clickedObj);
+        console.log(intersects[0]);
 
       } else {
         //toggle debug
@@ -122,19 +123,6 @@ function createDots () {
       circle.position.copy(pos);
       circle.lookAt(globe.position);
       circle.userData.quantity = k*5;
-
-      //compute vertice normal and store it as userData
-      // for(var i = 0, l = geometry.faces.length; i < l; i ++) {
-      //   var face = geometry.faces[i];
-      //   for ( var j = 0, jl = face.vertexNormals.length; j < jl; j ++ ) {
-
-      //     var normal = face.vertexNormals[ j ];
-      //     circle.userData.vertNorm =  new THREE.Vector3();
-      //     circle.userData.vertNorm.copy( normal ).applyMatrix3( _normalMatrix ).normalize()
-      //   }
-      // }
-
-
       scene.add(circle);
   }
 }

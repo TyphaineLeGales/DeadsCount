@@ -23,12 +23,18 @@ scene.add( globe );
 
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
-var uniforms;
 var _instanceSpacing = 10;
 var clock = new THREE.Clock(); //units a second
 var dt = 0;
 var _instMat;
 var _amountOfInst = 15;
+var  uniforms = {
+                u_time: { type: "f", value: 1.0 }, // Time in seconds since load
+                u_resolution: { type: "v2", value: new THREE.Vector2() }, // Canvas size
+                u_mouse: { type: "v2", value: new THREE.Vector2() } // mouse position in screen pixels
+            };
+uniforms.u_resolution.value.x = renderer.domElement.width;
+uniforms.u_resolution.value.y = renderer.domElement.height;
 
 var datGUI = new dat.GUI();
 var guiControls = new function () {
@@ -50,6 +56,8 @@ function onWindowResize(){
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize( window.innerWidth, window.innerHeight );
+    uniforms.u_resolution.value.x = renderer.domElement.width;
+    uniforms.u_resolution.value.y = renderer.domElement.height;
 }
 
 function onMouseMove(event) {
@@ -89,9 +97,7 @@ function render () {
   requestAnimationFrame( render );
   dt += clock.getDelta();
   // console.log(dt%1);
-  if(_instMat) {
-   _instMat.uniforms.u_time.value = dt;
-  }
+  uniforms.u_time.value = dt;
   renderer.render( scene, camera );
 };
 
@@ -113,11 +119,6 @@ function createDots () {
 
 function createInstances (dot) {
   var dotGeo = new THREE.CircleGeometry(0.2, 16);
-  uniforms = {
-                u_time: { type: "f", value: 1.0 }, // Time in seconds since load
-                u_resolution: { type: "v2", value: new THREE.Vector2() }, // Canvas size
-                u_mouse: { type: "v2", value: new THREE.Vector2() } // mouse position in screen pixels
-            };
    _instMat = new THREE.ShaderMaterial( { uniforms:uniforms, vertexShader: document.getElementById( 'vertexShader' ).textContent, fragmentShader: document.getElementById( 'fragmentShader' ).textContent,flatShading: true});
    _instMat.side = THREE.DoubleSide;
    _instMat.needsUpdate = true

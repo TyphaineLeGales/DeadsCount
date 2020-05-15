@@ -11,22 +11,38 @@
   <script src="js/OrbitControls.js"></script>
   <script src="main.js"></script>
   <script type="x-shader/x-vertex" id="vertexShader">
+    varying vec2 v_uv;
     void main() {
       vec4 p = vec4( position, 1. );
       //modelViewMatrix  =  position of mesh within our scene
       // projectionMatrix = camera's relationship to the model within the scene
       //gl_Position gives the ultimate rendered posiiton of the vertex inside our scene
-
+      v_uv = uv;
       vec4 modelViewPosition = modelViewMatrix * p;
       gl_Position = projectionMatrix * modelViewPosition;
     }
   </script>
   <script type="x-shader/x-fragment" id="fragmentShader">
+    varying vec2 v_uv;
     uniform vec2 u_resolution;
     uniform float u_time;
 
+    float plot(vec2 st, float pct){
+  return  smoothstep( pct-0.02, pct, st.y) -
+          smoothstep( pct, pct+0.02, st.y);
+}
+
     void main() {
-      gl_FragColor = vec4(abs(sin(u_time)),0.0,0.0,1.0);
+    vec2 st = gl_FragCoord.xy/u_resolution;
+    float y = step(0.5,st.x);
+
+    vec3 color = vec3(y);
+
+    float pct = plot(st,y);
+    color = (1.0-pct)*color+pct*vec3(0.0,1.0,0.0);
+
+    gl_FragColor = vec4(color,1.0);
+
     }
   </script>
 </body>

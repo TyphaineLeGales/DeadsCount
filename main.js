@@ -22,11 +22,15 @@ scene.add( globe );
 
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
-
+var uniforms;
 var _instanceSpacing = 10;
+var clock = new THREE.Clock(); //units a second
+var dt = 0;
+
+var _instMat;
 
 createDots();
-animate();
+render();
 
 window.addEventListener( 'resize', onWindowResize, false );
 window.addEventListener( 'mousemove', onMouseMove, false );
@@ -71,8 +75,13 @@ function onClick() {
   }
 
 }
-function animate () {
-  requestAnimationFrame( animate );
+function render () {
+  requestAnimationFrame( render );
+  dt += clock.getDelta();
+  console.log(dt);
+  if(_instMat) {
+   _instMat.uniforms.u_time.value = dt;
+  }
   renderer.render( scene, camera );
 };
 
@@ -95,13 +104,17 @@ function createDots () {
 function createInstances (dot) {
   var dir = new THREE.Vector3();
   dir.copy(dot.position).normalize();
-  var dotGeo = new THREE.CircleGeometry(0.2, 16);
-  // var materialInstance = new THREE.MeshBasicMaterial({color: 0xff0000});
-  // materialInstance.side = THREE.DoubleSide;
-   _material = new THREE.ShaderMaterial( { vertexShader: document.getElementById( 'vertexShader' ).textContent, fragmentShader: document.getElementById( 'fragmentShader' ).textContent,flatShading: true});
-   _material.side = THREE.DoubleSide;
+  var dotGeo = new THREE.SphereGeometry(0.2, 16);
+  uniforms = {
+                u_time: { type: "f", value: 1.0 }, // Time in seconds since load
+                u_resolution: { type: "v2", value: new THREE.Vector2() }, // Canvas size
+                u_mouse: { type: "v2", value: new THREE.Vector2() } // mouse position in screen pixels
+            };
+   _instMat = new THREE.ShaderMaterial( { uniforms:uniforms, vertexShader: document.getElementById( 'vertexShader' ).textContent, fragmentShader: document.getElementById( 'fragmentShader' ).textContent,flatShading: true});
+   _instMat.side = THREE.DoubleSide;
+   _instMat.needsUpdate = true
   for(var i = 0; i < 15; i += 1) {
-    var dotInst = new THREE.Mesh(dotGeo, _material);
+    var dotInst = new THREE.Mesh(dotGeo, _instMat);
     dot.add(dotInst);
     dotInst.position.x -= i/_instanceSpacing;
     dotInst.position.y -= i/_instanceSpacing;
@@ -117,3 +130,4 @@ function deleteInstances (dot) {
     dot.remove(dotInstances[0]);
   }
 }
+

@@ -21,9 +21,12 @@
     }
   </script>
   <script type="x-shader/x-fragment" id="fragmentShader">
-  void main() {
-    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-  }
+    uniform vec2 u_resolution;
+    uniform float u_time;
+
+    void main() {
+      gl_FragColor = vec4(abs(sin(u_time)),0.0,0.0,1.0);
+    }
   </script>
 </body>
 </html>

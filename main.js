@@ -15,7 +15,6 @@ camera.position.z = 10;
 
 var geometry = new THREE.SphereGeometry( 5, 8, 8);
 geometry.computeVertexNormals();
-console.log(geometry.faces[0].vertexNormals);
 var texture = new THREE.TextureLoader().load( "Assets/map.jpg" );
 texture.minFilter = THREE.NearestFilter;
 var material = new THREE.MeshBasicMaterial( { map: texture} );
@@ -86,15 +85,14 @@ function onClick() {
         clickedObj.material.color.set(0x0000ff);
         clickedObj.userData.state = "isActive";
         createInstances(clickedObj);
-        console.log(intersects[0]);
 
       } else {
         //toggle debug
-        intersects[ 0 ].object.material.color.set(0xff0000);
+        clickedObj.material.color.set(0xff0000);
 
         //delete instances
         deleteInstances(clickedObj);
-        intersects[0].object.userData.state = "";
+        clickedObj.userData.state = "";
       }
   }
 
@@ -128,6 +126,7 @@ function createDots () {
 }
 
 function createInstances (dot) {
+  //substract sphere radius
   var dotGeo = new THREE.CircleGeometry(0.2, 16);
    // _instMat = new THREE.ShaderMaterial( { uniforms:uniforms, vertexShader: document.getElementById( 'vertexShader' ).textContent, fragmentShader: document.getElementById( 'fragmentShader' ).textContent,flatShading: true});
    _instMat = new THREE.MeshBasicMaterial( {color : 0xff0000});
@@ -137,16 +136,18 @@ function createInstances (dot) {
 
   for(var i = 0; i < dot.userData.quantity; i += 1) {
         var dotInst = new THREE.Mesh(dotGeo, _instMat);
-        scene.add(dotInst);
-        dotInst.position.copy(dot.position).multiplyScalar( i/guiControls.instanceSpacing);
+        dot.add(dotInst);
+        dotInst.position.copy(new THREE.Vector3(1, 1, 1)).multiplyScalar( i/guiControls.instanceSpacing);
         dotInst.lookAt(globe.position);
   }
 }
 
 function deleteInstances (dot) {
+
   var dotInstances = dot.children;
+  console.log(dotInstances);
   var instAmount = dotInstances.length;
-  for(var i = 0; i <  instAmount; i++) {
+  for(var i = 0; i < instAmount; i++) {
     dot.remove(dotInstances[0]);
   }
 }

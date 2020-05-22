@@ -1,4 +1,4 @@
-var splinePoints = [-71.12163543701172,5.02753353118896,-92.73057556152344,
+var _splinePoints = [-71.12163543701172,5.02753353118896,-92.73057556152344,
 -57.63454818725586,5.46526622772217,-103.41516876220703,
 -44.14746475219727,5.90299892425537,-114.09976196289062,
 -30.85867881774902,6.43158388137817,-125.01026153564453,
@@ -56,8 +56,8 @@ var splinePoints = [-71.12163543701172,5.02753353118896,-92.73057556152344,
 13.83610343933105,128.72129821777344,-572.71551513671875,
 6.53896760940552,134.75184631347656,-558.4759521484375];
 
+let _unitConvert = 0.01;
 //basic THREEJS Setup
-
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
 var renderer = new THREE.WebGLRenderer();
@@ -72,6 +72,9 @@ controls.enableZoom = true;
 camera.position.x = -115.319;
 camera.position.y = 233.663;
 camera.position.z = -303.89;
+camera.rotation.x = -18.175;
+camera.rotation.y = -13.189;
+
 
 //time
 var clock = new THREE.Clock(); //units a second
@@ -82,12 +85,22 @@ var datGUI = new dat.GUI();
 
 window.addEventListener( 'resize', onWindowResize, false );
 
+convertScale(_splinePoints);
+instanceObjAlongSpline();
+render();
+
+function convertScale (array) {
+    for(let i=0; i< array.length; i++) {
+       array[i] *= _unitConvert;
+    }
+}
+
 function onWindowResize(){
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize( window.innerWidth, window.innerHeight );
-    uniforms.u_resolution.value.x = renderer.domElement.width;
-    uniforms.u_resolution.value.y = renderer.domElement.height;
+    // uniforms.u_resolution.value.x = renderer.domElement.width;
+    // uniforms.u_resolution.value.y = renderer.domElement.height;
 }
 
 function render () {
@@ -98,15 +111,18 @@ function render () {
   renderer.render( scene, camera );
 };
 
+var debugOrigin = new THREE.Mesh(new THREE.CubeGeometry( 10, 10, 10), new THREE.MeshNormalMaterial());
+scene.add(debugOrigin);
 var _geo = new THREE.SphereGeometry( 5, 8, 8);
 var _mat = new THREE.MeshNormalMaterial();
 
 function instanceObjAlongSpline () {
-  for(var i = 0; i < splinePoints.length; i+=3) {
+  for(var i = 0; i < _splinePoints.length; i+=3) {
     var instance = new THREE.Mesh(_geo, _mat);
-    instance.position.x = splinePoints[i];
-    instance.position.y = splinePoints[i+1];
-    instance.position.z = splinePoints[i+2];
-    scene.add(sphere);
+    instance.position.x = _splinePoints[i];
+    instance.position.y = _splinePoints[i+1];
+    instance.position.z = _splinePoints[i+2];
+    scene.add(instance);
   }
+  console.log(scene);
 }

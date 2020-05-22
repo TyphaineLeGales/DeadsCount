@@ -29,7 +29,6 @@ class Spline {
   }
 
   setPositionByFrame (vec3, f) {
-
       let arrayMax = this.pointCount -1;
       let prev = this.clamp(Math.floor(f), 0, arrayMax);
       let next = this.clamp(Math.ceil(f), 0, arrayMax);

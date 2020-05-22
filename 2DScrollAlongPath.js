@@ -115,6 +115,24 @@ instanceObjAlongSpline();
 
 
 window.addEventListener( 'resize', onWindowResize, false );
+window.addEventListener('scoll', onWindowScroll, false);
+
+
+function onWindowResize(){
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    // uniforms.u_resolution.value.x = renderer.domElement.width;
+    // uniforms.u_resolution.value.y = renderer.domElement.height;
+}
+
+function onWindowScroll(){
+   console.log(window.scrollTop());
+}
+
+
+
+
 
 function init() {
 convertScale(_splinePoints);
@@ -122,8 +140,6 @@ flipZ(_splinePoints);
 _splinePath = new Spline(_splinePoints);
 
 }
-
-
 
 function convertScale (array) {
     for(let i=0; i< array.length; i++) {
@@ -137,21 +153,13 @@ function flipZ (array) {
     }
 }
 
-function onWindowResize(){
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    // uniforms.u_resolution.value.x = renderer.domElement.width;
-    // uniforms.u_resolution.value.y = renderer.domElement.height;
-}
-
 function render () {
   requestAnimationFrame( render );
   dt += clock.getDelta();
   debugOrigin.visible = guiControls.showOriginDebug;
   controls.enabled = guiControls.orbitControlsEnabled;
-  // moveObjAlongPath(dt);
-   _splinePath.setPositionByTime(_debugAnim.position,guiControls.pathF);
+   _splinePath.setObjectPath(_debugAnim,guiControls.pathF);
+   // _splinePath.setPositionByTime(_debugAnim.position,guiControls.pathF);
   // camera.rotation.y+= 1*_unitConvert;
   // console.log(dt%1);
   // uniforms.u_time.value = dt;
@@ -178,9 +186,4 @@ function easePath(t) {
     easedT = 0.5 + Math.cos(Math.pow(Math.exp(-easedT), 4) * Math.PI) * 0.5;
     return easedT
 }
-
-function moveObjAlongPath(dt) {
-  _splinePath.setObjectPath(_debugAnim,easePath(dt));
-}
-
 

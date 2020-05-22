@@ -91,18 +91,33 @@ datGUI.add(guiControls, 'showOriginDebug');
 var debugOrigin = new THREE.Mesh(new THREE.CubeGeometry( 10, 10, 10), new THREE.MeshNormalMaterial());
 debugOrigin.isVisible = guiControls.showOriginDebug;
 // scene.add(debugOrigin);
-var _geo = new THREE.SphereGeometry( 0.5, 8, 8);
+
+//plane
+var geometry = new THREE.PlaneGeometry( 10, 20, 32 );
+var material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
+var plane = new THREE.Mesh( geometry, material );
+plane.rotation.x += 90;
+scene.add( plane );
+
+var _geo = new THREE.SphereGeometry( 0.1, 8, 8);
 var _mat = new THREE.MeshNormalMaterial();
 
-window.addEventListener( 'resize', onWindowResize, false );
-
 convertScale(_splinePoints);
+flipZ(_splinePoints);
 instanceObjAlongSpline();
 render();
+window.addEventListener( 'resize', onWindowResize, false );
+
 
 function convertScale (array) {
     for(let i=0; i< array.length; i++) {
        array[i] *= _unitConvert;
+    }
+}
+
+function flipZ (array) {
+    for(let i=2; i< array.length; i+=3) {
+       array[i] = - array[i];
     }
 }
 

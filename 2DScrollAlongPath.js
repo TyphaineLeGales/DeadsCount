@@ -82,6 +82,17 @@ var dt = 0;
 
 //UI
 var datGUI = new dat.GUI();
+var guiControls = new function () {
+  this.showOriginDebug = true;
+}
+datGUI.add(guiControls, 'showOriginDebug');
+
+//debug origin scene
+var debugOrigin = new THREE.Mesh(new THREE.CubeGeometry( 10, 10, 10), new THREE.MeshNormalMaterial());
+debugOrigin.isVisible = guiControls.showOriginDebug;
+// scene.add(debugOrigin);
+var _geo = new THREE.SphereGeometry( 0.5, 8, 8);
+var _mat = new THREE.MeshNormalMaterial();
 
 window.addEventListener( 'resize', onWindowResize, false );
 
@@ -111,10 +122,6 @@ function render () {
   renderer.render( scene, camera );
 };
 
-var debugOrigin = new THREE.Mesh(new THREE.CubeGeometry( 10, 10, 10), new THREE.MeshNormalMaterial());
-scene.add(debugOrigin);
-var _geo = new THREE.SphereGeometry( 5, 8, 8);
-var _mat = new THREE.MeshNormalMaterial();
 
 function instanceObjAlongSpline () {
   for(var i = 0; i < _splinePoints.length; i+=3) {

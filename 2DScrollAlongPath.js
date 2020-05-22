@@ -89,10 +89,18 @@ var guiControls = new function () {
   this.showOriginDebug = false;
   this.orbitControlsEnabled = false;
   this.pathF = 0.50;
+  this.cameraPosX = camera.position.x;
+  this.cameraPosY = camera.position.y;
+  this.cameraPosZ = camera.position.z;
 }
 datGUI.add(guiControls, 'showOriginDebug');
 datGUI.add(guiControls, 'orbitControlsEnabled');
 datGUI.add(guiControls, 'pathF', 0,1);
+datGUI.addFolder('CameraPos');
+datGUI.add(guiControls, 'cameraPosX', -5, 5 );
+datGUI.add(guiControls, 'cameraPosY', -5, 5 );
+datGUI.add(guiControls, 'cameraPosZ', -5, 5 );
+
 //debug origin scene
 var _debugMat = new THREE.MeshNormalMaterial();
 var debugOrigin = new THREE.Mesh(new THREE.CubeGeometry( 5, 5, 5), new THREE.MeshNormalMaterial(_debugMat));
@@ -163,6 +171,7 @@ function render () {
   // camera.rotation.y+= 1*_unitConvert;
   // console.log(dt%1);
   // uniforms.u_time.value = dt;
+  camera.position.set(guiControls.cameraPosX, guiControls.cameraPosY,  guiControls.cameraPosZ);
   renderer.render( scene, camera );
 };
 

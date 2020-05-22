@@ -69,11 +69,11 @@ controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.campingFactor = 0.25;
 controls.enableZoom = true;
-camera.position.x = -115.319;
-camera.position.y = 233.663;
-camera.position.z = -303.89;
-camera.rotation.x = -18.175;
-camera.rotation.y = -13.189;
+camera.position.x = -115.319*_unitConvert;
+camera.position.y = -233.663*_unitConvert;
+camera.position.z = -303.89*_unitConvert;
+// camera.rotation.x = -18.175*_unitConvert;
+// camera.rotation.y = -13.189*_unitConvert;
 
 
 //time
@@ -88,9 +88,10 @@ var guiControls = new function () {
 datGUI.add(guiControls, 'showOriginDebug');
 
 //debug origin scene
-var debugOrigin = new THREE.Mesh(new THREE.CubeGeometry( 10, 10, 10), new THREE.MeshNormalMaterial());
-debugOrigin.isVisible = guiControls.showOriginDebug;
-// scene.add(debugOrigin);
+var _debugMat = new THREE.MeshNormalMaterial();
+var debugOrigin = new THREE.Mesh(new THREE.CubeGeometry( 10, 10, 10), new THREE.MeshNormalMaterial(_debugMat));
+_debugMat.needsUpdate = true;
+scene.add(debugOrigin);
 
 //plane
 var geometry = new THREE.PlaneGeometry( 10, 20, 32 );
@@ -102,11 +103,13 @@ scene.add( plane );
 var _geo = new THREE.SphereGeometry( 0.1, 8, 8);
 var _mat = new THREE.MeshNormalMaterial();
 
+render();
 convertScale(_splinePoints);
 flipZ(_splinePoints);
 instanceObjAlongSpline();
-render();
+
 window.addEventListener( 'resize', onWindowResize, false );
+
 
 
 function convertScale (array) {
@@ -132,6 +135,8 @@ function onWindowResize(){
 function render () {
   requestAnimationFrame( render );
   dt += clock.getDelta();
+  debugOrigin.visible = guiControls.showOriginDebug;
+  // camera.rotation.y+= 1*_unitConvert;
   // console.log(dt%1);
   // uniforms.u_time.value = dt;
   renderer.render( scene, camera );
@@ -146,5 +151,4 @@ function instanceObjAlongSpline () {
     instance.position.z = _splinePoints[i+2];
     scene.add(instance);
   }
-  console.log(scene);
 }

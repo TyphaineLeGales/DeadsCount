@@ -60,6 +60,7 @@ let _unitConvert = 0.01;
 //basic THREEJS Setup
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+scene.add(camera);
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
@@ -70,10 +71,11 @@ controls.enableDamping = true;
 controls.campingFactor = 0.25;
 controls.enableZoom = true;
 camera.position.x = -115.319*_unitConvert;
-camera.position.y = -233.663*_unitConvert;
-camera.position.z = -303.89*_unitConvert;
-// camera.rotation.x = -18.175*_unitConvert;
-// camera.rotation.y = -13.189*_unitConvert;
+camera.position.y = 233.663*_unitConvert;
+camera.position.z = 303.89*_unitConvert;
+camera.rotation.x = -18.175*_unitConvert;
+camera.rotation.y = -13.189*_unitConvert;
+
 
 
 //time
@@ -83,22 +85,23 @@ var dt = 0;
 //UI
 var datGUI = new dat.GUI();
 var guiControls = new function () {
-  this.showOriginDebug = true;
+  this.showOriginDebug = false;
+  this.orbitControlsEnabled = false;
 }
 datGUI.add(guiControls, 'showOriginDebug');
-
+datGUI.add(guiControls, 'orbitControlsEnabled');
 //debug origin scene
 var _debugMat = new THREE.MeshNormalMaterial();
-var debugOrigin = new THREE.Mesh(new THREE.CubeGeometry( 10, 10, 10), new THREE.MeshNormalMaterial(_debugMat));
+var debugOrigin = new THREE.Mesh(new THREE.CubeGeometry( 5, 5, 5), new THREE.MeshNormalMaterial(_debugMat));
 _debugMat.needsUpdate = true;
 scene.add(debugOrigin);
 
 //plane
-var geometry = new THREE.PlaneGeometry( 10, 20, 32 );
-var material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
-var plane = new THREE.Mesh( geometry, material );
-plane.rotation.x += 90;
-scene.add( plane );
+// var geometry = new THREE.PlaneGeometry( 10, 20, 32 );
+// var material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
+// var plane = new THREE.Mesh( geometry, material );
+// plane.rotation.x += 90;
+// scene.add( plane );
 
 var _geo = new THREE.SphereGeometry( 0.1, 8, 8);
 var _mat = new THREE.MeshNormalMaterial();
@@ -136,6 +139,7 @@ function render () {
   requestAnimationFrame( render );
   dt += clock.getDelta();
   debugOrigin.visible = guiControls.showOriginDebug;
+  controls.enabled = guiControls.orbitControlsEnabled;
   // camera.rotation.y+= 1*_unitConvert;
   // console.log(dt%1);
   // uniforms.u_time.value = dt;
@@ -144,6 +148,7 @@ function render () {
 
 
 function instanceObjAlongSpline () {
+  console.log("is called");
   for(var i = 0; i < _splinePoints.length; i+=3) {
     var instance = new THREE.Mesh(_geo, _mat);
     instance.position.x = _splinePoints[i];

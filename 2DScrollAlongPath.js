@@ -58,8 +58,55 @@ var splinePoints = [-71.12163543701172,5.02753353118896,-92.73057556152344,
 
 //basic THREEJS Setup
 
+var scene = new THREE.Scene();
+var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+var renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
+
+//Camera
+controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.campingFactor = 0.25;
+controls.enableZoom = true;
+camera.position.x = -115.319;
+camera.position.y = 233.663;
+camera.position.z = -303.89;
+
+//time
+var clock = new THREE.Clock(); //units a second
+var dt = 0;
+
+//UI
+var datGUI = new dat.GUI();
+
+window.addEventListener( 'resize', onWindowResize, false );
+
+function onWindowResize(){
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    uniforms.u_resolution.value.x = renderer.domElement.width;
+    uniforms.u_resolution.value.y = renderer.domElement.height;
+}
+
+function render () {
+  requestAnimationFrame( render );
+  dt += clock.getDelta();
+  // console.log(dt%1);
+  // uniforms.u_time.value = dt;
+  renderer.render( scene, camera );
+};
+
+var _geo = new THREE.SphereGeometry( 5, 8, 8);
+var _mat = new THREE.MeshNormalMaterial();
+
 function instanceObjAlongSpline () {
   for(var i = 0; i < splinePoints.length; i+=3) {
-    var sphere =
+    var instance = new THREE.Mesh(_geo, _mat);
+    instance.position.x = splinePoints[i];
+    instance.position.y = splinePoints[i+1];
+    instance.position.z = splinePoints[i+2];
+    scene.add(sphere);
   }
 }

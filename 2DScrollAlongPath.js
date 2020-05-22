@@ -57,6 +57,7 @@ var _splinePoints = [-71.12163543701172,5.02753353118896,-92.73057556152344,
 6.53896760940552,134.75184631347656,-558.4759521484375];
 
 let _unitConvert = 0.01;
+var _splinePath;
 //basic THREEJS Setup
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
@@ -87,14 +88,19 @@ var datGUI = new dat.GUI();
 var guiControls = new function () {
   this.showOriginDebug = false;
   this.orbitControlsEnabled = false;
+  this.pathF = 0.50;
 }
 datGUI.add(guiControls, 'showOriginDebug');
 datGUI.add(guiControls, 'orbitControlsEnabled');
+datGUI.add(guiControls, 'pathF', 0,1);
 //debug origin scene
 var _debugMat = new THREE.MeshNormalMaterial();
 var debugOrigin = new THREE.Mesh(new THREE.CubeGeometry( 5, 5, 5), new THREE.MeshNormalMaterial(_debugMat));
 _debugMat.needsUpdate = true;
 scene.add(debugOrigin);
+
+var _debugAnim =  new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5), new THREE.MeshNormalMaterial(_debugMat));
+scene.add(_debugAnim);
 
 //plane
 // var geometry = new THREE.PlaneGeometry( 10, 20, 32 );
@@ -103,15 +109,19 @@ scene.add(debugOrigin);
 // plane.rotation.x += 90;
 // scene.add( plane );
 
-var _geo = new THREE.SphereGeometry( 0.1, 8, 8);
-var _mat = new THREE.MeshNormalMaterial();
-
+init();
 render();
-convertScale(_splinePoints);
-flipZ(_splinePoints);
 instanceObjAlongSpline();
 
+
 window.addEventListener( 'resize', onWindowResize, false );
+
+function init() {
+convertScale(_splinePoints);
+flipZ(_splinePoints);
+_splinePath = new Spline(_splinePoints);
+
+}
 
 
 
@@ -140,6 +150,8 @@ function render () {
   dt += clock.getDelta();
   debugOrigin.visible = guiControls.showOriginDebug;
   controls.enabled = guiControls.orbitControlsEnabled;
+  // moveObjAlongPath(dt);
+   _splinePath.setPositionByTime(_debugAnim.position,guiControls.pathF);
   // camera.rotation.y+= 1*_unitConvert;
   // console.log(dt%1);
   // uniforms.u_time.value = dt;
@@ -148,12 +160,27 @@ function render () {
 
 
 function instanceObjAlongSpline () {
-  console.log("is called");
-  for(var i = 0; i < _splinePoints.length; i+=3) {
+var _geo = new THREE.CubeGeometry( 0.1, 0.05, 0.5);
+var _mat = new THREE.MeshNormalMaterial();
+  for(var i = 0; i < _splinePoints.length-3; i+=3) {
     var instance = new THREE.Mesh(_geo, _mat);
     instance.position.x = _splinePoints[i];
     instance.position.y = _splinePoints[i+1];
     instance.position.z = _splinePoints[i+2];
+    var nextPoint = new THREE.Vector3(_splinePoints[i+3], _splinePoints[i+4], _splinePoints[i+5]);
+    instance.lookAt(nextPoint);
     scene.add(instance);
   }
 }
+
+function easePath(t) {
+    let easedT = t % guiControls.speed;
+    easedT = 0.5 + Math.cos(Math.pow(Math.exp(-easedT), 4) * Math.PI) * 0.5;
+    return easedT
+}
+
+function moveObjAlongPath(dt) {
+  _splinePath.setObjectPath(_debugAnim,easePath(dt));
+}
+
+

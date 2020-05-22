@@ -58,6 +58,10 @@ var _splinePoints = [-71.12163543701172,5.02753353118896,-92.73057556152344,
 
 let _unitConvert = 0.01;
 var _splinePath;
+
+let scrollContainer = document.getElementById('scrollableContainer');
+scrollContainer.addEventListener('scroll', containerScrollTest, false);
+let _maxScroll = (scrollContainer.scrollHeight-scrollContainer.offsetHeight);
 //basic THREEJS Setup
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
@@ -82,6 +86,7 @@ camera.rotation.y = -13.189*_unitConvert;
 //time
 var clock = new THREE.Clock(); //units a second
 var dt = 0;
+var t;
 
 //UI
 var datGUI = new dat.GUI();
@@ -92,6 +97,9 @@ var guiControls = new function () {
   this.cameraPosX = camera.position.x;
   this.cameraPosY = camera.position.y;
   this.cameraPosZ = camera.position.z;
+  this.cameraRX = camera.rotation.x;
+  this.cameraRY = camera.rotation.y;
+  this.cameraRZ = camera.rotation.z;
 }
 datGUI.add(guiControls, 'showOriginDebug');
 datGUI.add(guiControls, 'orbitControlsEnabled');
@@ -99,8 +107,11 @@ datGUI.add(guiControls, 'pathF', 0,1);
 datGUI.addFolder('CameraPos');
 datGUI.add(guiControls, 'cameraPosX', -5, 5 );
 datGUI.add(guiControls, 'cameraPosY', -5, 5 );
-datGUI.add(guiControls, 'cameraPosZ', -5, 5 );
-
+datGUI.add(guiControls, 'cameraPosZ', -5, 10 );
+datGUI.addFolder('CameraRotation');
+datGUI.add(guiControls, 'cameraRX', -5, 5 );
+datGUI.add(guiControls, 'cameraRY', -5, 5 );
+datGUI.add(guiControls, 'cameraRZ', -5, 10 );
 //debug origin scene
 var _debugMat = new THREE.MeshNormalMaterial();
 var debugOrigin = new THREE.Mesh(new THREE.CubeGeometry( 5, 5, 5), new THREE.MeshNormalMaterial(_debugMat));
@@ -123,7 +134,7 @@ instanceObjAlongSpline();
 
 
 window.addEventListener( 'resize', onWindowResize, false );
-window.addEventListener('scoll', onWindowScroll, false);
+// window.addEventListener('scroll', onWindowScroll, false);
 
 
 function onWindowResize(){
@@ -135,11 +146,13 @@ function onWindowResize(){
 }
 
 function onWindowScroll(){
-   console.log(window.scrollTop());
+   console.log(window.scrollY);
 }
 
-
-
+function containerScrollTest() {
+  console.log(scrollContainer.scrollHeight-scrollContainer.offsetHeight);
+  console.log(scrollContainer.scrollTop);
+}
 
 
 function init() {
@@ -164,14 +177,13 @@ function flipZ (array) {
 function render () {
   requestAnimationFrame( render );
   dt += clock.getDelta();
+  _t = dt%1;
   debugOrigin.visible = guiControls.showOriginDebug;
   controls.enabled = guiControls.orbitControlsEnabled;
-   _splinePath.setObjectPath(_debugAnim,guiControls.pathF);
-   // _splinePath.setPositionByTime(_debugAnim.position,guiControls.pathF);
-  // camera.rotation.y+= 1*_unitConvert;
-  // console.log(dt%1);
+   _splinePath.setObjectPath(_debugAnim,mapRange(scrollContainer.scrollTop, 0, _maxScroll,0,  1));
   // uniforms.u_time.value = dt;
   camera.position.set(guiControls.cameraPosX, guiControls.cameraPosY,  guiControls.cameraPosZ);
+  camera.rotation.set(guiControls.cameraRX, guiControls.cameraRY,  guiControls.cameraRZ);
   renderer.render( scene, camera );
 };
 
@@ -194,5 +206,16 @@ function easePath(t) {
     let easedT = t % guiControls.speed;
     easedT = 0.5 + Math.cos(Math.pow(Math.exp(-easedT), 4) * Math.PI) * 0.5;
     return easedT
+}
+
+function  clamp ( value, min, max ) {
+
+    return Math.max( min, Math.min( max, value ) );
+
+  }
+
+function mapRange(value, a, b, c, d) {
+  value = (value - a) / (b - a);
+  return c + value*(d-c);
 }
 

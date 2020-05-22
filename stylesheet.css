@@ -8,3 +8,13 @@ canvas {
   position: sticky;
   top:0;
    }
+
+#scrollableContainer {
+  height:4000px;
+  width:10%;
+  background-color:red;
+  position:fixed;
+  top:0;
+  overflow: auto;
+  z-index:1;
+}

@@ -30,8 +30,8 @@ class Spline {
 
   setPositionByFrame (vec3, f) {
       let arrayMax = this.pointCount -1;
-      let prev = this.clamp(Math.floor(f), 0, arrayMax);
-      let next = this.clamp(Math.ceil(f), 0, arrayMax);
+      let prev = clamp(Math.floor(f), 0, arrayMax);
+      let next = clamp(Math.ceil(f), 0, arrayMax);
       let ratio = f % 1;
       vec3.copy(this.arr[prev]);
       vec3.lerp(this.arr[next], ratio);
@@ -45,18 +45,12 @@ class Spline {
 
   setObjectPath (object, t) {
       this.setPositionByTime(object.position, t);
-      let prevTime = this.clamp(t - 1/this.pointCount, 0, 1);
-      let nextTime = this.clamp(t + 1/this.pointCount, 0, 1);
+      let prevTime = clamp(t - 1/this.pointCount, 0, 1);
+      let nextTime = clamp(t + 1/this.pointCount, 0, 1);
       this.setPositionByTime(this.prevPos, prevTime);
       this.setPositionByTime(this.nextPos, nextTime);
       this.lookAtTarget.copy(this.nextPos).sub(this.prevPos).normalize().add(object.position);
       object.lookAt(this.lookAtTarget);
-  }
-
-  clamp ( value, min, max ) {
-
-    return Math.max( min, Math.min( max, value ) );
-
   }
 
 }

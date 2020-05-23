@@ -67,7 +67,12 @@ const _OPACITYTHRESHOLDOUT = 0.9;
 const _ADD_OFFSET = 0.1;
 let objectCounter = _MAXOBJ;
 let _delayCounter;
+let _globalScrollAmount = 0;
 // const _MAXSCROLL;
+var prevOffsetTop = 0;
+var currOffsetTop = 0;
+let _loopCounter = 0;
+let _maxLoop = 5;
 
 let scrollContainer = document.getElementById('scrollableContainer');
 let _maxScroll = (scrollContainer.scrollHeight-scrollContainer.offsetHeight);
@@ -176,11 +181,12 @@ function onWindowScroll(){
 }
 
 function onContainerScroll() {
-  respawn()
+  respawn();
+  // prevOffsetTop = 0;
+  // currOffsetTop = scrollContainer.scrollTop;
+  // _globalScrollAmount += (currOffsetTop - prevOffsetTop) + _loopCounter*_maxScroll ;
+  // prevOffsetTop = currOffsetTop;
 
-  // _splinePath.setObjectPath(_debugAnim, _f);
-
-  // console.log(_debugAnim.material.opacity);
 }
 
 
@@ -202,7 +208,7 @@ function render () {
 
   for(var i = 0; i<_unitArray.length; i++) {
     var obj = _unitArray[i]
-    obj.userData.f = _f - obj.userData.offset;
+    obj.userData.f = (_f+_loopCounter - obj.userData.offset)%1;
     _splinePath.setObjectPath(obj, obj.userData.f);
     opacityEase(obj.userData.f, obj);
   }
@@ -272,6 +278,7 @@ function respawn() {
 
   if(_f === 1){
     scrollContainer.scrollTop = 0;
+    _loopCounter += 1;
   }
 }
 
@@ -316,13 +323,14 @@ function easePath(t) {
     return easedT
 }
 
+function mapRange(value, a, b, c, d) {
+  value = (value - a) / (b - a);
+  return c + value*(d-c);
+}
+
 function  clamp ( value, min, max ) {
 
   return Math.max( min, Math.min( max, value ) );
 
 }
 
-function mapRange(value, a, b, c, d) {
-  value = (value - a) / (b - a);
-  return c + value*(d-c);
-}

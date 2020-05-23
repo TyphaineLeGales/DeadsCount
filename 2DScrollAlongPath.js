@@ -63,6 +63,7 @@ let _heightOffsetCurve = 0.45;
 const _MAXOBJ = 10;
 const _OPACITYTHRESHOLDIN = 0.1;
 const _OPACITYTHRESHOLDOUT = 0.9;
+const _MAXSCROLL;
 
 let scrollContainer = document.getElementById('scrollableContainer');
 let _maxScroll = (scrollContainer.scrollHeight-scrollContainer.offsetHeight);
@@ -125,6 +126,7 @@ var testMat = new THREE.MeshNormalMaterial();
 var texture = new THREE.TextureLoader().load( 'Assets/matCapTest.jpg' );
 var testMatcap = new THREE.MeshMatcapMaterial({matcap:texture, transparent: true});
 testMatcap.needsUpdate = true;
+testMatcap.opacity = 0;
 
 var testMat2 = new THREE.MeshNormalMaterial();
 var texture2 = new THREE.TextureLoader().load( 'Assets/matCap4.jpg' );
@@ -134,11 +136,20 @@ var testMatcap2 = new THREE.MeshMatcapMaterial({matcap:texture2});
 var _debugMat = new THREE.MeshNormalMaterial();
 var debugOrigin = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5), new THREE.MeshNormalMaterial(_debugMat));
 _debugMat.needsUpdate = true;
+_debugMat.visible = false;
 scene.add(debugOrigin);
 
 //test object along spline
 var _debugAnim =  new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),testMatcap);
 scene.add(_debugAnim);
+
+//TO DO :
+//have a global scroll Amount independant of container size - each time container reaches max scrollTop = 0;
+// => add scroll amount to a global variable => can go scroll through container independ of its size but until SCROLLMAX
+// DEFINE MAX OBJECTS
+//Spur new objects after definite interval add it to array until array.length == MAXOBJECTS.
+//then have userData for each objects contain => number of rounds it has passed
+// => global variable that contains count : addition of each object userData
 
 
 init();
@@ -147,7 +158,6 @@ render();
 
 
 window.addEventListener( 'resize', onWindowResize, false );
-// window.addEventListener('scroll', onWindowScroll, false);
 
 
 function onWindowResize(){
@@ -166,6 +176,7 @@ function onContainerScroll() {
   respawn()
   _splinePath.setObjectPath(_debugAnim, _f);
   opacityEase(_f, _debugAnim);
+
   // console.log(_debugAnim.material.opacity);
 }
 
@@ -179,7 +190,6 @@ makeSplineCurve(_splinePoints);
 _debugAnim.position.x = _splinePoints[0];
 _debugAnim.position.y = _splinePoints[1];
 _debugAnim.position.z = _splinePoints[2];
-
 
 }
 
@@ -225,6 +235,10 @@ var _mat = new THREE.MeshBasicMaterial({color:0xffffff});
   }
 }
 
+function globalScrollAmount {
+
+}
+
 
 function makeSplineCurve (array) {
   var vec3array = [];
@@ -249,15 +263,14 @@ function respawn() {
 }
 
 function opacityEase(f, obj) {
-  var opacity = obj.material.opacity;
 
   if(f < _OPACITYTHRESHOLDIN) {
-    opacity =  mapRange(f, 0,_OPACITYTHRESHOLDIN, 0, 1);
-
+    obj.material.opacity =  mapRange(f, 0,_OPACITYTHRESHOLDIN, 0, 1);
   } else if (f > _OPACITYTHRESHOLDOUT) {
-    opacity = mapRange(f,_OPACITYTHRESHOLDOUT,1, 1, 0);
+    obj.material.opacity = mapRange(f,_OPACITYTHRESHOLDOUT,1, 1, 0);
+  } else {
+    obj.material.opacity = 1;
   }
-  console.log(opacity);
 }
 
 function makeLineSpline (array) {
@@ -280,9 +293,9 @@ function easePath(t) {
 
 function  clamp ( value, min, max ) {
 
-    return Math.max( min, Math.min( max, value ) );
+  return Math.max( min, Math.min( max, value ) );
 
-  }
+}
 
 function mapRange(value, a, b, c, d) {
   value = (value - a) / (b - a);

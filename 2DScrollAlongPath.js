@@ -60,10 +60,15 @@ let _unitConvert = 0.01;
 var _splinePath;
 var curve;
 let _heightOffsetCurve = 0.45;
+const _MAXOBJ = 10;
+const _OPACITYTHRESHOLDIN = 0.1;
+const _OPACITYTHRESHOLDOUT = 0.9;
 
 let scrollContainer = document.getElementById('scrollableContainer');
-// scrollContainer.addEventListener('scroll', containerScrollTest, false);
 let _maxScroll = (scrollContainer.scrollHeight-scrollContainer.offsetHeight);
+let _f;
+scrollContainer.addEventListener('scroll', onContainerScroll, false);
+
 //basic THREEJS Setup
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
@@ -82,13 +87,6 @@ camera.position.y = 233.663*_unitConvert;
 camera.position.z = 6;
 camera.rotation.x = -18.175*_unitConvert;
 camera.rotation.y = -13.189*_unitConvert;
-
-
-//light
-var light = new THREE.PointLight( 0xff0000, 1, 100 );
-light.position.set( 1, 0, 0 );
-scene.add( light );
-
 
 //time
 var clock = new THREE.Clock(); //units a second
@@ -125,7 +123,8 @@ datGUI.add(guiControls, 'cameraRZ', -5, 10 );
 //MATCAP
 var testMat = new THREE.MeshNormalMaterial();
 var texture = new THREE.TextureLoader().load( 'Assets/matCapTest.jpg' );
-var testMatcap = new THREE.MeshMatcapMaterial({matcap:texture});
+var testMatcap = new THREE.MeshMatcapMaterial({matcap:texture, transparent: true});
+testMatcap.needsUpdate = true;
 
 var testMat2 = new THREE.MeshNormalMaterial();
 var texture2 = new THREE.TextureLoader().load( 'Assets/matCap4.jpg' );
@@ -137,15 +136,10 @@ var debugOrigin = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5), new THR
 _debugMat.needsUpdate = true;
 scene.add(debugOrigin);
 
+//test object along spline
 var _debugAnim =  new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),testMatcap);
 scene.add(_debugAnim);
 
-//plane
-// var geometry = new THREE.PlaneGeometry( 10, 20, 32 );
-// var material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
-// var plane = new THREE.Mesh( geometry, material );
-// plane.rotation.x += 90;
-// scene.add( plane );
 
 init();
 render();
@@ -168,9 +162,11 @@ function onWindowScroll(){
    console.log(window.scrollY);
 }
 
-function containerScrollTest() {
-  console.log(scrollContainer.scrollHeight-scrollContainer.offsetHeight);
-  console.log(scrollContainer.scrollTop);
+function onContainerScroll() {
+  respawn()
+  _splinePath.setObjectPath(_debugAnim, _f);
+  opacityEase(_f, _debugAnim);
+  // console.log(_debugAnim.material.opacity);
 }
 
 
@@ -179,6 +175,11 @@ convertScale(_splinePoints);
 flipZ(_splinePoints);
 _splinePath = new Spline(_splinePoints);
 makeSplineCurve(_splinePoints);
+//initiate at beginning of spline
+_debugAnim.position.x = _splinePoints[0];
+_debugAnim.position.y = _splinePoints[1];
+_debugAnim.position.z = _splinePoints[2];
+
 
 }
 
@@ -196,12 +197,12 @@ function flipZ (array) {
 
 function render () {
   requestAnimationFrame( render );
-  dt += clock.getDelta();
-  _t = dt%1;
+
+  // dt += clock.getDelta();
+  // _t = dt%1;
+  _f = clamp(mapRange(scrollContainer.scrollTop, 0, _maxScroll,0,  1), 0, 1);
   debugOrigin.visible = guiControls.showOriginDebug;
   controls.enabled = guiControls.orbitControlsEnabled;
-   _splinePath.setObjectPath(_debugAnim, mapRange(scrollContainer.scrollTop, 0, _maxScroll,0,  1));
-   // curve.material.linewidth = guiControls.lineThickness;
   // uniforms.u_time.value = dt;
   // camera.position.set(guiControls.cameraPosX, guiControls.cameraPosY,  guiControls.cameraPosZ);
   // camera.rotation.set(guiControls.cameraRX, guiControls.cameraRY,  guiControls.cameraRZ);
@@ -224,22 +225,6 @@ var _mat = new THREE.MeshBasicMaterial({color:0xffffff});
   }
 }
 
-function easePath(t) {
-    let easedT = t % guiControls.speed;
-    easedT = 0.5 + Math.cos(Math.pow(Math.exp(-easedT), 4) * Math.PI) * 0.5;
-    return easedT
-}
-
-function  clamp ( value, min, max ) {
-
-    return Math.max( min, Math.min( max, value ) );
-
-  }
-
-function mapRange(value, a, b, c, d) {
-  value = (value - a) / (b - a);
-  return c + value*(d-c);
-}
 
 function makeSplineCurve (array) {
   var vec3array = [];
@@ -256,6 +241,25 @@ function makeSplineCurve (array) {
 
 }
 
+function respawn() {
+
+  if( _debugAnim.position.z === _splinePoints[_splinePoints.length-1]){
+    scrollContainer.scrollTop = 0;
+  }
+}
+
+function opacityEase(f, obj) {
+  var opacity = obj.material.opacity;
+
+  if(f < _OPACITYTHRESHOLDIN) {
+    opacity =  mapRange(f, 0,_OPACITYTHRESHOLDIN, 0, 1);
+
+  } else if (f > _OPACITYTHRESHOLDOUT) {
+    opacity = mapRange(f,_OPACITYTHRESHOLDOUT,1, 1, 0);
+  }
+  console.log(opacity);
+}
+
 function makeLineSpline (array) {
 
   var vertices = new Float32Array(_splinePoints);
@@ -266,4 +270,21 @@ function makeLineSpline (array) {
   curve = new THREE.Line( geometry, material );
 
   scene.add(curve);
+}
+
+function easePath(t) {
+    let easedT = t % guiControls.speed;
+    easedT = 0.5 + Math.cos(Math.pow(Math.exp(-easedT), 4) * Math.PI) * 0.5;
+    return easedT
+}
+
+function  clamp ( value, min, max ) {
+
+    return Math.max( min, Math.min( max, value ) );
+
+  }
+
+function mapRange(value, a, b, c, d) {
+  value = (value - a) / (b - a);
+  return c + value*(d-c);
 }

@@ -60,10 +60,14 @@ let _unitConvert = 0.01;
 var _splinePath;
 var curve;
 let _heightOffsetCurve = 0.45;
+let _unitArray = [];
 const _MAXOBJ = 10;
 const _OPACITYTHRESHOLDIN = 0.1;
 const _OPACITYTHRESHOLDOUT = 0.9;
-const _MAXSCROLL;
+const _ADD_OFFSET = 0.1;
+let objectCounter = _MAXOBJ;
+let _delayCounter;
+// const _MAXSCROLL;
 
 let scrollContainer = document.getElementById('scrollableContainer');
 let _maxScroll = (scrollContainer.scrollHeight-scrollContainer.offsetHeight);
@@ -140,8 +144,8 @@ _debugMat.visible = false;
 scene.add(debugOrigin);
 
 //test object along spline
-var _debugAnim =  new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),testMatcap);
-scene.add(_debugAnim);
+// var _debugAnim =  new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),testMatcap);
+// scene.add(_debugAnim);
 
 //TO DO :
 //have a global scroll Amount independant of container size - each time container reaches max scrollTop = 0;
@@ -150,6 +154,8 @@ scene.add(_debugAnim);
 //Spur new objects after definite interval add it to array until array.length == MAXOBJECTS.
 //then have userData for each objects contain => number of rounds it has passed
 // => global variable that contains count : addition of each object userData
+//GUI controller for speed => changes scroll max
+//edit new spline
 
 
 init();
@@ -174,36 +180,21 @@ function onWindowScroll(){
 
 function onContainerScroll() {
   respawn()
-  _splinePath.setObjectPath(_debugAnim, _f);
-  opacityEase(_f, _debugAnim);
+
+  // _splinePath.setObjectPath(_debugAnim, _f);
 
   // console.log(_debugAnim.material.opacity);
 }
 
 
 function init() {
-convertScale(_splinePoints);
-flipZ(_splinePoints);
-_splinePath = new Spline(_splinePoints);
-makeSplineCurve(_splinePoints);
-//initiate at beginning of spline
-_debugAnim.position.x = _splinePoints[0];
-_debugAnim.position.y = _splinePoints[1];
-_debugAnim.position.z = _splinePoints[2];
-
+  convertScale(_splinePoints);
+  flipZ(_splinePoints);
+  _splinePath = new Spline(_splinePoints);
+  makeSplineCurve(_splinePoints);
+  createObj();
 }
 
-function convertScale (array) {
-    for(let i=0; i< array.length; i++) {
-       array[i] *= _unitConvert;
-    }
-}
-
-function flipZ (array) {
-    for(let i=2; i< array.length; i+=3) {
-       array[i] = - array[i];
-    }
-}
 
 function render () {
   requestAnimationFrame( render );
@@ -211,6 +202,14 @@ function render () {
   // dt += clock.getDelta();
   // _t = dt%1;
   _f = clamp(mapRange(scrollContainer.scrollTop, 0, _maxScroll,0,  1), 0, 1);
+
+  for(var i = 0; i<_unitArray.length; i++) {
+    var obj = _unitArray[i]
+    obj.userData.f = _f - obj.userData.offset;
+    _splinePath.setObjectPath(obj, obj.userData.f);
+    opacityEase(obj.userData.f, obj);
+  }
+
   debugOrigin.visible = guiControls.showOriginDebug;
   controls.enabled = guiControls.orbitControlsEnabled;
   // uniforms.u_time.value = dt;
@@ -218,6 +217,20 @@ function render () {
   // camera.rotation.set(guiControls.cameraRX, guiControls.cameraRY,  guiControls.cameraRZ);
   renderer.render( scene, camera );
 };
+
+function createObj() {
+ for(var i = 0; i<_MAXOBJ; i++) {
+  var startPos = new THREE.Vector3(_splinePoints[0], _splinePoints[1], _splinePoints[2]);
+    var obj = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),testMatcap);
+    obj.userData.offset =1/i;
+    obj.userDataf = 0;
+    obj.position.copy(startPos);
+    scene.add(obj);
+    _unitArray.push(obj);
+
+  }
+}
+
 
 
 function instanceObjAlongSpline () {
@@ -235,7 +248,7 @@ var _mat = new THREE.MeshBasicMaterial({color:0xffffff});
   }
 }
 
-function globalScrollAmount {
+function globalScrollAmount () {
 
 }
 
@@ -257,7 +270,7 @@ function makeSplineCurve (array) {
 
 function respawn() {
 
-  if( _debugAnim.position.z === _splinePoints[_splinePoints.length-1]){
+  if(_f === 1){
     scrollContainer.scrollTop = 0;
   }
 }
@@ -283,6 +296,18 @@ function makeLineSpline (array) {
   curve = new THREE.Line( geometry, material );
 
   scene.add(curve);
+}
+
+function convertScale (array) {
+    for(let i=0; i< array.length; i++) {
+       array[i] *= _unitConvert;
+    }
+}
+
+function flipZ (array) {
+    for(let i=2; i< array.length; i+=3) {
+       array[i] = - array[i];
+    }
 }
 
 function easePath(t) {

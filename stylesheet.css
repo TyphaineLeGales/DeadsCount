@@ -18,3 +18,11 @@ canvas {
   overflow: auto;
   z-index:1;
 }
+
+#numberContainer {
+  position:fixed;
+  left:0;
+  top:0;
+  color:white;
+  font-size:10em;
+}

@@ -73,11 +73,16 @@ var prevOffsetTop = 0;
 var currOffsetTop = 0;
 let _loopCounter = 0;
 let _maxLoop = 5;
+let _prevF =0;
+let _currT =0;
+let totalCount = 0;
 
 let scrollContainer = document.getElementById('scrollableContainer');
 let _maxScroll = (scrollContainer.scrollHeight-scrollContainer.offsetHeight);
 let _f;
 scrollContainer.addEventListener('scroll', onContainerScroll, false);
+
+let numberContainer = document.getElementById('numberContainer');
 
 //basic THREEJS Setup
 var scene = new THREE.Scene();
@@ -150,13 +155,11 @@ scene.add(debugOrigin);
 // scene.add(_debugAnim);
 
 //TO DO :
-//have a global scroll Amount independant of container size - each time container reaches max scrollTop = 0;
-// => add scroll amount to a global variable => can go scroll through container independ of its size but until SCROLLMAX
-// DEFINE MAX OBJECTS
-//Spur new objects after definite interval add it to array until array.length == MAXOBJECTS.
+
 //then have userData for each objects contain => number of rounds it has passed
 // => global variable that contains count : addition of each object userData
 //GUI controller for speed => changes scroll max
+//work scroll backward loop
 //edit new spline
 
 
@@ -182,6 +185,15 @@ function onWindowScroll(){
 
 function onContainerScroll() {
   respawn();
+  numberContainer.innerHTML = totalCount;
+  console.log(_loopCounter);
+  // console.log(_unitArray[0].userData.number);
+  //update number Count
+   // if(obj.userData.f < _unitArray[(i+1)%1].userData.f) {
+   //    obj.userData.number +=1;
+   //  }
+
+
   // prevOffsetTop = 0;
   // currOffsetTop = scrollContainer.scrollTop;
   // _globalScrollAmount += (currOffsetTop - prevOffsetTop) + _loopCounter*_maxScroll ;
@@ -207,11 +219,16 @@ function render () {
   _f = clamp(mapRange(scrollContainer.scrollTop, 0, _maxScroll,0,  1), 0, 1);
 
   for(var i = 0; i<_unitArray.length; i++) {
-    var obj = _unitArray[i]
+    var obj = _unitArray[i];
     obj.userData.f = (_f+_loopCounter - obj.userData.offset)%1;
     _splinePath.setObjectPath(obj, obj.userData.f);
     opacityEase(obj.userData.f, obj);
+
+    if(obj.userData.f === -_splinePoints[_splinePoints.length-1]*_unitConvert) {
+      obj.userData.number += 1;
+    }
   }
+  // console.log
 
   debugOrigin.visible = guiControls.showOriginDebug;
   controls.enabled = guiControls.orbitControlsEnabled;
@@ -229,7 +246,8 @@ function createObj() {
   var startPos = new THREE.Vector3(_splinePoints[0], _splinePoints[1], _splinePoints[2]);
   var obj = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),matcap);
   obj.userData.offset = i*0.1;
-  obj.userDataf = 0;
+  obj.userData.f = 0;
+  obj.userData.number = i;
   obj.position.copy(startPos);
   scene.add(obj);
   _unitArray.push(obj);
@@ -254,10 +272,6 @@ var _mat = new THREE.MeshBasicMaterial({color:0xffffff});
   }
 }
 
-function globalScrollAmount () {
-
-}
-
 
 function makeSplineCurve (array) {
   var vec3array = [];
@@ -279,6 +293,7 @@ function respawn() {
   if(_f === 1){
     scrollContainer.scrollTop = 0;
     _loopCounter += 1;
+    totalCount = _loopCounter*_MAXOBJ;
   }
 }
 

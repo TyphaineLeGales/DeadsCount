@@ -59,9 +59,10 @@ var _splinePoints = [-71.12163543701172,5.02753353118896,-92.73057556152344,
 let _unitConvert = 0.01;
 var _splinePath;
 var curve;
+let _heightOffsetCurve = 0.45;
 
 let scrollContainer = document.getElementById('scrollableContainer');
-scrollContainer.addEventListener('scroll', containerScrollTest, false);
+// scrollContainer.addEventListener('scroll', containerScrollTest, false);
 let _maxScroll = (scrollContainer.scrollHeight-scrollContainer.offsetHeight);
 //basic THREEJS Setup
 var scene = new THREE.Scene();
@@ -83,6 +84,11 @@ camera.rotation.x = -18.175*_unitConvert;
 camera.rotation.y = -13.189*_unitConvert;
 
 
+//light
+var light = new THREE.PointLight( 0xff0000, 1, 100 );
+light.position.set( 1, 0, 0 );
+scene.add( light );
+
 
 //time
 var clock = new THREE.Clock(); //units a second
@@ -94,7 +100,7 @@ var datGUI = new dat.GUI();
 var guiControls = new function () {
   this.showOriginDebug = false;
   this.orbitControlsEnabled = false;
-  this.lineThickness = 1;
+  // this.lineThickness = 1;
   this.pathF = 0.50;
   this.cameraPosX = camera.position.x;
   this.cameraPosY = camera.position.y;
@@ -105,7 +111,7 @@ var guiControls = new function () {
 }
 datGUI.add(guiControls, 'showOriginDebug');
 datGUI.add(guiControls, 'orbitControlsEnabled');
-datGUI.add(guiControls, 'lineThickness', 1, 10);
+// datGUI.add(guiControls, 'lineThickness', 1, 10);
 datGUI.add(guiControls, 'pathF', 0,1);
 datGUI.addFolder('CameraPos');
 datGUI.add(guiControls, 'cameraPosX', -5, 5 );
@@ -115,13 +121,23 @@ datGUI.addFolder('CameraRotation');
 datGUI.add(guiControls, 'cameraRX', -5, 5 );
 datGUI.add(guiControls, 'cameraRY', -5, 5 );
 datGUI.add(guiControls, 'cameraRZ', -5, 10 );
+
+//MATCAP
+var testMat = new THREE.MeshNormalMaterial();
+var texture = new THREE.TextureLoader().load( 'Assets/matCapTest.jpg' );
+var testMatcap = new THREE.MeshMatcapMaterial({matcap:texture});
+
+var testMat2 = new THREE.MeshNormalMaterial();
+var texture2 = new THREE.TextureLoader().load( 'Assets/matCap4.jpg' );
+var testMatcap2 = new THREE.MeshMatcapMaterial({matcap:texture2});
+
 //debug origin scene
 var _debugMat = new THREE.MeshNormalMaterial();
-var debugOrigin = new THREE.Mesh(new THREE.CubeGeometry( 5, 5, 5), new THREE.MeshNormalMaterial(_debugMat));
+var debugOrigin = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5), new THREE.MeshNormalMaterial(_debugMat));
 _debugMat.needsUpdate = true;
 scene.add(debugOrigin);
 
-var _debugAnim =  new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5), new THREE.MeshBasicMaterial({color:0xff0000}));
+var _debugAnim =  new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),testMatcap);
 scene.add(_debugAnim);
 
 //plane
@@ -133,7 +149,7 @@ scene.add(_debugAnim);
 
 init();
 render();
-instanceObjAlongSpline();
+// instanceObjAlongSpline();
 
 
 window.addEventListener( 'resize', onWindowResize, false );
@@ -185,7 +201,7 @@ function render () {
   debugOrigin.visible = guiControls.showOriginDebug;
   controls.enabled = guiControls.orbitControlsEnabled;
    _splinePath.setObjectPath(_debugAnim, mapRange(scrollContainer.scrollTop, 0, _maxScroll,0,  1));
-   curve.material.linewidth = guiControls.lineThickness;
+   // curve.material.linewidth = guiControls.lineThickness;
   // uniforms.u_time.value = dt;
   // camera.position.set(guiControls.cameraPosX, guiControls.cameraPosY,  guiControls.cameraPosZ);
   // camera.rotation.set(guiControls.cameraRX, guiControls.cameraRY,  guiControls.cameraRZ);
@@ -229,21 +245,25 @@ function makeSplineCurve (array) {
   var vec3array = [];
 
   for(var i = 0; i < array.length; i+= 3) {
-    var vecPos = new THREE.Vector3(array[i], array[i+1], array[i+2]);
+    var vecPos = new THREE.Vector3(array[i], array[i+1]-_heightOffsetCurve, array[i+2]);
     vec3array.push(vecPos);
   }
-  var path = new THREE.CatmullRomCurve3( vec3array );
-  var tubeGeometry = new THREE.TubeGeometry( path, 64, 0.2, 3, false );
-  var testMat = new THREE.MeshNormalMaterial();
-  var pathTest = new THREE.Mesh( tubeGeometry, testMat );
-  scene.add( pathTest );
-  // var vec3Array = [];
-  // var vertices = new Float32Array(_splinePoints);
-  // var geometry = new THREE.BufferGeometry();
-  // geometry.addAttribute( "position", new THREE.BufferAttribute( vertices, 3 ) );
-  // var material = new THREE.LineBasicMaterial( { color : 0xff0000} );
-  // material.needsUpdate = true;
-  // curve = new THREE.Line( geometry, material );
 
-  // scene.add(curve);
+  var path = new THREE.CatmullRomCurve3( vec3array );
+  var tubeGeometry = new THREE.TubeGeometry( path, 256, 0.2, 5, false );
+  var pathTest = new THREE.Mesh( tubeGeometry, testMatcap2 );
+  scene.add( pathTest );
+
+}
+
+function makeLineSpline (array) {
+
+  var vertices = new Float32Array(_splinePoints);
+  var geometry = new THREE.BufferGeometry();
+  geometry.addAttribute( "position", new THREE.BufferAttribute( vertices, 3 ) );
+  var material = new THREE.LineBasicMaterial( { color : 0xff0000} );
+  material.needsUpdate = true;
+  curve = new THREE.Line( geometry, material );
+
+  scene.add(curve);
 }

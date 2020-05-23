@@ -77,7 +77,7 @@ controls.campingFactor = 0.25;
 controls.enableZoom = true;
 camera.position.x = -115.319*_unitConvert;
 camera.position.y = 233.663*_unitConvert;
-camera.position.z = 303.89*_unitConvert;
+camera.position.z = 6;
 camera.rotation.x = -18.175*_unitConvert;
 camera.rotation.y = -13.189*_unitConvert;
 
@@ -118,7 +118,7 @@ var debugOrigin = new THREE.Mesh(new THREE.CubeGeometry( 5, 5, 5), new THREE.Mes
 _debugMat.needsUpdate = true;
 scene.add(debugOrigin);
 
-var _debugAnim =  new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5), new THREE.MeshNormalMaterial(_debugMat));
+var _debugAnim =  new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5), new THREE.MeshBasicMaterial({color:0xff0000}));
 scene.add(_debugAnim);
 
 //plane
@@ -159,6 +159,7 @@ function init() {
 convertScale(_splinePoints);
 flipZ(_splinePoints);
 _splinePath = new Spline(_splinePoints);
+makeSplineCurve(_splinePoints);
 
 }
 
@@ -180,17 +181,18 @@ function render () {
   _t = dt%1;
   debugOrigin.visible = guiControls.showOriginDebug;
   controls.enabled = guiControls.orbitControlsEnabled;
-   _splinePath.setObjectPath(_debugAnim,mapRange(scrollContainer.scrollTop, 0, _maxScroll,0,  1));
+   _splinePath.setObjectPath(_debugAnim, mapRange(scrollContainer.scrollTop, 0, _maxScroll,0,  1));
   // uniforms.u_time.value = dt;
-  camera.position.set(guiControls.cameraPosX, guiControls.cameraPosY,  guiControls.cameraPosZ);
-  camera.rotation.set(guiControls.cameraRX, guiControls.cameraRY,  guiControls.cameraRZ);
+  // camera.position.set(guiControls.cameraPosX, guiControls.cameraPosY,  guiControls.cameraPosZ);
+  // camera.rotation.set(guiControls.cameraRX, guiControls.cameraRY,  guiControls.cameraRZ);
   renderer.render( scene, camera );
 };
 
 
 function instanceObjAlongSpline () {
-var _geo = new THREE.CubeGeometry( 0.1, 0.05, 0.5);
-var _mat = new THREE.MeshNormalMaterial();
+var _geo = new THREE.SphereGeometry( 0.03, 8, 8);
+var _mat = new THREE.MeshBasicMaterial({color:0xffffff});
+
   for(var i = 0; i < _splinePoints.length-3; i+=3) {
     var instance = new THREE.Mesh(_geo, _mat);
     instance.position.x = _splinePoints[i];
@@ -219,3 +221,29 @@ function mapRange(value, a, b, c, d) {
   return c + value*(d-c);
 }
 
+function makeSplineCurve (array) {
+  // var vec3Array = [];
+  var vertices = new Float32Array(_splinePoints);
+
+
+//   for(var i = 0; i < array.length; i+=3) {
+//     var vecPos = new THREE.Vector3(array[i], array[i+1], array[i+2]);
+//     vec3Array.push(vecPos);
+//   }
+
+//   console.log(vec3Array);
+//   var curve = new THREE.CatmullRomCurve3(array);
+// console.log(curve);
+
+  // var points = curve.points;
+  // var geometry = new THREE.BufferGeometry().setFromPoints( points );
+  var geometry = new THREE.BufferGeometry();
+  geometry.addAttribute( "position", new THREE.BufferAttribute( vertices, 3 ) );
+
+  var material = new THREE.LineBasicMaterial( { color : 0xff0000, linewidth:5 } );
+
+// Create the final object to add to the scene
+  var curveObject = new THREE.Line( geometry, material );
+
+  scene.add(curveObject);
+}

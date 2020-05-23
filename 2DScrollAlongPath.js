@@ -58,6 +58,7 @@ var _splinePoints = [-71.12163543701172,5.02753353118896,-92.73057556152344,
 
 let _unitConvert = 0.01;
 var _splinePath;
+var curve;
 
 let scrollContainer = document.getElementById('scrollableContainer');
 scrollContainer.addEventListener('scroll', containerScrollTest, false);
@@ -93,6 +94,7 @@ var datGUI = new dat.GUI();
 var guiControls = new function () {
   this.showOriginDebug = false;
   this.orbitControlsEnabled = false;
+  this.lineThickness = 1;
   this.pathF = 0.50;
   this.cameraPosX = camera.position.x;
   this.cameraPosY = camera.position.y;
@@ -103,6 +105,7 @@ var guiControls = new function () {
 }
 datGUI.add(guiControls, 'showOriginDebug');
 datGUI.add(guiControls, 'orbitControlsEnabled');
+datGUI.add(guiControls, 'lineThickness', 1, 10);
 datGUI.add(guiControls, 'pathF', 0,1);
 datGUI.addFolder('CameraPos');
 datGUI.add(guiControls, 'cameraPosX', -5, 5 );
@@ -182,6 +185,7 @@ function render () {
   debugOrigin.visible = guiControls.showOriginDebug;
   controls.enabled = guiControls.orbitControlsEnabled;
    _splinePath.setObjectPath(_debugAnim, mapRange(scrollContainer.scrollTop, 0, _maxScroll,0,  1));
+   curve.material.linewidth = guiControls.lineThickness;
   // uniforms.u_time.value = dt;
   // camera.position.set(guiControls.cameraPosX, guiControls.cameraPosY,  guiControls.cameraPosZ);
   // camera.rotation.set(guiControls.cameraRX, guiControls.cameraRY,  guiControls.cameraRZ);
@@ -222,28 +226,24 @@ function mapRange(value, a, b, c, d) {
 }
 
 function makeSplineCurve (array) {
+  var vec3array = [];
+
+  for(var i = 0; i < array.length; i+= 3) {
+    var vecPos = new THREE.Vector3(array[i], array[i+1], array[i+2]);
+    vec3array.push(vecPos);
+  }
+  var path = new THREE.CatmullRomCurve3( vec3array );
+  var tubeGeometry = new THREE.TubeGeometry( path, 64, 0.2, 3, false );
+  var testMat = new THREE.MeshNormalMaterial();
+  var pathTest = new THREE.Mesh( tubeGeometry, testMat );
+  scene.add( pathTest );
   // var vec3Array = [];
-  var vertices = new Float32Array(_splinePoints);
+  // var vertices = new Float32Array(_splinePoints);
+  // var geometry = new THREE.BufferGeometry();
+  // geometry.addAttribute( "position", new THREE.BufferAttribute( vertices, 3 ) );
+  // var material = new THREE.LineBasicMaterial( { color : 0xff0000} );
+  // material.needsUpdate = true;
+  // curve = new THREE.Line( geometry, material );
 
-
-//   for(var i = 0; i < array.length; i+=3) {
-//     var vecPos = new THREE.Vector3(array[i], array[i+1], array[i+2]);
-//     vec3Array.push(vecPos);
-//   }
-
-//   console.log(vec3Array);
-//   var curve = new THREE.CatmullRomCurve3(array);
-// console.log(curve);
-
-  // var points = curve.points;
-  // var geometry = new THREE.BufferGeometry().setFromPoints( points );
-  var geometry = new THREE.BufferGeometry();
-  geometry.addAttribute( "position", new THREE.BufferAttribute( vertices, 3 ) );
-
-  var material = new THREE.LineBasicMaterial( { color : 0xff0000, linewidth:5 } );
-
-// Create the final object to add to the scene
-  var curveObject = new THREE.Line( geometry, material );
-
-  scene.add(curveObject);
+  // scene.add(curve);
 }

@@ -68,7 +68,6 @@ const _ADD_OFFSET = 0.1;
 let objectCounter = _MAXOBJ;
 let _delayCounter;
 let _globalScrollAmount = 0;
-// const _MAXSCROLL;
 var prevOffsetTop = 0;
 var currOffsetTop = 0;
 let _loopCounter = 0;
@@ -186,12 +185,15 @@ function onWindowScroll(){
 function onContainerScroll() {
   respawn();
   numberContainer.innerHTML = totalCount;
-  console.log(_loopCounter);
-  // console.log(_unitArray[0].userData.number);
-  //update number Count
-   // if(obj.userData.f < _unitArray[(i+1)%1].userData.f) {
-   //    obj.userData.number +=1;
-   //  }
+  // console.log(_loopCounter);
+  for(var i = 0; i<_MAXOBJ; i++) {
+    var obj = _unitArray[i];
+
+    if(obj.userData.f< obj.userData.prevF) {
+      totalCount += 1;
+    }
+    obj.userData.prevF = obj.userData.f;
+  }
 
 
   // prevOffsetTop = 0;
@@ -248,6 +250,7 @@ function createObj() {
   obj.userData.offset = i*0.1;
   obj.userData.f = 0;
   obj.userData.number = i;
+  obj.userData.prevF = 0;
   obj.position.copy(startPos);
   scene.add(obj);
   _unitArray.push(obj);
@@ -293,7 +296,6 @@ function respawn() {
   if(_f === 1){
     scrollContainer.scrollTop = 0;
     _loopCounter += 1;
-    totalCount = _loopCounter*_MAXOBJ;
   }
 }
 

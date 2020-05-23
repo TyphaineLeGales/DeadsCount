@@ -128,9 +128,6 @@ datGUI.add(guiControls, 'cameraRZ', -5, 10 );
 //MATCAP
 var testMat = new THREE.MeshNormalMaterial();
 var texture = new THREE.TextureLoader().load( 'Assets/matCapTest.jpg' );
-var testMatcap = new THREE.MeshMatcapMaterial({matcap:texture, transparent: true});
-testMatcap.needsUpdate = true;
-testMatcap.opacity = 0;
 
 var testMat2 = new THREE.MeshNormalMaterial();
 var texture2 = new THREE.TextureLoader().load( 'Assets/matCap4.jpg' );
@@ -220,13 +217,16 @@ function render () {
 
 function createObj() {
  for(var i = 0; i<_MAXOBJ; i++) {
+  var matcap = new THREE.MeshMatcapMaterial({matcap:texture, transparent: true});
+  matcap.needsUpdate = true;
+  matcap.opacity = 0;
   var startPos = new THREE.Vector3(_splinePoints[0], _splinePoints[1], _splinePoints[2]);
-    var obj = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),testMatcap);
-    obj.userData.offset =1/i;
-    obj.userDataf = 0;
-    obj.position.copy(startPos);
-    scene.add(obj);
-    _unitArray.push(obj);
+  var obj = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),matcap);
+  obj.userData.offset = i*0.1;
+  obj.userDataf = 0;
+  obj.position.copy(startPos);
+  scene.add(obj);
+  _unitArray.push(obj);
 
   }
 }

@@ -75,6 +75,7 @@ let _maxLoop = 5;
 let _prevF =0;
 let _currT =0;
 let totalCount = 0;
+let _speed = 1;
 
 let scrollContainer = document.getElementById('scrollableContainer');
 let _maxScroll = (scrollContainer.scrollHeight-scrollContainer.offsetHeight);
@@ -113,6 +114,7 @@ var guiControls = new function () {
   this.showOriginDebug = false;
   this.orbitControlsEnabled = false;
   // this.lineThickness = 1;
+  this.speed = 1;
   this.pathF = 0.50;
   this.cameraPosX = camera.position.x;
   this.cameraPosY = camera.position.y;
@@ -124,6 +126,7 @@ var guiControls = new function () {
 datGUI.add(guiControls, 'showOriginDebug');
 datGUI.add(guiControls, 'orbitControlsEnabled');
 // datGUI.add(guiControls, 'lineThickness', 1, 10);
+datGUI.add(guiControls, 'speed', 1, 10);
 datGUI.add(guiControls, 'pathF', 0,1);
 datGUI.addFolder('CameraPos');
 datGUI.add(guiControls, 'cameraPosX', -5, 5 );
@@ -222,7 +225,7 @@ function render () {
 
   for(var i = 0; i<_unitArray.length; i++) {
     var obj = _unitArray[i];
-    obj.userData.f = (_f+_loopCounter - obj.userData.offset)%1;
+    obj.userData.f = ((_f+_loopCounter - obj.userData.offset)*guiControls.speed)%1;
     _splinePath.setObjectPath(obj, obj.userData.f);
     opacityEase(obj.userData.f, obj);
 

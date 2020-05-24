@@ -245,11 +245,15 @@ function render () {
 
 function createObj() {
  for(var i = 0; i<_MAXOBJ; i++) {
-  var matcap = new THREE.MeshMatcapMaterial({matcap:texture, transparent: true});
-  matcap.needsUpdate = true;
-  matcap.opacity = 0;
+  var redMat = new THREE.MeshBasicMaterial({color:0xff0000, transparent:true});
+  redMat.needsUpdate = true;
+  redMat.opacity = 0;
+  // var matcap = new THREE.MeshMatcapMaterial({matcap:texture, transparent: true});
+  // matcap.needsUpdate = true;
+  // matcap.opacity = 0;
   var startPos = new THREE.Vector3(_splinePoints[0], _splinePoints[1], _splinePoints[2]);
-  var obj = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),matcap);
+  // var obj = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),matcap);
+  var obj = new THREE.Mesh(new THREE.CircleGeometry(0.2, 32), redMat);
   obj.userData.offset = i*0.1;
   obj.userData.f = 0;
   obj.userData.number = i;

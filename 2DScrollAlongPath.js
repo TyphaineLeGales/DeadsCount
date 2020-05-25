@@ -75,6 +75,7 @@ let _prevF =0;
 let _currT =0;
 let totalCount = 0;
 let _speed = 1;
+var model;
 
 let scrollContainer = document.getElementById('scrollableContainer');
 let _maxScroll = (scrollContainer.scrollHeight-scrollContainer.offsetHeight);
@@ -164,7 +165,7 @@ scene.add(debugOrigin);
 
 //work scroll backward loop
 //edit new spline
-//gradient background
+//instance 3D
 
 
 init();
@@ -192,7 +193,7 @@ function onContainerScroll() {
   // if(scrollContainer.scrollTop === 0) {
   //   scrollContainer.scrollTop = _maxScroll;
   // }
-  if(_currOffsetTop > _prevOffsetTop) {
+  if(_currOffsetTop >= _prevOffsetTop) {
     for(var i = 0; i<_MAXOBJ; i++) {
       var obj = _unitArray[i];
       //update count when object respawn
@@ -205,7 +206,7 @@ function onContainerScroll() {
 
 
    _prevOffsetTop = _currOffsetTop;
-  numberContainer.innerHTML = totalCount*100;
+  numberContainer.innerHTML = totalCount;
 
   // prevOffsetTop = 0;
   // currOffsetTop = scrollContainer.scrollTop;
@@ -273,8 +274,8 @@ function createObj() {
   _unitArray.push(obj);
 
   }
+  console.log(model);
 }
-
 
 
 function instanceObjAlongSpline () {
@@ -299,17 +300,15 @@ function loadModel() {
   objLoader.setPath('Assets/');
   objLoader.load('Corpse.obj', function(object){
   object.position.z =0;
-  object.scale.set(0.02,0.02,0.02);
+  object.scale.set(1*_unitConvert,1*_unitConvert,1*_unitConvert);
   object.traverse( function ( child ) {
+    if ( child instanceof THREE.Mesh ) {
+      child.material = testMatcap2;
+    }
 
-        if ( child instanceof THREE.Mesh ) {
-
-            child.material = testMatcap2;
-
-        }
-
-    } );
-  scene.add(object);
+  } );
+  model = object;
+  scene.add(model);
 });
 
 }
@@ -321,7 +320,6 @@ function makeSplineCurve (array) {
     var vecPos = new THREE.Vector3(array[i], array[i+1]-_heightOffsetCurve, array[i+2]);
     vec3array.push(vecPos);
   }
-
   var path = new THREE.CatmullRomCurve3( vec3array );
   var tubeGeometry = new THREE.TubeGeometry( path, 256, 0.2, 5, false );
   var pathTest = new THREE.Mesh( tubeGeometry, testMatcap2 );
@@ -331,7 +329,7 @@ function makeSplineCurve (array) {
 
 function respawn() {
 
-  if(_f === 1){
+  if(scrollContainer.scrollTop === _maxScroll){
     scrollContainer.scrollTop = 0;
     _loopCounter += 1;
   }

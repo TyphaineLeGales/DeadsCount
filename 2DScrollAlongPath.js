@@ -145,8 +145,11 @@ var testMat2 = new THREE.MeshNormalMaterial();
 var texture2 = new THREE.TextureLoader().load( 'Assets/matCap4.jpg' );
 var testMatcap2 = new THREE.MeshMatcapMaterial({matcap:texture2});
 
+//PERSON TEST
+var personTex =  new THREE.TextureLoader().load( 'Assets/PersonTry.png' );
+var personMat = new THREE.MeshBasicMaterial({map:personTex});
 //Background
-var backgroundTex = new THREE.TextureLoader().load( 'Assets/skyTest.jpg' );
+var backgroundTex = new THREE.TextureLoader().load( 'Assets/skyTest2.jpg' );
 scene.background = backgroundTex;
 //debug origin scene
 var _debugMat = new THREE.MeshNormalMaterial();
@@ -253,9 +256,11 @@ function createObj() {
   var matcap = new THREE.MeshMatcapMaterial({matcap:texture, transparent: true});
   matcap.needsUpdate = true;
   matcap.opacity = 0;
+  matcap.opacity = 0;
   var startPos = new THREE.Vector3(_splinePoints[0], _splinePoints[1], _splinePoints[2]);
-  var obj = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),matcap);
-  // var obj = new THREE.Mesh(new THREE.CircleGeometry(0.2, 32), redMat);
+  // var obj = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),matcap);
+  var obj = new THREE.Mesh(new THREE.CircleGeometry(0.2, 32), redMat);
+  // var obj = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 2), personMat);
   obj.userData.offset = i*0.1;
   obj.userData.f = 0;
   obj.userData.number = i;

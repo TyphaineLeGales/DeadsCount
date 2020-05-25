@@ -66,10 +66,9 @@ const _OPACITYTHRESHOLDIN = 0.1;
 const _OPACITYTHRESHOLDOUT = 0.9;
 const _ADD_OFFSET = 0.1;
 let objectCounter = _MAXOBJ;
-let _delayCounter;
 let _globalScrollAmount = 0;
-var prevOffsetTop = 0;
-var currOffsetTop = 0;
+var _prevOffsetTop = 0;
+var _currOffsetTop = 0;
 let _loopCounter = 0;
 let _maxLoop = 5;
 let _prevF =0;
@@ -152,15 +151,8 @@ _debugMat.needsUpdate = true;
 _debugMat.visible = false;
 scene.add(debugOrigin);
 
-//test object along spline
-// var _debugAnim =  new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),testMatcap);
-// scene.add(_debugAnim);
-
 //TO DO :
 
-//then have userData for each objects contain => number of rounds it has passed
-// => global variable that contains count : addition of each object userData
-//GUI controller for speed => changes scroll max
 //work scroll backward loop
 //edit new spline
 
@@ -181,23 +173,28 @@ function onWindowResize(){
     // uniforms.u_resolution.value.y = renderer.domElement.height;
 }
 
-function onWindowScroll(){
-   console.log(window.scrollY);
-}
-
 function onContainerScroll() {
   respawn();
-  numberContainer.innerHTML = totalCount;
+
   // console.log(_loopCounter);
-  for(var i = 0; i<_MAXOBJ; i++) {
-    var obj = _unitArray[i];
-
-    if(obj.userData.f< obj.userData.prevF) {
-      totalCount += 1;
+  _currOffsetTop = scrollContainer.scrollTop;
+  // if(scrollContainer.scrollTop === 0) {
+  //   scrollContainer.scrollTop = _maxScroll;
+  // }
+  // if(_currOffsetTop > _prevOffsetTop) {
+    for(var i = 0; i<_MAXOBJ; i++) {
+      var obj = _unitArray[i];
+      //update count when object respawn
+      if(obj.userData.f< obj.userData.prevF) {
+        totalCount += 1;
+      }
+      obj.userData.prevF = obj.userData.f;
     }
-    obj.userData.prevF = obj.userData.f;
-  }
+  // }
 
+
+   _prevOffsetTop = _currOffsetTop;
+  numberContainer.innerHTML = totalCount;
 
   // prevOffsetTop = 0;
   // currOffsetTop = scrollContainer.scrollTop;
@@ -248,12 +245,12 @@ function createObj() {
   var redMat = new THREE.MeshBasicMaterial({color:0xff0000, transparent:true});
   redMat.needsUpdate = true;
   redMat.opacity = 0;
-  // var matcap = new THREE.MeshMatcapMaterial({matcap:texture, transparent: true});
-  // matcap.needsUpdate = true;
-  // matcap.opacity = 0;
+  var matcap = new THREE.MeshMatcapMaterial({matcap:texture, transparent: true});
+  matcap.needsUpdate = true;
+  matcap.opacity = 0;
   var startPos = new THREE.Vector3(_splinePoints[0], _splinePoints[1], _splinePoints[2]);
-  // var obj = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),matcap);
-  var obj = new THREE.Mesh(new THREE.CircleGeometry(0.2, 32), redMat);
+  var obj = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),matcap);
+  // var obj = new THREE.Mesh(new THREE.CircleGeometry(0.2, 32), redMat);
   obj.userData.offset = i*0.1;
   obj.userData.f = 0;
   obj.userData.number = i;

@@ -61,10 +61,10 @@ var _splinePath;
 var curve;
 let _heightOffsetCurve = 0.45;
 let _unitArray = [];
-const _MAXOBJ = 50;
+const _MAXOBJ = 10;
 const _OPACITYTHRESHOLDIN = 0.1;
 const _OPACITYTHRESHOLDOUT = 0.9;
-const _ADD_OFFSET = 0.1;
+const _ADD_OFFSET = 10;
 let objectCounter = _MAXOBJ;
 let _globalScrollAmount = 0;
 var _prevOffsetTop = 0;
@@ -222,6 +222,7 @@ function init() {
   _splinePath = new Spline(_splinePoints);
   makeSplineCurve(_splinePoints);
   createObj();
+  console.log(_unitArray.length);
   loadModel();
 }
 

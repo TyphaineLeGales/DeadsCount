@@ -149,8 +149,8 @@ var testMatcap2 = new THREE.MeshMatcapMaterial({matcap:texture2});
 var personTex =  new THREE.TextureLoader().load( 'Assets/PersonTry.png' );
 var personMat = new THREE.MeshBasicMaterial({map:personTex});
 //Background
-var backgroundTex = new THREE.TextureLoader().load( 'Assets/skyTest2.jpg' );
-scene.background = backgroundTex;
+// var backgroundTex = new THREE.TextureLoader().load( 'Assets/skyTest2.jpg' );
+// scene.background = backgroundTex;
 //debug origin scene
 var _debugMat = new THREE.MeshNormalMaterial();
 var debugOrigin = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5), new THREE.MeshNormalMaterial(_debugMat));
@@ -203,7 +203,7 @@ function onContainerScroll() {
 
 
    _prevOffsetTop = _currOffsetTop;
-  numberContainer.innerHTML = totalCount*10;
+  numberContainer.innerHTML = totalCount*100;
 
   // prevOffsetTop = 0;
   // currOffsetTop = scrollContainer.scrollTop;
@@ -250,16 +250,16 @@ function render () {
 
 function createObj() {
  for(var i = 0; i<_MAXOBJ; i++) {
-  var redMat = new THREE.MeshBasicMaterial({color:0xff0000, transparent:true});
-  redMat.needsUpdate = true;
-  redMat.opacity = 0;
+  // var redMat = new THREE.MeshBasicMaterial({color:0xff0000, transparent:true});
+  // redMat.needsUpdate = true;
+  // redMat.opacity = 0;
   var matcap = new THREE.MeshMatcapMaterial({matcap:texture, transparent: true});
   matcap.needsUpdate = true;
   matcap.opacity = 0;
   matcap.opacity = 0;
   var startPos = new THREE.Vector3(_splinePoints[0], _splinePoints[1], _splinePoints[2]);
-  // var obj = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),matcap);
-  var obj = new THREE.Mesh(new THREE.CircleGeometry(0.2, 32), redMat);
+  var obj = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),matcap);
+  // var obj = new THREE.Mesh(new THREE.CircleGeometry(0.2, 32), redMat);
   // var obj = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 2), personMat);
   obj.userData.offset = i*0.1;
   obj.userData.f = 0;

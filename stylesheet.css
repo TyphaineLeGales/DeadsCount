@@ -23,9 +23,9 @@ canvas {
 
 #numberContainer {
   position:fixed;
-  left:2em;
+  right:0;
   top:2em;
   color:red;
-  font-size:5em;
+  font-size:10em;
   z-index:5;
 }

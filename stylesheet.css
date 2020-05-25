@@ -1,13 +1,15 @@
 body {
   margin: 0;
+  font-family:helvetica;
+  font-weight:bold;
 }
 canvas {
   width: 100%;
-  height: 100%
-  position: -webkit-sticky;
-  position: sticky;
+  height: 100%;
+  /*position: -webkit-sticky;*/
+  position: fixed;
   top:0;
-   }
+}
 
 #scrollableContainer {
   height:4000px;
@@ -21,8 +23,9 @@ canvas {
 
 #numberContainer {
   position:fixed;
-  left:0;
-  top:0;
-  color:white;
+  left:2em;
+  top:2em;
+  color:red;
   font-size:5em;
+  z-index:5;
 }

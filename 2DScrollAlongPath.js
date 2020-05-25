@@ -79,6 +79,7 @@ let _speed = 1;
 let scrollContainer = document.getElementById('scrollableContainer');
 let _maxScroll = (scrollContainer.scrollHeight-scrollContainer.offsetHeight);
 let _f;
+
 scrollContainer.addEventListener('scroll', onContainerScroll, false);
 
 let numberContainer = document.getElementById('numberContainer');
@@ -96,8 +97,8 @@ controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.campingFactor = 0.25;
 controls.enableZoom = true;
-camera.position.x = -115.319*_unitConvert;
-camera.position.y = 233.663*_unitConvert;
+camera.position.x = -1.2;
+camera.position.y = 2.3;
 camera.position.z = 6;
 camera.rotation.x = -18.175*_unitConvert;
 camera.rotation.y = -13.189*_unitConvert;
@@ -144,6 +145,9 @@ var testMat2 = new THREE.MeshNormalMaterial();
 var texture2 = new THREE.TextureLoader().load( 'Assets/matCap4.jpg' );
 var testMatcap2 = new THREE.MeshMatcapMaterial({matcap:texture2});
 
+//Background
+var backgroundTex = new THREE.TextureLoader().load( 'Assets/skyTest.jpg' );
+scene.background = backgroundTex;
 //debug origin scene
 var _debugMat = new THREE.MeshNormalMaterial();
 var debugOrigin = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5), new THREE.MeshNormalMaterial(_debugMat));
@@ -155,6 +159,7 @@ scene.add(debugOrigin);
 
 //work scroll backward loop
 //edit new spline
+//gradient background
 
 
 init();
@@ -178,10 +183,11 @@ function onContainerScroll() {
 
   // console.log(_loopCounter);
   _currOffsetTop = scrollContainer.scrollTop;
+  // console.log(_unitArray[1].userData.f);
   // if(scrollContainer.scrollTop === 0) {
   //   scrollContainer.scrollTop = _maxScroll;
   // }
-  // if(_currOffsetTop > _prevOffsetTop) {
+  if(_currOffsetTop > _prevOffsetTop) {
     for(var i = 0; i<_MAXOBJ; i++) {
       var obj = _unitArray[i];
       //update count when object respawn
@@ -190,11 +196,11 @@ function onContainerScroll() {
       }
       obj.userData.prevF = obj.userData.f;
     }
-  // }
+  }
 
 
    _prevOffsetTop = _currOffsetTop;
-  numberContainer.innerHTML = totalCount;
+  numberContainer.innerHTML = totalCount*10;
 
   // prevOffsetTop = 0;
   // currOffsetTop = scrollContainer.scrollTop;
@@ -230,7 +236,6 @@ function render () {
       obj.userData.number += 1;
     }
   }
-  // console.log
 
   debugOrigin.visible = guiControls.showOriginDebug;
   controls.enabled = guiControls.orbitControlsEnabled;

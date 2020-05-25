@@ -150,13 +150,15 @@ var personTex =  new THREE.TextureLoader().load( 'Assets/PersonTry.png' );
 var personMat = new THREE.MeshBasicMaterial({map:personTex});
 //Background
 // var backgroundTex = new THREE.TextureLoader().load( 'Assets/skyTest2.jpg' );
-// scene.background = backgroundTex;
+var backgroundTex = new THREE.TextureLoader().load( 'Assets/gradientB&W.jpg' );
+scene.background = backgroundTex;
 //debug origin scene
 var _debugMat = new THREE.MeshNormalMaterial();
 var debugOrigin = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5), new THREE.MeshNormalMaterial(_debugMat));
 _debugMat.needsUpdate = true;
 _debugMat.visible = false;
 scene.add(debugOrigin);
+
 
 //TO DO :
 
@@ -219,6 +221,7 @@ function init() {
   _splinePath = new Spline(_splinePoints);
   makeSplineCurve(_splinePoints);
   createObj();
+  loadModel();
 }
 
 
@@ -289,6 +292,27 @@ var _mat = new THREE.MeshBasicMaterial({color:0xffffff});
   }
 }
 
+function loadModel() {
+
+ var objLoader = new THREE.OBJLoader();
+        // objLoader.setMaterials(materials);
+  objLoader.setPath('Assets/');
+  objLoader.load('Corpse.obj', function(object){
+  object.position.z =0;
+  object.scale.set(0.02,0.02,0.02);
+  object.traverse( function ( child ) {
+
+        if ( child instanceof THREE.Mesh ) {
+
+            child.material = testMatcap2;
+
+        }
+
+    } );
+  scene.add(object);
+});
+
+}
 
 function makeSplineCurve (array) {
   var vec3array = [];

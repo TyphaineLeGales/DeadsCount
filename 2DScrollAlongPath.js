@@ -114,6 +114,7 @@ var datGUI = new dat.GUI();
 var guiControls = new function () {
   this.showOriginDebug = false;
   this.orbitControlsEnabled = false;
+  this.modelIsVisible = false;
   // this.lineThickness = 1;
   this.speed = 1;
   this.pathF = 0.50;
@@ -124,8 +125,15 @@ var guiControls = new function () {
   this.cameraRY = camera.rotation.y;
   this.cameraRZ = camera.rotation.z;
 }
-datGUI.add(guiControls, 'showOriginDebug');
-datGUI.add(guiControls, 'orbitControlsEnabled');
+datGUI.add(guiControls, 'showOriginDebug').onChange(function(value) {
+  debugOrigin.visible = value;
+});
+datGUI.add(guiControls, 'orbitControlsEnabled').onChange(function(value) {
+  controls.enabled = value;
+});
+datGUI.add(guiControls, 'modelIsVisible').onChange(function(value) {
+  matcapModel.visible = value;
+});
 // datGUI.add(guiControls, 'lineThickness', 1, 10);
 datGUI.add(guiControls, 'speed', 1, 10);
 datGUI.add(guiControls, 'pathF', 0,1);
@@ -145,6 +153,7 @@ var texture = new THREE.TextureLoader().load( 'Assets/matCapTest.jpg' );
 var testMat2 = new THREE.MeshNormalMaterial();
 var texture2 = new THREE.TextureLoader().load( 'Assets/matCap4.jpg' );
 var testMatcap2 = new THREE.MeshMatcapMaterial({matcap:texture2});
+var matcapModel= new THREE.MeshMatcapMaterial({matcap:texture2});
 
 //PERSON TEST
 var personTex =  new THREE.TextureLoader().load( 'Assets/PersonTry.png' );
@@ -244,8 +253,6 @@ function render () {
     }
   }
 
-  debugOrigin.visible = guiControls.showOriginDebug;
-  controls.enabled = guiControls.orbitControlsEnabled;
   // uniforms.u_time.value = dt;
   // camera.position.set(guiControls.cameraPosX, guiControls.cameraPosY,  guiControls.cameraPosZ);
   // camera.rotation.set(guiControls.cameraRX, guiControls.cameraRY,  guiControls.cameraRZ);
@@ -274,7 +281,6 @@ function createObj() {
   _unitArray.push(obj);
 
   }
-  console.log(model);
 }
 
 
@@ -303,7 +309,7 @@ function loadModel() {
   object.scale.set(1*_unitConvert,1*_unitConvert,1*_unitConvert);
   object.traverse( function ( child ) {
     if ( child instanceof THREE.Mesh ) {
-      child.material = testMatcap2;
+      child.material = matcapModel;
     }
 
   } );

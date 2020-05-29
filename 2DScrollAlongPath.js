@@ -145,20 +145,41 @@ datGUI.add(guiControls, 'skyBackground').onChange(function(value) {
   }
 });
 datGUI.add(guiControls, 'redDots').onChange(function(value) {
-  for(var i = 0; i < _unitArray.length; i++) {
-    var obj = _unitArray[i];
-    obj.visible=false;
-    var redMat = new THREE.MeshBasicMaterial({color:0xff0000, transparent:true});
-    redMat.needsUpdate = true;
-    redMat.opacity = 0;
-    var updatedObj = new THREE.Mesh(circleGeo,redMat);
-    updatedObj.position.copy(obj.position);
-    updatedObj.userData.offset = obj.userData.offset;
-    updatedObj.userData.f =  obj.userData.f;
-    updatedObj.userData.number = obj.userData.number;
-    updatedObj.userData.prevF = obj.userData.prevF;
-    _unitArray[i] = updatedObj;
-    scene.add(updatedObj);
+  if(value === true){
+
+    for(var i = 0; i < _unitArray.length; i++) {
+      var obj = _unitArray[i];
+      obj.visible=false;
+      var redMat = new THREE.MeshBasicMaterial({color:0xff0000, transparent:true});
+      redMat.needsUpdate = true;
+      redMat.opacity = 0;
+      var updatedObj = new THREE.Mesh(circleGeo,redMat);
+      updatedObj.position.copy(obj.position);
+      updatedObj.userData.offset = obj.userData.offset;
+      updatedObj.userData.f =  obj.userData.f;
+      updatedObj.userData.number = obj.userData.number;
+      updatedObj.userData.prevF = obj.userData.prevF;
+      _unitArray[i] = updatedObj;
+      scene.add(updatedObj);
+
+    }
+  } else {
+     for(var i = 0; i < _unitArray.length; i++) {
+      var obj = _unitArray[i];
+      obj.visible = false;
+      var matcap = new THREE.MeshMatcapMaterial({matcap:texture, transparent: true});
+      matcap.needsUpdate = true;
+      matcap.opacity = 0;
+      var updatedObj = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),matcap);
+      updatedObj.position.copy(obj.position);
+      updatedObj.userData.offset = obj.userData.offset;
+      updatedObj.userData.f =  obj.userData.f;
+      updatedObj.userData.number = obj.userData.number;
+      updatedObj.userData.prevF = obj.userData.prevF;
+      _unitArray[i] = updatedObj;
+      scene.add(updatedObj);
+
+    }
 
   }
 });
@@ -311,7 +332,6 @@ function createObj() {
   // redMat.opacity = 0;
   var matcap = new THREE.MeshMatcapMaterial({matcap:texture, transparent: true});
   matcap.needsUpdate = true;
-  matcap.opacity = 0;
   matcap.opacity = 0;
   var startPos = new THREE.Vector3(_splinePoints[0], _splinePoints[1], _splinePoints[2]);
   var obj = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),matcap);

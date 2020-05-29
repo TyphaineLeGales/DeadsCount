@@ -58,6 +58,7 @@ var _splinePoints = [-71.12163543701172,5.02753353118896,-92.73057556152344,
 
 let _unitConvert = 0.01;
 var _splinePath;
+var _splineObj;
 var curve;
 let _heightOffsetCurve = 0.45;
 let _unitArray = [];
@@ -114,6 +115,7 @@ var datGUI = new dat.GUI();
 var guiControls = new function () {
   this.showOriginDebug = false;
   this.orbitControlsEnabled = false;
+  this.hideSpline = false;
   this.modelIsVisible = false;
   this.skyBackground = false;
   this.redDots = false;
@@ -133,6 +135,10 @@ datGUI.add(guiControls, 'showOriginDebug').onChange(function(value) {
 datGUI.add(guiControls, 'orbitControlsEnabled').onChange(function(value) {
   controls.enabled = value;
 });
+
+datGUI.add(guiControls, 'hideSpline').onChange(function(value) {
+  _splineObj.visible = value;
+})
 datGUI.add(guiControls, 'modelIsVisible').onChange(function(value) {
   matcapModel.visible = value;
 });
@@ -393,8 +399,8 @@ function makeSplineCurve (array) {
   }
   var path = new THREE.CatmullRomCurve3( vec3array );
   var tubeGeometry = new THREE.TubeGeometry( path, 256, 0.2, 5, false );
-  var pathTest = new THREE.Mesh( tubeGeometry, testMatcap2 );
-  scene.add( pathTest );
+  _splineObj = new THREE.Mesh( tubeGeometry, testMatcap2 );
+  scene.add( _splineObj);
 
 }
 

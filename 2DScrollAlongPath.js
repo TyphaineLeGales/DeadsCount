@@ -115,6 +115,8 @@ var guiControls = new function () {
   this.showOriginDebug = false;
   this.orbitControlsEnabled = false;
   this.modelIsVisible = false;
+  this.skyBackground = false;
+  this.redDots = false;
   // this.lineThickness = 1;
   this.speed = 1;
   this.pathF = 0.50;
@@ -134,17 +136,48 @@ datGUI.add(guiControls, 'orbitControlsEnabled').onChange(function(value) {
 datGUI.add(guiControls, 'modelIsVisible').onChange(function(value) {
   matcapModel.visible = value;
 });
+
+datGUI.add(guiControls, 'skyBackground').onChange(function(value) {
+  if(value === true) {
+    scene.background = backgroundTexSky;
+  } else {
+    scene.background = backgroundTexBlack;
+  }
+});
+datGUI.add(guiControls, 'redDots').onChange(function(value) {
+  for(var i = 0; i < _unitArray.length; i++) {
+     var obj = _unitArray
+  }
+});
 // datGUI.add(guiControls, 'lineThickness', 1, 10);
 datGUI.add(guiControls, 'speed', 1, 10);
 datGUI.add(guiControls, 'pathF', 0,1);
-datGUI.addFolder('CameraPos');
-datGUI.add(guiControls, 'cameraPosX', -5, 5 );
-datGUI.add(guiControls, 'cameraPosY', -5, 5 );
-datGUI.add(guiControls, 'cameraPosZ', -5, 10 );
-datGUI.addFolder('CameraRotation');
-datGUI.add(guiControls, 'cameraRX', -5, 5 );
-datGUI.add(guiControls, 'cameraRY', -5, 5 );
-datGUI.add(guiControls, 'cameraRZ', -5, 10 );
+
+var cameraPosition = datGUI.addFolder('CameraPos');
+
+cameraPosition.add(guiControls, 'cameraPosX', -5, 5 ).onChange(function(value) {
+  camera.position.x = value;
+});
+cameraPosition.add(guiControls, 'cameraPosY', -5, 5 ).onChange(function(value) {
+  camera.position.y = value;
+});
+cameraPosition.add(guiControls, 'cameraPosZ', -5, 10 ).onChange(function(value) {
+  camera.position.z = value;
+});
+
+cameraPosition.close();
+var rotationFolder = datGUI.addFolder('CameraRotation');
+rotationFolder.add(guiControls, 'cameraRX', -5, 5 ).onChange(function(value) {
+  camera.rotation.x = value;
+});
+rotationFolder.add(guiControls, 'cameraRY', -5, 5 ).onChange(function(value) {
+  camera.rotation.y = value;
+});
+rotationFolder.add(guiControls, 'cameraRZ', -5, 10 ).onChange(function(value) {
+  camera.rotation.z = value;
+});
+
+rotationFolder.close();
 
 //MATCAP
 var testMat = new THREE.MeshNormalMaterial();
@@ -159,9 +192,9 @@ var matcapModel= new THREE.MeshMatcapMaterial({matcap:texture2});
 var personTex =  new THREE.TextureLoader().load( 'Assets/PersonTry.png' );
 var personMat = new THREE.MeshBasicMaterial({map:personTex});
 //Background
-// var backgroundTex = new THREE.TextureLoader().load( 'Assets/skyTest2.jpg' );
-var backgroundTex = new THREE.TextureLoader().load( 'Assets/gradientB&W.jpg' );
-scene.background = backgroundTex;
+var backgroundTexSky = new THREE.TextureLoader().load( 'Assets/skyTest2.jpg' );
+var backgroundTexBlack = new THREE.TextureLoader().load( 'Assets/gradientB&W.jpg' );
+scene.background = backgroundTexBlack;
 //debug origin scene
 var _debugMat = new THREE.MeshNormalMaterial();
 var debugOrigin = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5), new THREE.MeshNormalMaterial(_debugMat));
@@ -253,10 +286,8 @@ function render () {
     }
   }
 
-  // uniforms.u_time.value = dt;
-  // camera.position.set(guiControls.cameraPosX, guiControls.cameraPosY,  guiControls.cameraPosZ);
-  // camera.rotation.set(guiControls.cameraRX, guiControls.cameraRY,  guiControls.cameraRZ);
   renderer.render( scene, camera );
+  // uniforms.u_time.value = dt;
 };
 
 function createObj() {

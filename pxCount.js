@@ -3,6 +3,7 @@ var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
 scene.add(camera);
 var renderer = new THREE.WebGLRenderer();
+renderer.setClearColor( 0xffffff, 1.0 );
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
@@ -11,10 +12,10 @@ window.addEventListener("DOMContentLoaded", (event) => {
 });
 
 //Camera
-controls = new THREE.OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.campingFactor = 0.25;
-controls.enableZoom = true;
+// controls = new THREE.OrbitControls(camera, renderer.domElement);
+// controls.enableDamping = true;
+// controls.campingFactor = 0.25;
+// controls.enableZoom = true;
 camera.position.z = 10;
 
 //UI
@@ -36,11 +37,12 @@ uniforms.u_resolution.value.y = renderer.domElement.height;
 
 // instanceObjAlongSpline();
 function init() {
-  var _testGeo = new THREE.CubeGeometry( 5, 5, 5);
+  var _testGeo = new THREE.PlaneGeometry( window.innerWidth, window.innerHeight);
   var _testMat = new THREE.MeshNormalMaterial();
   var mapedCount = mapRange(_testCount, 0.0, 100.0, 0.0, 1.0);
   uniforms.u_countValue.value = mapedCount;
  _material = new THREE.ShaderMaterial( { uniforms:uniforms, vertexShader: document.getElementById( 'vertexShader' ).textContent, fragmentShader: document.getElementById( 'fragmentShader' ).textContent});
+  _material.needsUpdate = true;
   console.log(_material.uniforms.u_countValue);
   var textureHeight = 256;
   var textureWidth = 256;
@@ -63,6 +65,7 @@ function init() {
 
 function render() {
   requestAnimationFrame( render );
+  // _material.uniforms.
   renderer.render(scene, camera);
 }
 

@@ -30,6 +30,7 @@ var _spacingY = 10;
 var isActive = false;
 var countDiv = document.querySelector('h1');
 var countString = "39811";
+  var numberOfDigits = countString.length;
 var numbIsDisp = false;
  var _cubesArray = [];
 
@@ -40,6 +41,7 @@ var guiControls = new function () {
   this.cameraPosY = camera.position.y;
   this.cameraPosZ = camera.position.z;
   this.spacingX = 20;
+  this.spacingY = 10;
 }
 
 var cameraPosition = datGUI.addFolder('CameraPos');
@@ -56,6 +58,12 @@ cameraPosition.add(guiControls, 'cameraPosZ', -50, 100 ).onChange(function(value
 
 datGUI.add(guiControls, 'spacingX', 0, 50).onChange(function(value) {
   _spacingX = value;
+  positionCubes();
+})
+
+datGUI.add(guiControls, 'spacingY', 0, 50).onChange(function(value) {
+  _spacingY = value;
+  positionCubes();
 })
 
 
@@ -124,7 +132,6 @@ function dispCountry () {
    // matCapCube.visible = false;
 }
 function generateCubes() {
-  var numberOfDigits = countString.length;
 
   for(var i = 0; i<numberOfDigits; i++) {
     var number = parseInt(countString[i]);
@@ -142,4 +149,16 @@ function generateCubes() {
   }
 
   console.log(_cubesArray);
+}
+
+function positionCubes () {
+  for(var i = 0; i<_cubesArray.length; i++) {
+    var number = parseInt(countString[i]);
+    for(var j = 0; j < _cubesArray[i].length; j++) {
+      var cube = _cubesArray[i][j];
+      cube.position.z = j*(i+ _spacingY) ;
+      cube.position.x = i*_spacingX;
+    }
+  }
+
 }

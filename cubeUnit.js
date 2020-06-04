@@ -14,6 +14,9 @@ controls.campingFactor = 0.25;
 controls.enableZoom = true;
 camera.position.z = 10;
 
+var _testMesh;
+var _normalMat = new THREE.MeshNormalMaterial();
+var _redMat = new THREE.MeshBasicMaterial({color:0xff0000});
 window.addEventListener("DOMContentLoaded", (event) => {
   init();
 });
@@ -21,9 +24,8 @@ window.addEventListener("DOMContentLoaded", (event) => {
 // instanceObjAlongSpline();
 function init() {
   var _testGeo = new THREE.CubeGeometry( 5, 5, 5);
-  var _testMat = new THREE.MeshNormalMaterial();
 
-  var _testMesh = new THREE.Mesh(_testGeo, _testMat);
+  _testMesh = new THREE.Mesh(_testGeo, _normalMat);
   scene.add(_testMesh);
 
   render();
@@ -42,4 +44,20 @@ function onWindowResize(){
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize( window.innerWidth, window.innerHeight );
+}
+
+function changeMaterial() {
+  _testMesh.material = _redMat;
+  generateCubes();
+}
+
+function restoreMaterial() {
+  _testMesh.material = _normalMat;
+}
+
+function generateCubes() {
+  var countString = document.querySelector('h1').innerHTML;
+  var numberOfDigits = countString.length;
+  var count = parseInt(countString, 10);
+  console.log(numberOfDigits);
 }

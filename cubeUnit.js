@@ -17,16 +17,18 @@ camera.position.z = 10;
 var _testMesh;
 var _normalMat = new THREE.MeshNormalMaterial();
 var _redMat = new THREE.MeshBasicMaterial({color:0xff0000});
+var _testGeo = new THREE.CubeGeometry( 5, 5, 5);
+var _spacingX = 8;
+var _spacingY = 2;
 window.addEventListener("DOMContentLoaded", (event) => {
   init();
 });
 
 // instanceObjAlongSpline();
 function init() {
-  var _testGeo = new THREE.CubeGeometry( 5, 5, 5);
 
   _testMesh = new THREE.Mesh(_testGeo, _normalMat);
-  scene.add(_testMesh);
+  // scene.add(_testMesh);
 
   render();
 }
@@ -58,6 +60,19 @@ function restoreMaterial() {
 function generateCubes() {
   var countString = document.querySelector('h1').innerHTML;
   var numberOfDigits = countString.length;
-  var count = parseInt(countString, 10);
-  console.log(numberOfDigits);
+  // var count = parseInt(countString, 10);
+  // console.log(numberOfDigits);
+
+  for(var i = 0; i<numberOfDigits; i++) {
+    var number = parseInt(countString[i]);
+    console.log(number);
+    for(var j = 0; j < number; j++) {
+      var cubeGeo = new THREE.CubeGeometry(i, i, i);
+      var cube = new THREE.Mesh(cubeGeo, _normalMat);
+      cube.position.y = j*(i+ _spacingY) ;
+      cube.position.x = i*_spacingX;
+      scene.add(cube);
+
+    }
+  }
 }

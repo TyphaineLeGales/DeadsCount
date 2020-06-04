@@ -3,7 +3,7 @@ var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
 scene.add(camera);
 var renderer = new THREE.WebGLRenderer();
-renderer.setClearColor( 0xffffff, 1.0 );
+// renderer.setClearColor( 0xffffff, 1.0 );
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
@@ -16,10 +16,18 @@ camera.position.z = 10;
 
 var _testMesh;
 var _normalMat = new THREE.MeshNormalMaterial();
+ _normalMat.visible = false;
+var texCube = new THREE.TextureLoader().load( 'Assets/matCap4.jpg' );
+var matCapCube = new THREE.MeshMatcapMaterial({matcap:texCube});
+matCapCube.visible = false;
 var _redMat = new THREE.MeshBasicMaterial({color:0xff0000});
 var _testGeo = new THREE.CubeGeometry( 5, 5, 5);
 var _spacingX = 8;
 var _spacingY = 2;
+var isActive = false;
+var countDiv = document.querySelector('h1');
+var countString = countDiv.innerHTML;
+
 window.addEventListener("DOMContentLoaded", (event) => {
   init();
 });
@@ -29,6 +37,7 @@ function init() {
 
   _testMesh = new THREE.Mesh(_testGeo, _normalMat);
   // scene.add(_testMesh);
+  generateCubes();
 
   render();
 }
@@ -57,8 +66,21 @@ function restoreMaterial() {
   _testMesh.material = _normalMat;
 }
 
+function cubeDisp() {
+  if(isActive === false) {
+    countDiv.style.color= "red";
+    matCapCube.visible = true;
+    isActive = true;
+  } else {
+    isActive = false;
+    countDiv.style.color= "white";
+    matCapCube.visible =false;
+
+  }
+
+}
+
 function generateCubes() {
-  var countString = document.querySelector('h1').innerHTML;
   var numberOfDigits = countString.length;
   // var count = parseInt(countString, 10);
   // console.log(numberOfDigits);
@@ -68,7 +90,7 @@ function generateCubes() {
     console.log(number);
     for(var j = 0; j < number; j++) {
       var cubeGeo = new THREE.CubeGeometry(i, i, i);
-      var cube = new THREE.Mesh(cubeGeo, _normalMat);
+      var cube = new THREE.Mesh(cubeGeo, matCapCube);
       cube.position.y = j*(i+ _spacingY) ;
       cube.position.x = i*_spacingX;
       scene.add(cube);

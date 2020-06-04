@@ -25,11 +25,15 @@
   <script type="x-shader/x-fragment" id="fragmentShader">
     varying vec2 v_uv;
     uniform vec2 u_resolution;
+    uniform float u_countValue;
 
     void main() {
-    vec2 st = gl_FragCoord.xy/u_resolution;
+    //normalize coordinates of the pixel currently treated by the thread so its comprised between 0.0 and 1.0
 
-    gl_FragColor = vec4(v_uv, 0.0,1.0);
+    vec2 st = gl_FragCoord.xy/u_resolution;
+    float r = step(u_countValue, st.x);
+
+    gl_FragColor = vec4(r, 0.0,0.0, 1.0);
 
     }
   </script>

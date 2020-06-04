@@ -41,6 +41,7 @@ function init() {
   var mapedCount = mapRange(_testCount, 0.0, 100.0, 0.0, 1.0);
   uniforms.u_countValue.value = mapedCount;
  _material = new THREE.ShaderMaterial( { uniforms:uniforms, vertexShader: document.getElementById( 'vertexShader' ).textContent, fragmentShader: document.getElementById( 'fragmentShader' ).textContent});
+  console.log(_material.uniforms.u_countValue);
   var textureHeight = 256;
   var textureWidth = 256;
   maxCount = textureHeight*textureWidth;

@@ -10,5 +10,28 @@
 </head>
 <body>
   <script src="pxCount.js"></script>
+  <script type="x-shader/x-vertex" id="vertexShader">
+    varying vec2 v_uv;
+    void main() {
+      vec4 p = vec4( position, 1. );
+      //modelViewMatrix  =  position of mesh within our scene
+      // projectionMatrix = camera's relationship to the model within the scene
+      //gl_Position gives the ultimate rendered posiiton of the vertex inside our scene
+      v_uv = uv;
+      vec4 modelViewPosition = modelViewMatrix * p;
+      gl_Position = projectionMatrix * modelViewPosition;
+    }
+  </script>
+  <script type="x-shader/x-fragment" id="fragmentShader">
+    varying vec2 v_uv;
+    uniform vec2 u_resolution;
+
+    void main() {
+    vec2 st = gl_FragCoord.xy/u_resolution;
+
+    gl_FragColor = vec4(v_uv, 0.0,1.0);
+
+    }
+  </script>
 </body>
 </html>

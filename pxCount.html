@@ -29,11 +29,14 @@
 
     void main() {
     //normalize coordinates of the pixel currently treated by the thread so its comprised between 0.0 and 1.0
+    //step function : anything under the value will return 0.0
 
     vec2 st = gl_FragCoord.xy/u_resolution;
-    float r = step(u_countValue, st.x);
+    float rx = step(u_countValue, st.x);
+    float ry = step(u_countValue, st.y);
 
-    gl_FragColor = vec4(r, 0.0,0.0, 1.0);
+
+    gl_FragColor = vec4(1.0-rx, 0.0,0.0, 1.0);
 
     }
   </script>

@@ -24,7 +24,7 @@ var guiControls = new function () {
 }
 
 var _material;
-var _testCount = 80.0;
+var _testCount = 1.0;
 var  uniforms = {
                 u_countValue: { type: "f", value: _testCount }, // Time in seconds since load
                 u_resolution: { type: "v2", value: new THREE.Vector2() }, // Canvas size
@@ -37,8 +37,8 @@ uniforms.u_resolution.value.y = renderer.domElement.height;
 
 // instanceObjAlongSpline();
 function init() {
-  var _testGeo = new THREE.PlaneGeometry( window.innerWidth, window.innerHeight);
-  var _testMat = new THREE.MeshNormalMaterial();
+  var _testGeo = new THREE.PlaneGeometry( window.innerWidth, window.innerHeight, 20, 20);
+  var _testMat = new THREE.MeshNormalMaterial({wireframe:true});
   var mapedCount = mapRange(_testCount, 0.0, 100.0, 0.0, 1.0);
   uniforms.u_countValue.value = mapedCount;
  _material = new THREE.ShaderMaterial( { uniforms:uniforms, vertexShader: document.getElementById( 'vertexShader' ).textContent, fragmentShader: document.getElementById( 'fragmentShader' ).textContent});
@@ -65,7 +65,7 @@ function init() {
 
 function render() {
   requestAnimationFrame( render );
-  // _material.uniforms.
+
   renderer.render(scene, camera);
 }
 

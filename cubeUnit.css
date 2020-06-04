@@ -1,3 +1,7 @@
+body {
+  background-color:black;
+}
+
 h1 {
   z-index:5;
   color:white;
@@ -11,4 +15,5 @@ h1 {
 
 h1:hover {
   cursor:pointer;
+  letter-spacing:0.5em;
 }

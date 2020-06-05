@@ -1,3 +1,4 @@
+
 //basic THREEJS Setup
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000000 );
@@ -15,7 +16,7 @@ controls.enableZoom = true;
 // controls.enableKeys = false;
 // controls.enablePan = false;
 // controls.enableRotate = false;
-camera.position.z = 600;
+camera.position.z = 10;
 camera.position.y = 230;
 camera.position.x = 839;
 
@@ -38,6 +39,7 @@ var _minSize = 10;
 var _cubeGroup = new THREE.Group();
 var _speed = 0.0;
 var _scaleFactor = 10;
+var _cubesArrayTest = [];
 
 //UI
 var datGUI = new dat.GUI();
@@ -105,7 +107,6 @@ datGUI.add(guiControls, 'scaleFactor', 0, 1000).onChange(function(value) {
 })
 
 
-
 window.addEventListener("DOMContentLoaded", (event) => {
   init();
 });
@@ -114,8 +115,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
 function init() {
 
   _testMesh = new THREE.Mesh(_testGeo, _normalMat);
-  // scene.add(_testMesh);
-  generateCubes();
+  scene.add(_testMesh);
+  // generateCubes();
+  generateCubesAsInstances();
   render();
 }
 
@@ -161,7 +163,6 @@ async function cubeDisp() {
           cube.material.visible = true;
           // cube.material.visible = true;
        }
-
     }
     isActive = true;
   } else {
@@ -226,28 +227,28 @@ var scaleFactor = 1;
     _cubesArray[i] = _rowCubes;
     scaleFactor *= 2;
   }
-  scene.add(_cubeGroup);
+  // scene.add(_cubeGroup);
 }
 
-function generateCubesDelayedByDecimal () {
-  for(var i = 0; i<numberOfDigits; i++) {
-    var number = parseInt(countString[i]);
-    var _rowCubes = [];
-    for(var j = 0; j < number; j++) {
-      var scale = 1
-      var cubeGeo = new THREE.CubeGeometry(scale, scale, scale);
-      var cube = new THREE.Mesh(cubeGeo, matCapCube);
-      // cube.position.z = -(j*(i+ _spacingY)) ;
-      // cube.position.x = i*_spacingX;
-       // await sleep(2000);
-      _cubeGroup.add(cube);
-      _rowCubes[j] = cube;
+async function generateCubesAsInstances () {
+  var scale = 1;
+  var spacing = 1.5;
+  var cubeGeo = new THREE.CubeGeometry(scale, scale, scale);
+  var mat = new THREE.MeshMatcapMaterial({matcap:texCube});
+   for(let i = 0; i<10; i++) {
+    for(let j = 0; j< 10; j++) {
+      for(let k = 0; k < 10; k++) {
 
+        var cube = new THREE.Mesh(cubeGeo, mat);
+        cube.position.x = j* scale* spacing;
+        cube.position.y = i* scale*spacing;
+        cube.position.z = k* scale*spacing;
+         await sleep(30);
+        scene.add(cube);
+      }
     }
-    _cubesArray[i] = _rowCubes;
-    scaleFactor *= 2;
-  }
-  scene.add(_cubeGroup);
+   }
+
 }
 
 function positionCubes () {

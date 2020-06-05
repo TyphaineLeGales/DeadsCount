@@ -78,6 +78,8 @@ let totalCount = 0;
 let _speed = 1;
 var model;
 
+var THREE = require('three');
+
 let scrollContainer = document.getElementById('scrollableContainer');
 let _maxScroll = (scrollContainer.scrollHeight-scrollContainer.offsetHeight);
 let _f;

@@ -34,8 +34,6 @@ uniforms.u_resolution.value.x = renderer.domElement.width;
 uniforms.u_resolution.value.y = renderer.domElement.height;
 
 
-
-// instanceObjAlongSpline();
 function init() {
   var _testGeo = new THREE.PlaneGeometry( window.innerWidth, window.innerHeight, 20, 20);
   var _testMat = new THREE.MeshNormalMaterial({wireframe:true});

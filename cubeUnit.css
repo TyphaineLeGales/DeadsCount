@@ -6,7 +6,7 @@ h1 {
   z-index:5;
   color:white;
   position:fixed;
-  font-size:10em;
+  font-size:8em;
   top: 50%;
   left: 50%;
   /* bring your own prefixes */

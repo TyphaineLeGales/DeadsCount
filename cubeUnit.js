@@ -36,6 +36,8 @@ var numberOfDigits = countString.length;
 var numbIsDisp = false;
 var _cubesArray = [];
 var _minSize = 10;
+var _cubeGroup = new THREE.Group();
+var _speed = 1;
 
 //UI
 var datGUI = new dat.GUI();
@@ -45,6 +47,10 @@ var guiControls = new function () {
   this.cameraPosZ = camera.position.z;
   this.spacingX = 250;
   this.spacingY = 315;
+  this.cameraRotationX = camera.rotation.x;
+  this.cameraRotationY = camera.rotation.y;
+  this.cameraRotationZ = camera.rotation.z;
+  this.speed = 0.1;
 }
 
 var cameraPosition = datGUI.addFolder('CameraPos');
@@ -59,6 +65,20 @@ cameraPosition.add(guiControls, 'cameraPosZ', -1000, 1000 ).onChange(function(va
   camera.position.z = value;
 });
 
+var cameraRotation = datGUI.addFolder('CameraRotation');
+
+cameraRotation.add(guiControls, 'cameraRotationX', -200, 1000 ).onChange(function(value) {
+  camera.position.x = value;
+});
+
+cameraRotation.add(guiControls, 'cameraRotationY', -200, 1000 ).onChange(function(value) {
+  camera.position.y = value;
+});
+
+cameraRotation.add(guiControls, 'cameraRotationZ', -1000, 1000 ).onChange(function(value) {
+  camera.position.z = value;
+});
+
 datGUI.add(guiControls, 'spacingX', 0, 1000).onChange(function(value) {
   _spacingX = value;
   positionCubes();
@@ -67,6 +87,10 @@ datGUI.add(guiControls, 'spacingX', 0, 1000).onChange(function(value) {
 datGUI.add(guiControls, 'spacingY', 0, 1000).onChange(function(value) {
   _spacingY = value;
   positionCubes();
+})
+
+datGUI.add(guiControls, 'speed', 0, 0.1).onChange(function(value) {
+  _speed = value;
 })
 
 
@@ -86,8 +110,9 @@ function init() {
 
 function render() {
   requestAnimationFrame( render );
-
+  rotationAnim();
   renderer.render(scene, camera);
+
 }
 
 window.addEventListener( 'resize', onWindowResize, false );
@@ -106,6 +131,12 @@ function changeMaterial() {
 
 function restoreMaterial() {
   _testMesh.material = _normalMat;
+}
+
+function rotationAnim () {
+  _cubeGroup.rotation.x += _speed;
+  _cubeGroup.rotation.y += _speed;
+  _cubeGroup.rotation.z += _speed;
 }
 
 function cubeDisp() {
@@ -146,13 +177,14 @@ var scaleFactor = 10;
       var cube = new THREE.Mesh(cubeGeo, matCapCube);
       cube.position.z = -(j*(i+ _spacingY)) ;
       cube.position.x = i*_spacingX;
-      scene.add(cube);
+      _cubeGroup.add(cube);
       _rowCubes[j] = cube;
 
     }
     _cubesArray[i] = _rowCubes;
     scaleFactor *= 10;
   }
+  scene.add(_cubeGroup);
 }
 
 function positionCubes () {

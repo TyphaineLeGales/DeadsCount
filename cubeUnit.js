@@ -43,9 +43,11 @@ var _minSize = 10;
 var _cubeGroup = new THREE.Group();
 var _thousandIsDone = false;
 var _offsetTimer = 0;
-var _animCubeOffset = 3;
+var _animCubeOffset = 1;
 var _cubeCounter = 0;
 var _userHasClicked = false;
+var _blockThousand = false;
+
 
 var header = document.querySelector('h1');
 header.addEventListener('click', function () {
@@ -61,6 +63,10 @@ var guiControls = new function () {
   this.cameraRotationX = camera.rotation.x;
   this.cameraRotationY = camera.rotation.y;
   this.cameraRotationZ = camera.rotation.z;
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 //Background
@@ -94,9 +100,18 @@ cameraRotation.add(guiControls, 'cameraRotationZ', -1000, 1000 ).onChange(functi
   camera.position.z = value;
 });
 
+var mat = new THREE.MeshMatcapMaterial({matcap:texCube});
 
 window.addEventListener("DOMContentLoaded", (event) => {
   init();
+  // window.addEventListener('mousemove', e => {
+  // var mouseX = e.clientX;
+  // var mouseY = e.clientY;
+  // var offsetX = mapRange(e.clientX, 0,  window.innerWidth, -0.2, 0.2 );
+  // var offsetY = mapRange(e.clientY, 0,  window.innerHeight, -0.2, 0.2 );
+  // camera.position.y += offsetY;
+  // camera.position.x += offsetX;
+  // });
 });
 
 function init() {
@@ -109,20 +124,26 @@ function render() {
   dt += clock.getDelta();
   _offsetTimer += dt;
 
+  //thousand
   if(_userHasClicked && _thousandIsDone != true) {
     for(var i = 0; i <  _cubesArray.length; i++) {
       if(_offsetTimer > _animCubeOffset) {
        _cubeGroup.add( _cubesArray[_cubeCounter]);
         _cubeCounter += 1;
         _offsetTimer = 0;
-         camera.position.y += 0.01;
+        camera.position.y += 0.01;
       }
     }
   }
 
-  if(_cubeGroup.children.length === _cubesArray.length) {
-    _thousandIsDone = true;
-  }
+  //group block
+    if(_cubeGroup.children.length === _cubesArray.length) {
+      _thousandIsDone = true;
+      if(_blockThousand != true) {
+        blockCubes();
+      }
+    }
+
 
   requestAnimationFrame( render );
   renderer.render(scene, camera);
@@ -130,6 +151,7 @@ function render() {
 }
 
 window.addEventListener( 'resize', onWindowResize, false );
+
 
 
 function onWindowResize(){
@@ -151,9 +173,8 @@ function dispCountry () {
 
 function generateThousandCubes () {
   var scale = 1;
-  var spacing = 1.2;
+  var spacing = 1.1;
   var cubeGeo = new THREE.CubeGeometry(scale, scale, scale);
-  var mat = new THREE.MeshMatcapMaterial({matcap:texCube});
    for(let i = 0; i<10; i++) {
     for(let j = 0; j< 10; j++) {
       for(let k = 0; k < 10; k++) {
@@ -161,8 +182,34 @@ function generateThousandCubes () {
         cube.position.x = j* scale* spacing;
         cube.position.y = i* scale*spacing;
         cube.position.z = k* scale*spacing;
+
+        // cube.userData.xPosIndex = i;
+        // cube.userData.yPosIndex = j;
+        // cube.userData.zPosIndex = k;
         _cubesArray.push(cube);
       }
     }
   }
+}
+
+function blockCubes () {
+  var cubeCenter = new THREE.Vector3(5, 5, 5);
+  for(var i = 0; i <  1000; i++) {
+    var cube = _cubesArray[i];
+    scene.remove(cube);
+      // cube.position.x = cube.userData.xPosIndex;
+      // cube.position.y = cube.userData.yPosIndex;
+      // cube.position.z = cube.userData.zPosIndex;
+  }
+  var thousandCube = new THREE.Mesh(new THREE.CubeGeometry(12, 12, 12), mat);
+      thousandCube.position.x += 5.5;
+      thousandCube.position.y += 5.5;
+      thousandCube.position.z += 5.5;
+      scene.add(thousandCube);
+  _blockThousand = true;
+}
+
+function mapRange(value, a, b, c, d) {
+  value = (value - a) / (b - a);
+  return c + value*(d-c);
 }

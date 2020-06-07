@@ -12,18 +12,24 @@ canvas {
   top:0;
 }
 
+
+#count {
+  color:red;
+}
+
 h1 {
   z-index:5;
   color:white;
   position:fixed;
-  font-size:8em;
+  font-size:10em;
   top: 50%;
   left: 50%;
-  /* bring your own prefixes */
+
   transform: translate(-50%, -50%);
 }
 
-h1:hover {
+/*h1:hover {
   cursor:pointer;
   letter-spacing:0.5em;
-}
+}*/
+

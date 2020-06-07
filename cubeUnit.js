@@ -1,3 +1,4 @@
+var countDiv = document.getElementById('count');
 
 //basic THREEJS Setup
 var scene = new THREE.Scene();
@@ -16,14 +17,13 @@ controls.enableZoom = true;
 // controls.enableKeys = false;
 // controls.enablePan = false;
 // controls.enableRotate = false;
-camera.position.z = 21;
-camera.position.y = 6;
-camera.position.x = 7;
+camera.position.z = 27;
+camera.position.y = -3;
+camera.position.x = 0;
 
 var clock = new THREE.Clock(); //units a second
 var dt = 0;
 var _t;
-
 
 
 var _testMesh;
@@ -43,16 +43,18 @@ var _minSize = 10;
 var _cubeGroup = new THREE.Group();
 var _thousandIsDone = false;
 var _offsetTimer = 0;
-var _animCubeOffset = 1;
+var _animCubeOffset = 5;
 var _cubeCounter = 0;
 var _userHasClicked = false;
 var _blockThousand = false;
+var _bigCubes = [];
+var _bigCubesDone = false;
 
 
-var header = document.querySelector('h1');
-header.addEventListener('click', function () {
-  _userHasClicked = true;
- });
+// var header = document.querySelector('h1');
+// header.addEventListener('click', function () {
+//   _userHasClicked = true;
+//  });
 
 //UI
 var datGUI = new dat.GUI();
@@ -76,13 +78,13 @@ scene.background = backgroundTexBlack;
 
 var cameraPosition = datGUI.addFolder('CameraPos');
 
-cameraPosition.add(guiControls, 'cameraPosX', -200, 1000 ).onChange(function(value) {
+cameraPosition.add(guiControls, 'cameraPosX', -200, 100 ).onChange(function(value) {
   camera.position.x = value;
 });
-cameraPosition.add(guiControls, 'cameraPosY', -200, 1000 ).onChange(function(value) {
+cameraPosition.add(guiControls, 'cameraPosY', -200, 100 ).onChange(function(value) {
   camera.position.y = value;
 });
-cameraPosition.add(guiControls, 'cameraPosZ', -1000, 1000 ).onChange(function(value) {
+cameraPosition.add(guiControls, 'cameraPosZ', -100, 100 ).onChange(function(value) {
   camera.position.z = value;
 });
 
@@ -117,6 +119,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
 function init() {
   scene.add(_cubeGroup);
   generateThousandCubes();
+  // generateBigCubes();
   render();
 }
 
@@ -124,23 +127,43 @@ function render() {
   dt += clock.getDelta();
   _offsetTimer += dt;
 
-  //thousand
-  if(_userHasClicked && _thousandIsDone != true) {
+
+   // if(_userHasClicked && _bigCubesDone != true) {
+   //  for(var i = 0; i < _bigCubes.length; i++) {
+   //    if(_offsetTimer > _animCubeOffset) {
+   //     scene.add(_bigCubes[_cubeCounter]);
+   //      _cubeCounter += 1;
+   //      _offsetTimer = 0;
+   //    }
+   //  }
+
+   //  if(_cubeGroup.children.length === _bigCubes.length) {
+   //    _bigCubesDone = true;
+   //  }
+   // }
+
+  // thousand units
+  if(_thousandIsDone != true) {
     for(var i = 0; i <  _cubesArray.length; i++) {
       if(_offsetTimer > _animCubeOffset) {
        _cubeGroup.add( _cubesArray[_cubeCounter]);
         _cubeCounter += 1;
+        countDiv.innerHTML = _cubeCounter;
         _offsetTimer = 0;
-        camera.position.y += 0.01;
+        // camera.rotation.x += 0.01;
       }
     }
   }
+
+    _cubeGroup.rotation.y -= 0.001;
+    _cubeGroup.rotation.x += 0.001;
+  // _cubeGroup.rotation.z+= 0.001;
 
   //group block
     if(_cubeGroup.children.length === _cubesArray.length) {
       _thousandIsDone = true;
       if(_blockThousand != true) {
-        blockCubes();
+        // blockCubes();
       }
     }
 
@@ -174,10 +197,13 @@ function dispCountry () {
 function generateThousandCubes () {
   var scale = 1;
   var spacing = 1.1;
+  var cubeSize = 10;
   var cubeGeo = new THREE.CubeGeometry(scale, scale, scale);
-   for(let i = 0; i<10; i++) {
-    for(let j = 0; j< 10; j++) {
-      for(let k = 0; k < 10; k++) {
+
+  //HUNDREDS
+   for(let i = 0; i<8; i++) {
+    for(let j = 0; j< cubeSize; j++) {
+      for(let k = 0; k < cubeSize; k++) {
         var cube = new THREE.Mesh(cubeGeo, mat);
         cube.position.x = j* scale* spacing;
         cube.position.y = i* scale*spacing;
@@ -189,6 +215,38 @@ function generateThousandCubes () {
         _cubesArray.push(cube);
       }
     }
+  }
+  //if _cubesArray.length > 3 first number of string
+  // x = stringNumber ++
+
+  //TENS
+  for(let j = 0;j<1;j++) {
+    for(let k = 0; k<cubeSize; k++) {
+      var cube = new THREE.Mesh(cubeGeo, mat);
+        cube.position.x = j* scale* spacing;
+        cube.position.y = 8* scale*spacing;
+        cube.position.z = k* scale*spacing;
+        _cubesArray.push(cube);
+    }
+  }
+
+//UNITS
+for(let k = 0; k<1; k++) {
+      var cube = new THREE.Mesh(cubeGeo, new THREE.MeshNormalMaterial());
+        cube.position.x = 1* scale* spacing;
+        cube.position.y = 8* scale*spacing;
+        cube.position.z = k* scale*spacing;
+        _cubesArray.push(cube);
+    }
+}
+
+
+function generateBigCubes () {
+  for(var i =0; i < 39; i++) {
+    var cube = new THREE.Mesh(new THREE.CubeGeometry(12, 12, 12), mat);
+    cube.position.x += 12*i*1.1;
+    _cubeGroup.add(cube);
+    _bigCubes.push(cube);
   }
 }
 

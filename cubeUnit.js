@@ -49,6 +49,7 @@ var _userHasClicked = false;
 var _blockThousand = false;
 var _bigCubes = [];
 var _bigCubesDone = false;
+var _dispCount = 0;
 
 
 // var header = document.querySelector('h1');
@@ -147,8 +148,9 @@ function render() {
     for(var i = 0; i <  _cubesArray.length; i++) {
       if(_offsetTimer > _animCubeOffset) {
        _cubeGroup.add( _cubesArray[_cubeCounter]);
+       _dispCount += _cubesArray[_cubeCounter].userData.unit;
+       countDiv.innerHTML = _dispCount;
         _cubeCounter += 1;
-        countDiv.innerHTML = _cubeCounter;
         _offsetTimer = 0;
         // camera.rotation.x += 0.01;
       }
@@ -157,7 +159,6 @@ function render() {
 
     _cubeGroup.rotation.y -= 0.001;
     _cubeGroup.rotation.x += 0.001;
-  // _cubeGroup.rotation.z+= 0.001;
 
   //group block
     if(_cubeGroup.children.length === _cubesArray.length) {
@@ -198,39 +199,41 @@ function generateThousandCubes () {
   var scale = 1;
   var spacing = 1.1;
   var cubeSize = 10;
-  var cubeGeo = new THREE.CubeGeometry(scale, scale, scale);
+  var cubeGeoUnits = new THREE.CubeGeometry(scale, scale, scale);
+  var cubeGeoThousands = new THREE.CubeGeometry(scale*cubeSize, scale*cubeSize, scale*cubeSize);
+
   var numberOfDigits = countString.length;
   var units = countString[numberOfDigits-1];
   var tens = countString[numberOfDigits-2];
   var hundreds = countString[numberOfDigits-3];
+  var thousands = countString[numberOfDigits-4];
 
-
-
-  console.log(units);
+  for(let i = 0; i< thousands; i++) {
+    var cube = new THREE.Mesh(cubeGeoThousands, mat);
+    cube.userData.unit = 1000;
+    cube.position.x = i*scale*cubeSize;
+    _cubesArray.push(cube);
+  }
 
   //HUNDREDS
    for(let i = 0; i<hundreds; i++) {
     for(let j = 0; j< cubeSize; j++) {
       for(let k = 0; k < cubeSize; k++) {
-        var cube = new THREE.Mesh(cubeGeo, mat);
+        var cube = new THREE.Mesh(cubeGeoUnits, mat);
+        cube.userData.unit = 100;
         cube.position.x = j* scale* spacing;
         cube.position.y = i* scale*spacing;
         cube.position.z = k* scale*spacing;
-
-        // cube.userData.xPosIndex = i;
-        // cube.userData.yPosIndex = j;
-        // cube.userData.zPosIndex = k;
         _cubesArray.push(cube);
       }
     }
   }
-  //if _cubesArray.length > 3 first number of string
-  // x = stringNumber ++
 
   //TENS
   for(let j = 0;j<tens;j++) {
     for(let k = 0; k<cubeSize; k++) {
-      var cube = new THREE.Mesh(cubeGeo, mat);
+      var cube = new THREE.Mesh(cubeGeoUnits, mat);
+        cube.userData.unit = 10;
         cube.position.x = j* scale* spacing;
         cube.position.y = hundreds* scale*spacing;
         cube.position.z = k* scale*spacing;
@@ -240,14 +243,14 @@ function generateThousandCubes () {
 
 //UNITS
   for(let k = 0; k<units; k++) {
-        var cube = new THREE.Mesh(cubeGeo, mat);
+        var cube = new THREE.Mesh(cubeGeoUnits, mat);
+          cube.userData.unit = 1;
           cube.position.x = tens* scale* spacing;
           cube.position.y = hundreds* scale*spacing;
           cube.position.z = k* scale*spacing;
           _cubesArray.push(cube);
       }
   }
-
 
 function generateBigCubes () {
   for(var i =0; i < 39; i++) {

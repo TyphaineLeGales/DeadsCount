@@ -78,8 +78,6 @@ let totalCount = 0;
 let _speed = 1;
 var model;
 
-var THREE = require('three');
-
 let scrollContainer = document.getElementById('scrollableContainer');
 let _maxScroll = (scrollContainer.scrollHeight-scrollContainer.offsetHeight);
 let _f;
@@ -192,7 +190,7 @@ datGUI.add(guiControls, 'redDots').onChange(function(value) {
   }
 });
 // datGUI.add(guiControls, 'lineThickness', 1, 10);
-datGUI.add(guiControls, 'speed', 1, 10);
+datGUI.add(guiControls, 'speed', 1, 10, 1);
 datGUI.add(guiControls, 'pathF', 0,1);
 
 var cameraPosition = datGUI.addFolder('CameraPos');
@@ -251,10 +249,12 @@ var circleGeo = new THREE.CircleGeometry(0.2, 32);
 //work scroll backward loop
 //edit new spline
 //instance 3D
+window.addEventListener("DOMContentLoaded", (event) => {
+  init();
+  render();
+});
 
 
-init();
-render();
 // instanceObjAlongSpline();
 
 
@@ -307,7 +307,7 @@ function init() {
   _splinePath = new Spline(_splinePoints);
   makeSplineCurve(_splinePoints);
   createObj();
-  loadModel();
+  // loadModel();
 }
 
 
@@ -408,7 +408,7 @@ function makeSplineCurve (array) {
 
 function respawn() {
 
-  if(_f === 1){
+  if(_f > 0.95){
     scrollContainer.scrollTop = 0;
     _loopCounter += 1;
   }

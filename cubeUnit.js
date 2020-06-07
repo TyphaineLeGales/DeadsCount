@@ -16,9 +16,13 @@ controls.enableZoom = true;
 // controls.enableKeys = false;
 // controls.enablePan = false;
 // controls.enableRotate = false;
-camera.position.z = 10;
-camera.position.y = 230;
-camera.position.x = 839;
+camera.position.z = 20;
+camera.position.y = 6;
+camera.position.x = 7;
+
+var clock = new THREE.Clock(); //units a second
+var dt = 0;
+var _t;
 
 var _testMesh;
 var _normalMat = new THREE.MeshNormalMaterial();
@@ -40,6 +44,7 @@ var _cubeGroup = new THREE.Group();
 var _speed = 0.0;
 var _scaleFactor = 10;
 var _cubesArrayTest = [];
+var _thousandIsDone = false;
 
 //UI
 var datGUI = new dat.GUI();
@@ -117,13 +122,18 @@ function init() {
   _testMesh = new THREE.Mesh(_testGeo, _normalMat);
   scene.add(_testMesh);
   // generateCubes();
-  generateCubesAsInstances();
+  // generateCubesAnim();
   render();
 }
 
 function render() {
+  dt += clock.getDelta();
+  _t = dt%1;
   requestAnimationFrame( render );
   rotationAnim();
+  if(_thousandIsDone && camera.position.z < 70) {
+    camera.position.z += 0.1;
+  }
   renderer.render(scene, camera);
 
 }
@@ -152,15 +162,17 @@ function rotationAnim () {
   _cubeGroup.rotation.z += _speed;
 }
 
-async function cubeDisp() {
+function cubeDisp() {
   if(isActive === false) {
     countDiv.style.color= "red";
     for(let i = 0; i<numberOfDigits; i++) {
        var number = parseInt(countString[i]);
        for(let j = 0; j < number; j++) {
+        if(_t === 1) {
           var cube = _cubesArray[i][j];
-          await sleep(500);
           cube.material.visible = true;
+
+        }
           // cube.material.visible = true;
        }
     }
@@ -180,10 +192,6 @@ async function cubeDisp() {
 
 }
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 function scaleCubes () {
   var scale = new THREE.Vector3(_scaleFactor, _scaleFactor, _scaleFactor,);
   for(var i = 0; i<_cubesArray.length; i++) {
@@ -195,7 +203,6 @@ function scaleCubes () {
   }
 }
 
-
 function dispNumber () {
    countDiv.innerHTML="39811";
    numbIsDisp = true;
@@ -203,7 +210,7 @@ function dispNumber () {
 }
 
 function dispCountry () {
-   countDiv.innerHTML="United Kingdom";
+   countDiv.innerHTML="UK";
    numbIsDisp = false;
    // matCapCube.visible = false;
 }
@@ -230,9 +237,9 @@ var scaleFactor = 1;
   // scene.add(_cubeGroup);
 }
 
-async function generateCubesAsInstances () {
+async function generateCubesAnim () {
   var scale = 1;
-  var spacing = 1.5;
+  var spacing = 1.2;
   var cubeGeo = new THREE.CubeGeometry(scale, scale, scale);
   var mat = new THREE.MeshMatcapMaterial({matcap:texCube});
    for(let i = 0; i<10; i++) {
@@ -245,10 +252,11 @@ async function generateCubesAsInstances () {
         cube.position.z = k* scale*spacing;
          await sleep(30);
         scene.add(cube);
+        camera.position.y += 0.01;
       }
     }
    }
-
+   _thousandIsDone = true;
 }
 
 function positionCubes () {

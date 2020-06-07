@@ -88,7 +88,7 @@ let numberContainer = document.getElementById('numberContainer');
 
 //basic THREEJS Setup
 var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+var camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 1000 );
 scene.add(camera);
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -101,7 +101,7 @@ controls.campingFactor = 0.25;
 controls.enableZoom = true;
 camera.position.x = -1.2;
 camera.position.y = 2.3;
-camera.position.z = 6;
+camera.position.z = 7.3;
 camera.rotation.x = -18.175*_unitConvert;
 camera.rotation.y = -13.189*_unitConvert;
 
@@ -111,113 +111,109 @@ var dt = 0;
 var t;
 
 //UI
-var datGUI = new dat.GUI();
-var guiControls = new function () {
-  this.showOriginDebug = false;
-  this.orbitControlsEnabled = false;
-  this.hideSpline = false;
-  this.modelIsVisible = false;
-  this.skyBackground = false;
-  this.redDots = false;
-  // this.lineThickness = 1;
-  this.speed = 1;
-  this.pathF = 0.50;
-  this.cameraPosX = camera.position.x;
-  this.cameraPosY = camera.position.y;
-  this.cameraPosZ = camera.position.z;
-  this.cameraRX = camera.rotation.x;
-  this.cameraRY = camera.rotation.y;
-  this.cameraRZ = camera.rotation.z;
-}
-datGUI.add(guiControls, 'showOriginDebug').onChange(function(value) {
-  debugOrigin.visible = value;
-});
-datGUI.add(guiControls, 'orbitControlsEnabled').onChange(function(value) {
-  controls.enabled = value;
-});
+// var datGUI = new dat.GUI();
+// var guiControls = new function () {
+//   this.orbitControlsEnabled = false;
+//   this.hideSpline = false;
+//   this.modelIsVisible = false;
+//   this.skyBackground = false;
+//   this.redDots = false;
+//   this.speed = 1;
+//   this.pathF = 0.50;
+//   this.cameraPosX = camera.position.x;
+//   this.cameraPosY = camera.position.y;
+//   this.cameraPosZ = camera.position.z;
+//   this.cameraRX = camera.rotation.x;
+//   this.cameraRY = camera.rotation.y;
+//   this.cameraRZ = camera.rotation.z;
+// }
 
-datGUI.add(guiControls, 'hideSpline').onChange(function(value) {
-  _splineObj.visible = value;
-})
-datGUI.add(guiControls, 'modelIsVisible').onChange(function(value) {
-  matcapModel.visible = value;
-});
+// datGUI.add(guiControls, 'orbitControlsEnabled').onChange(function(value) {
+//   controls.enabled = value;
+// });
 
-datGUI.add(guiControls, 'skyBackground').onChange(function(value) {
-  if(value === true) {
-    scene.background = backgroundTexSky;
-  } else {
-    scene.background = backgroundTexBlack;
-  }
-});
-datGUI.add(guiControls, 'redDots').onChange(function(value) {
-  if(value === true){
+// datGUI.add(guiControls, 'hideSpline').onChange(function(value) {
+//   _splineObj.visible = value;
+// })
+// datGUI.add(guiControls, 'modelIsVisible').onChange(function(value) {
+//   matcapModel.visible = value;
+// });
 
-    for(var i = 0; i < _unitArray.length; i++) {
-      var obj = _unitArray[i];
-      obj.visible=false;
-      var redMat = new THREE.MeshBasicMaterial({color:0xff0000, transparent:true});
-      redMat.needsUpdate = true;
-      redMat.opacity = 0;
-      var updatedObj = new THREE.Mesh(circleGeo,redMat);
-      updatedObj.position.copy(obj.position);
-      updatedObj.userData.offset = obj.userData.offset;
-      updatedObj.userData.f =  obj.userData.f;
-      updatedObj.userData.number = obj.userData.number;
-      updatedObj.userData.prevF = obj.userData.prevF;
-      _unitArray[i] = updatedObj;
-      scene.add(updatedObj);
+// datGUI.add(guiControls, 'skyBackground').onChange(function(value) {
+//   if(value === true) {
+//     scene.background = backgroundTexSky;
+//   } else {
+//     scene.background = backgroundTexBlack;
+//   }
+// });
+// datGUI.add(guiControls, 'redDots').onChange(function(value) {
+//   if(value === true){
 
-    }
-  } else {
-     for(var i = 0; i < _unitArray.length; i++) {
-      var obj = _unitArray[i];
-      obj.visible = false;
-      var matcap = new THREE.MeshMatcapMaterial({matcap:texture, transparent: true});
-      matcap.needsUpdate = true;
-      matcap.opacity = 0;
-      var updatedObj = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),matcap);
-      updatedObj.position.copy(obj.position);
-      updatedObj.userData.offset = obj.userData.offset;
-      updatedObj.userData.f =  obj.userData.f;
-      updatedObj.userData.number = obj.userData.number;
-      updatedObj.userData.prevF = obj.userData.prevF;
-      _unitArray[i] = updatedObj;
-      scene.add(updatedObj);
+//     for(var i = 0; i < _unitArray.length; i++) {
+//       var obj = _unitArray[i];
+//       obj.visible=false;
+//       var redMat = new THREE.MeshBasicMaterial({color:0xff0000, transparent:true});
+//       redMat.needsUpdate = true;
+//       redMat.opacity = 0;
+//       var updatedObj = new THREE.Mesh(circleGeo,redMat);
+//       updatedObj.position.copy(obj.position);
+//       updatedObj.userData.offset = obj.userData.offset;
+//       updatedObj.userData.f =  obj.userData.f;
+//       updatedObj.userData.number = obj.userData.number;
+//       updatedObj.userData.prevF = obj.userData.prevF;
+//       _unitArray[i] = updatedObj;
+//       scene.add(updatedObj);
 
-    }
+//     }
+//   } else {
+//      for(var i = 0; i < _unitArray.length; i++) {
+//       var obj = _unitArray[i];
+//       obj.visible = false;
+//       var matcap = new THREE.MeshMatcapMaterial({matcap:texture, transparent: true});
+//       matcap.needsUpdate = true;
+//       matcap.opacity = 0;
+//       var updatedObj = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),matcap);
+//       updatedObj.position.copy(obj.position);
+//       updatedObj.userData.offset = obj.userData.offset;
+//       updatedObj.userData.f =  obj.userData.f;
+//       updatedObj.userData.number = obj.userData.number;
+//       updatedObj.userData.prevF = obj.userData.prevF;
+//       _unitArray[i] = updatedObj;
+//       scene.add(updatedObj);
 
-  }
-});
-// datGUI.add(guiControls, 'lineThickness', 1, 10);
-datGUI.add(guiControls, 'speed', 1, 10, 1);
-datGUI.add(guiControls, 'pathF', 0,1);
+//     }
 
-var cameraPosition = datGUI.addFolder('CameraPos');
+//   }
+// });
+// // datGUI.add(guiControls, 'lineThickness', 1, 10);
+// datGUI.add(guiControls, 'speed', 1, 10, 1);
+// datGUI.add(guiControls, 'pathF', 0,1);
 
-cameraPosition.add(guiControls, 'cameraPosX', -5, 5 ).onChange(function(value) {
-  camera.position.x = value;
-});
-cameraPosition.add(guiControls, 'cameraPosY', -5, 5 ).onChange(function(value) {
-  camera.position.y = value;
-});
-cameraPosition.add(guiControls, 'cameraPosZ', -5, 10 ).onChange(function(value) {
-  camera.position.z = value;
-});
+// var cameraPosition = datGUI.addFolder('CameraPos');
 
-cameraPosition.close();
-var rotationFolder = datGUI.addFolder('CameraRotation');
-rotationFolder.add(guiControls, 'cameraRX', -5, 5 ).onChange(function(value) {
-  camera.rotation.x = value;
-});
-rotationFolder.add(guiControls, 'cameraRY', -5, 5 ).onChange(function(value) {
-  camera.rotation.y = value;
-});
-rotationFolder.add(guiControls, 'cameraRZ', -5, 10 ).onChange(function(value) {
-  camera.rotation.z = value;
-});
+// cameraPosition.add(guiControls, 'cameraPosX', -5, 5 ).onChange(function(value) {
+//   camera.position.x = value;
+// });
+// cameraPosition.add(guiControls, 'cameraPosY', -5, 5 ).onChange(function(value) {
+//   camera.position.y = value;
+// });
+// cameraPosition.add(guiControls, 'cameraPosZ', -5, 10 ).onChange(function(value) {
+//   camera.position.z = value;
+// });
 
-rotationFolder.close();
+// cameraPosition.close();
+// var rotationFolder = datGUI.addFolder('CameraRotation');
+// rotationFolder.add(guiControls, 'cameraRX', -5, 5 ).onChange(function(value) {
+//   camera.rotation.x = value;
+// });
+// rotationFolder.add(guiControls, 'cameraRY', -5, 5 ).onChange(function(value) {
+//   camera.rotation.y = value;
+// });
+// rotationFolder.add(guiControls, 'cameraRZ', -5, 10 ).onChange(function(value) {
+//   camera.rotation.z = value;
+// });
+
+// rotationFolder.close();
 
 //MATCAP
 var testMat = new THREE.MeshNormalMaterial();
@@ -228,35 +224,17 @@ var texture2 = new THREE.TextureLoader().load( 'Assets/matCap4.jpg' );
 var testMatcap2 = new THREE.MeshMatcapMaterial({matcap:texture2});
 var matcapModel= new THREE.MeshMatcapMaterial({matcap:texture2});
 
-//PERSON TEST
-var personTex =  new THREE.TextureLoader().load( 'Assets/PersonTry.png' );
-var personMat = new THREE.MeshBasicMaterial({map:personTex});
 //Background
 var backgroundTexSky = new THREE.TextureLoader().load( 'Assets/skyTest2.jpg' );
 var backgroundTexBlack = new THREE.TextureLoader().load( 'Assets/gradientB&W.jpg' );
 scene.background = backgroundTexBlack;
-//debug origin scene
-var _debugMat = new THREE.MeshNormalMaterial();
-var debugOrigin = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5), new THREE.MeshNormalMaterial(_debugMat));
-_debugMat.needsUpdate = true;
-_debugMat.visible = false;
-scene.add(debugOrigin);
 
 var circleGeo = new THREE.CircleGeometry(0.2, 32);
 
-//TO DO :
-
-//work scroll backward loop
-//edit new spline
-//instance 3D
 window.addEventListener("DOMContentLoaded", (event) => {
   init();
   render();
 });
-
-
-// instanceObjAlongSpline();
-
 
 window.addEventListener( 'resize', onWindowResize, false );
 
@@ -265,19 +243,12 @@ function onWindowResize(){
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize( window.innerWidth, window.innerHeight );
-    // uniforms.u_resolution.value.x = renderer.domElement.width;
-    // uniforms.u_resolution.value.y = renderer.domElement.height;
 }
 
 function onContainerScroll() {
   respawn();
 
-  // console.log(_loopCounter);
   _currOffsetTop = scrollContainer.scrollTop;
-  // console.log(_unitArray[1].userData.f);
-  // if(scrollContainer.scrollTop === 0) {
-  //   scrollContainer.scrollTop = _maxScroll;
-  // }
   if(_currOffsetTop >= _prevOffsetTop) {
     for(var i = 0; i<_MAXOBJ; i++) {
       var obj = _unitArray[i];
@@ -313,14 +284,11 @@ function init() {
 
 function render () {
   requestAnimationFrame( render );
-
-  // dt += clock.getDelta();
-  // _t = dt%1;
   _f = clamp(mapRange(scrollContainer.scrollTop, 0, _maxScroll,0,  1), 0, 1);
 
   for(var i = 0; i<_unitArray.length; i++) {
     var obj = _unitArray[i];
-    obj.userData.f = ((_f+_loopCounter - obj.userData.offset)*guiControls.speed)%1;
+    obj.userData.f = ((_f+_loopCounter - obj.userData.offset))%1;
     _splinePath.setObjectPath(obj, obj.userData.f);
     opacityEase(obj.userData.f, obj);
 
@@ -330,7 +298,6 @@ function render () {
   }
 
   renderer.render( scene, camera );
-  // uniforms.u_time.value = dt;
 };
 
 function createObj() {

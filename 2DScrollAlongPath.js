@@ -408,7 +408,7 @@ function makeSplineCurve (array) {
 
 function respawn() {
 
-  if(_f > 0.95){
+  if(_f > 0.9){
     scrollContainer.scrollTop = 0;
     _loopCounter += 1;
   }

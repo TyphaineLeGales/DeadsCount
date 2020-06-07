@@ -24,6 +24,8 @@ var clock = new THREE.Clock(); //units a second
 var dt = 0;
 var _t;
 
+
+
 var _testMesh;
 var _normalMat = new THREE.MeshNormalMaterial();
  _normalMat.visible = false;
@@ -43,6 +45,12 @@ var _thousandIsDone = false;
 var _offsetTimer = 0;
 var _animCubeOffset = 3;
 var _cubeCounter = 0;
+var _userHasClicked = false;
+
+var header = document.querySelector('h1');
+header.addEventListener('click', function () {
+  _userHasClicked = true;
+ });
 
 //UI
 var datGUI = new dat.GUI();
@@ -55,9 +63,6 @@ var guiControls = new function () {
   this.cameraRotationZ = camera.rotation.z;
 }
 
-// function sleep(ms) {
-//   return new Promise(resolve => setTimeout(resolve, ms));
-// }
 //Background
 var backgroundTexSky = new THREE.TextureLoader().load( 'Assets/skyTest2.jpg' );
 var backgroundTexBlack = new THREE.TextureLoader().load( 'Assets/gradientB&W.jpg' );
@@ -95,7 +100,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
 });
 
 function init() {
-
+  scene.add(_cubeGroup);
   generateThousandCubes();
   render();
 }
@@ -103,14 +108,22 @@ function init() {
 function render() {
   dt += clock.getDelta();
   _offsetTimer += dt;
-  for(var i = 0; i <  _cubesArray.length; i++) {
 
-    if(_offsetTimer > _animCubeOffset) {
-     scene.add( _cubesArray[_cubeCounter]);
-      _cubeCounter += 1;
-      _offsetTimer = 0;
+  if(_userHasClicked && _thousandIsDone != true) {
+    for(var i = 0; i <  _cubesArray.length; i++) {
+      if(_offsetTimer > _animCubeOffset) {
+       _cubeGroup.add( _cubesArray[_cubeCounter]);
+        _cubeCounter += 1;
+        _offsetTimer = 0;
+         camera.position.y += 0.01;
+      }
     }
   }
+
+  if(_cubeGroup.children.length === _cubesArray.length) {
+    _thousandIsDone = true;
+  }
+
   requestAnimationFrame( render );
   renderer.render(scene, camera);
 
@@ -129,13 +142,11 @@ function onWindowResize(){
 function dispNumber () {
    countDiv.innerHTML="39811";
    numbIsDisp = true;
-   // matCapCube.visible = true;
 }
 
 function dispCountry () {
    countDiv.innerHTML="UK";
    numbIsDisp = false;
-   // matCapCube.visible = false;
 }
 
 function generateThousandCubes () {
@@ -146,14 +157,12 @@ function generateThousandCubes () {
    for(let i = 0; i<10; i++) {
     for(let j = 0; j< 10; j++) {
       for(let k = 0; k < 10; k++) {
-
         var cube = new THREE.Mesh(cubeGeo, mat);
         cube.position.x = j* scale* spacing;
         cube.position.y = i* scale*spacing;
         cube.position.z = k* scale*spacing;
         _cubesArray.push(cube);
-        camera.position.y += 0.01;
       }
     }
-   }
+  }
 }

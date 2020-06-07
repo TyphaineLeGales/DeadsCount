@@ -199,9 +199,17 @@ function generateThousandCubes () {
   var spacing = 1.1;
   var cubeSize = 10;
   var cubeGeo = new THREE.CubeGeometry(scale, scale, scale);
+  var numberOfDigits = countString.length;
+  var units = countString[numberOfDigits-1];
+  var tens = countString[numberOfDigits-2];
+  var hundreds = countString[numberOfDigits-3];
+
+
+
+  console.log(units);
 
   //HUNDREDS
-   for(let i = 0; i<8; i++) {
+   for(let i = 0; i<hundreds; i++) {
     for(let j = 0; j< cubeSize; j++) {
       for(let k = 0; k < cubeSize; k++) {
         var cube = new THREE.Mesh(cubeGeo, mat);
@@ -220,25 +228,25 @@ function generateThousandCubes () {
   // x = stringNumber ++
 
   //TENS
-  for(let j = 0;j<1;j++) {
+  for(let j = 0;j<tens;j++) {
     for(let k = 0; k<cubeSize; k++) {
       var cube = new THREE.Mesh(cubeGeo, mat);
         cube.position.x = j* scale* spacing;
-        cube.position.y = 8* scale*spacing;
+        cube.position.y = hundreds* scale*spacing;
         cube.position.z = k* scale*spacing;
         _cubesArray.push(cube);
     }
   }
 
 //UNITS
-for(let k = 0; k<1; k++) {
-      var cube = new THREE.Mesh(cubeGeo, new THREE.MeshNormalMaterial());
-        cube.position.x = 1* scale* spacing;
-        cube.position.y = 8* scale*spacing;
-        cube.position.z = k* scale*spacing;
-        _cubesArray.push(cube);
-    }
-}
+  for(let k = 0; k<units; k++) {
+        var cube = new THREE.Mesh(cubeGeo, mat);
+          cube.position.x = tens* scale* spacing;
+          cube.position.y = hundreds* scale*spacing;
+          cube.position.z = k* scale*spacing;
+          _cubesArray.push(cube);
+      }
+  }
 
 
 function generateBigCubes () {

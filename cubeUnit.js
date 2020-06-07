@@ -16,7 +16,7 @@ controls.enableZoom = true;
 // controls.enableKeys = false;
 // controls.enablePan = false;
 // controls.enableRotate = false;
-camera.position.z = 20;
+camera.position.z = 21;
 camera.position.y = 6;
 camera.position.x = 7;
 
@@ -31,8 +31,6 @@ var texCube = new THREE.TextureLoader().load( 'Assets/matCap4.jpg' );
 
 var _redMat = new THREE.MeshBasicMaterial({color:0xff0000});
 var _testGeo = new THREE.CubeGeometry( 5, 5, 5);
-var _spacingX = 205;
-var _spacingY = 324;
 var isActive = false;
 var countDiv = document.querySelector('h1');
 var countString = "39811";
@@ -41,10 +39,10 @@ var numbIsDisp = false;
 var _cubesArray = [];
 var _minSize = 10;
 var _cubeGroup = new THREE.Group();
-var _speed = 0.0;
-var _scaleFactor = 10;
-var _cubesArrayTest = [];
 var _thousandIsDone = false;
+var _offsetTimer = 0;
+var _animCubeOffset = 3;
+var _cubeCounter = 0;
 
 //UI
 var datGUI = new dat.GUI();
@@ -52,15 +50,14 @@ var guiControls = new function () {
   this.cameraPosX = camera.position.x;
   this.cameraPosY = camera.position.y;
   this.cameraPosZ = camera.position.z;
-  this.spacingX = 250;
-  this.spacingY = 315;
   this.cameraRotationX = camera.rotation.x;
   this.cameraRotationY = camera.rotation.y;
   this.cameraRotationZ = camera.rotation.z;
-  this.speed = 0.0;
-  this.scaleFactor = 10;
 }
 
+// function sleep(ms) {
+//   return new Promise(resolve => setTimeout(resolve, ms));
+// }
 //Background
 var backgroundTexSky = new THREE.TextureLoader().load( 'Assets/skyTest2.jpg' );
 var backgroundTexBlack = new THREE.TextureLoader().load( 'Assets/gradientB&W.jpg' );
@@ -92,48 +89,29 @@ cameraRotation.add(guiControls, 'cameraRotationZ', -1000, 1000 ).onChange(functi
   camera.position.z = value;
 });
 
-datGUI.add(guiControls, 'spacingX', 0, 10000).onChange(function(value) {
-  _spacingX = value;
-  positionCubes();
-})
-
-datGUI.add(guiControls, 'spacingY', 0, 10000).onChange(function(value) {
-  _spacingY = value;
-  positionCubes();
-})
-
-datGUI.add(guiControls, 'speed', 0, 0.1).onChange(function(value) {
-  _speed = value;
-})
-
-datGUI.add(guiControls, 'scaleFactor', 0, 1000).onChange(function(value) {
-  _scaleFactor = value;
-  scaleCubes();
-})
-
 
 window.addEventListener("DOMContentLoaded", (event) => {
   init();
 });
 
-// instanceObjAlongSpline();
 function init() {
 
-  _testMesh = new THREE.Mesh(_testGeo, _normalMat);
-  scene.add(_testMesh);
-  // generateCubes();
-  // generateCubesAnim();
+  generateThousandCubes();
   render();
 }
 
 function render() {
   dt += clock.getDelta();
-  _t = dt%1;
-  requestAnimationFrame( render );
-  rotationAnim();
-  if(_thousandIsDone && camera.position.z < 70) {
-    camera.position.z += 0.1;
+  _offsetTimer += dt;
+  for(var i = 0; i <  _cubesArray.length; i++) {
+
+    if(_offsetTimer > _animCubeOffset) {
+     scene.add( _cubesArray[_cubeCounter]);
+      _cubeCounter += 1;
+      _offsetTimer = 0;
+    }
   }
+  requestAnimationFrame( render );
   renderer.render(scene, camera);
 
 }
@@ -147,61 +125,6 @@ function onWindowResize(){
     renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
-function changeMaterial() {
-  _testMesh.material = _redMat;
-  generateCubes();
-}
-
-function restoreMaterial() {
-  _testMesh.material = _normalMat;
-}
-
-function rotationAnim () {
-  _cubeGroup.rotation.x += _speed;
-  _cubeGroup.rotation.y += _speed;
-  _cubeGroup.rotation.z += _speed;
-}
-
-function cubeDisp() {
-  if(isActive === false) {
-    countDiv.style.color= "red";
-    for(let i = 0; i<numberOfDigits; i++) {
-       var number = parseInt(countString[i]);
-       for(let j = 0; j < number; j++) {
-        if(_t === 1) {
-          var cube = _cubesArray[i][j];
-          cube.material.visible = true;
-
-        }
-          // cube.material.visible = true;
-       }
-    }
-    isActive = true;
-  } else {
-    isActive = false;
-    countDiv.style.color= "white";
-    for(let i = 0; i<numberOfDigits; i++) {
-       var number = parseInt(countString[i]);
-       for(let j = 0; j < number; j++) {
-          var cube = _cubesArray[i][j];
-          cube.material.visible = false;
-       }
-    }
-
-  }
-
-}
-
-function scaleCubes () {
-  var scale = new THREE.Vector3(_scaleFactor, _scaleFactor, _scaleFactor,);
-  for(var i = 0; i<_cubesArray.length; i++) {
-    var number = parseInt(countString[i]);
-    for(var j = 0; j < _cubesArray[i].length; j++) {
-      var cube = _cubesArray[i][j];
-      cube.scale = i*scale ;
-    }
-  }
-}
 
 function dispNumber () {
    countDiv.innerHTML="39811";
@@ -214,30 +137,8 @@ function dispCountry () {
    numbIsDisp = false;
    // matCapCube.visible = false;
 }
-function generateCubes() {
-var scaleFactor = 1;
-  for(let i = 0; i<numberOfDigits; i++) {
-    var number = parseInt(countString[i]);
-    var _rowCubes = [];
-    for(let j = 0; j < number; j++) {
-      var scale = _minSize  + (numberOfDigits*50) - i*50;
-      var cubeGeo = new THREE.CubeGeometry(scale, scale, scale);
-      var matCapCube = new THREE.MeshMatcapMaterial({matcap:texCube});
-      matCapCube.visible = false;
-      var cube = new THREE.Mesh(cubeGeo, matCapCube);
-      cube.position.z = -(j*(i+ _spacingY)) ;
-      cube.position.x = i*_spacingX;
-      _cubeGroup.add(cube);
-      _rowCubes[j] = cube;
 
-    }
-    _cubesArray[i] = _rowCubes;
-    scaleFactor *= 2;
-  }
-  // scene.add(_cubeGroup);
-}
-
-async function generateCubesAnim () {
+function generateThousandCubes () {
   var scale = 1;
   var spacing = 1.2;
   var cubeGeo = new THREE.CubeGeometry(scale, scale, scale);
@@ -250,23 +151,9 @@ async function generateCubesAnim () {
         cube.position.x = j* scale* spacing;
         cube.position.y = i* scale*spacing;
         cube.position.z = k* scale*spacing;
-         await sleep(30);
-        scene.add(cube);
+        _cubesArray.push(cube);
         camera.position.y += 0.01;
       }
     }
    }
-   _thousandIsDone = true;
-}
-
-function positionCubes () {
-  for(var i = 0; i<_cubesArray.length; i++) {
-    var number = parseInt(countString[i]);
-    for(var j = 0; j < _cubesArray[i].length; j++) {
-      var cube = _cubesArray[i][j];
-      cube.position.z = -( j*(i+ _spacingY)) ;
-      cube.position.x = i*_spacingX;
-    }
-  }
-
 }

@@ -47,3 +47,19 @@ p{
   z-index:5;
 }
 
+.progressBar {
+  position:fixed;
+  top:10%;
+  left:25%;
+  background-color:white;
+  height:1%;
+  width:50%;
+  z-index:5;
+  border-radius:10px;
+  opacity:0.3;
+}
+
+#progress {
+  width:0;
+  opacity:1;
+}

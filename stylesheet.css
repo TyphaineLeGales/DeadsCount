@@ -11,9 +11,9 @@ body {
   z-index:5;
   color:white;
   position:fixed;
-  font-size:3em;
+  font-size:5em;
   top: 15%;
-  left: 15%;
+  left: 5%;
   color:red;
 }
 h1 {
@@ -24,7 +24,7 @@ h1 {
 }
 
 .numberHeader {
-  top:0;
-  left:0;
+  top:5%;
+  left:5%;
   font-size:5em;
 }

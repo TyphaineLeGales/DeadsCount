@@ -77,8 +77,9 @@ let _currT =0;
 let totalCount = 0;
 let _speed = 1;
 var model;
-var _maxCount = 593;
-
+var _maxCount = 103;
+var progress = document.getElementById('progress');
+var _progressWidth;
 let scrollContainer = document.getElementById('scrollableContainer');
 let _maxScroll = (scrollContainer.scrollHeight-scrollContainer.offsetHeight);
 let _f;
@@ -218,6 +219,8 @@ function onContainerScroll() {
       //update count when object respawn
       if(obj.userData.f< obj.userData.prevF) {
         totalCount += 1;
+         _progressWidth = mapRange(totalCount, 0,_maxCount, 0, 50);
+         progress.style.width = _progressWidth + "%";
       }
       obj.userData.prevF = obj.userData.f;
     }
@@ -247,19 +250,20 @@ function init() {
 
 function render () {
   requestAnimationFrame( render );
+  if(totalCount < _maxCount) {
 
+    _f = clamp(mapRange(scrollContainer.scrollTop, 0, _maxScroll,0,  1), 0, 1);
 
-  _f = clamp(mapRange(scrollContainer.scrollTop, 0, _maxScroll,0,  1), 0, 1);
+    for(var i = 0; i<_unitArray.length; i++) {
+      var obj = _unitArray[i];
+      // console.log(_f);
+      obj.userData.f = ((_f+_loopCounter - obj.userData.offset))%1;
+      _splinePath.setObjectPath(obj, obj.userData.f);
+      opacityEase(obj.userData.f, obj);
 
-  for(var i = 0; i<_unitArray.length; i++) {
-    var obj = _unitArray[i];
-    // console.log(_f);
-    obj.userData.f = ((_f+_loopCounter - obj.userData.offset))%1;
-    _splinePath.setObjectPath(obj, obj.userData.f);
-    opacityEase(obj.userData.f, obj);
-
-    if(obj.userData.f === -_splinePoints[_splinePoints.length-1]*_unitConvert) {
-      obj.userData.number += 1;
+      if(obj.userData.f === -_splinePoints[_splinePoints.length-1]*_unitConvert) {
+        obj.userData.number += 1;
+      }
     }
   }
 

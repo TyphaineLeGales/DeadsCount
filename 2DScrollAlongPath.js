@@ -77,7 +77,7 @@ let _currT =0;
 let totalCount = 0;
 let _speed = 1;
 var model;
-var _maxCount = 103;
+var _maxCount = 593;
 var progress = document.getElementById('progress');
 var _progressWidth;
 let scrollContainer = document.getElementById('scrollableContainer');
@@ -86,7 +86,7 @@ let _f;
 
 scrollContainer.addEventListener('scroll', onContainerScroll, false);
 
-let numberContainer = document.querySelector('h1.count');
+let numberContainer = document.querySelector('h1.countScroll');
 
 //basic THREEJS Setup
 var scene = new THREE.Scene();

@@ -6,3 +6,25 @@ body {
   background-size:cover;
 }
 
+.count {
+  color:red;
+  z-index:5;
+  color:white;
+  position:fixed;
+  font-size:3em;
+  top: 15%;
+  left: 15%;
+  color:red;
+}
+h1 {
+  z-index:5;
+  color:white;
+  position:fixed;
+
+}
+
+.numberHeader {
+  top:0;
+  left:0;
+  font-size:5em;
+}

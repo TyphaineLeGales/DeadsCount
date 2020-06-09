@@ -22,26 +22,28 @@ canvas {
   background-color:transparent;
   position:fixed;
   top:0;
-  overflow: auto;
-  z-index:1;
-  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  overflow: scroll;
+  z-index:15;
+  -ms-overflow-style: none;
   scrollbar-width: none;
-  cursor:default; /* Firefox */
+  cursor:default;
 }
 
 #scrollableContainer::-webkit-scrollbar {
-    display: none;  /* Safari and Chrome */
+  display: none;
 }
-#scrollableContainer h1{
+
+p{
   opacity:0;
+  font-size:10em;
 }
 #numberContainer {
   position:fixed;
   top: 25%;
   left: 25%;
-  /* bring your own prefixes */
   transform: translate(-25%, -25%);
   color:red;
   font-size:10em;
   z-index:5;
 }
+

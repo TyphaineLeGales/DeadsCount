@@ -13,17 +13,13 @@ canvas {
 }
 
 
-#count {
+p {
+  font-weight:lighter;
   color:red;
-}
-
-h1 {
   z-index:5;
-  color:white;
   position:fixed;
-  font-size:10em;
-  top: 10%;
-  left: 10%;
+  bottom:0;
+  right:0;
 
 }
 

@@ -77,6 +77,7 @@ let _currT =0;
 let totalCount = 0;
 let _speed = 1;
 var model;
+var _maxCount = 593;
 
 let scrollContainer = document.getElementById('scrollableContainer');
 let _maxScroll = (scrollContainer.scrollHeight-scrollContainer.offsetHeight);
@@ -84,7 +85,7 @@ let _f;
 
 scrollContainer.addEventListener('scroll', onContainerScroll, false);
 
-let numberContainer = document.getElementById('numberContainer');
+let numberContainer = document.querySelector('h1.count');
 
 //basic THREEJS Setup
 var scene = new THREE.Scene();
@@ -146,45 +147,7 @@ var t;
 //     scene.background = backgroundTexBlack;
 //   }
 // });
-// datGUI.add(guiControls, 'redDots').onChange(function(value) {
-//   if(value === true){
 
-//     for(var i = 0; i < _unitArray.length; i++) {
-//       var obj = _unitArray[i];
-//       obj.visible=false;
-//       var redMat = new THREE.MeshBasicMaterial({color:0xff0000, transparent:true});
-//       redMat.needsUpdate = true;
-//       redMat.opacity = 0;
-//       var updatedObj = new THREE.Mesh(circleGeo,redMat);
-//       updatedObj.position.copy(obj.position);
-//       updatedObj.userData.offset = obj.userData.offset;
-//       updatedObj.userData.f =  obj.userData.f;
-//       updatedObj.userData.number = obj.userData.number;
-//       updatedObj.userData.prevF = obj.userData.prevF;
-//       _unitArray[i] = updatedObj;
-//       scene.add(updatedObj);
-
-//     }
-//   } else {
-//      for(var i = 0; i < _unitArray.length; i++) {
-//       var obj = _unitArray[i];
-//       obj.visible = false;
-//       var matcap = new THREE.MeshMatcapMaterial({matcap:texture, transparent: true});
-//       matcap.needsUpdate = true;
-//       matcap.opacity = 0;
-//       var updatedObj = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),matcap);
-//       updatedObj.position.copy(obj.position);
-//       updatedObj.userData.offset = obj.userData.offset;
-//       updatedObj.userData.f =  obj.userData.f;
-//       updatedObj.userData.number = obj.userData.number;
-//       updatedObj.userData.prevF = obj.userData.prevF;
-//       _unitArray[i] = updatedObj;
-//       scene.add(updatedObj);
-
-//     }
-
-//   }
-// });
 // // datGUI.add(guiControls, 'lineThickness', 1, 10);
 // datGUI.add(guiControls, 'speed', 1, 10, 1);
 // datGUI.add(guiControls, 'pathF', 0,1);
@@ -284,10 +247,13 @@ function init() {
 
 function render () {
   requestAnimationFrame( render );
+
+
   _f = clamp(mapRange(scrollContainer.scrollTop, 0, _maxScroll,0,  1), 0, 1);
 
   for(var i = 0; i<_unitArray.length; i++) {
     var obj = _unitArray[i];
+    // console.log(_f);
     obj.userData.f = ((_f+_loopCounter - obj.userData.offset))%1;
     _splinePath.setObjectPath(obj, obj.userData.f);
     opacityEase(obj.userData.f, obj);

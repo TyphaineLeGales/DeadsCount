@@ -1,4 +1,3 @@
-var countDiv = document.getElementById('count');
 
 //basic THREEJS Setup
 var scene = new THREE.Scene();
@@ -34,8 +33,8 @@ var texCube = new THREE.TextureLoader().load( 'Assets/matCap4.jpg' );
 var _redMat = new THREE.MeshBasicMaterial({color:0xff0000});
 var _testGeo = new THREE.CubeGeometry( 5, 5, 5);
 var isActive = false;
-var countDiv = document.querySelector('h1');
-var countString = "395811";
+var countDiv = document.querySelector('h1.count');
+var countString = "406913";
 var numberOfDigits = countString.length;
 var numbIsDisp = false;
 var _cubesArray = [];
@@ -58,15 +57,15 @@ var _dispCount = 0;
 //  });
 
 //UI
-var datGUI = new dat.GUI();
-var guiControls = new function () {
-  this.cameraPosX = camera.position.x;
-  this.cameraPosY = camera.position.y;
-  this.cameraPosZ = camera.position.z;
-  this.cameraRotationX = camera.rotation.x;
-  this.cameraRotationY = camera.rotation.y;
-  this.cameraRotationZ = camera.rotation.z;
-}
+// var datGUI = new dat.GUI();
+// var guiControls = new function () {
+//   this.cameraPosX = camera.position.x;
+//   this.cameraPosY = camera.position.y;
+//   this.cameraPosZ = camera.position.z;
+//   this.cameraRotationX = camera.rotation.x;
+//   this.cameraRotationY = camera.rotation.y;
+//   this.cameraRotationZ = camera.rotation.z;
+// }
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -77,31 +76,31 @@ var backgroundTexSky = new THREE.TextureLoader().load( 'Assets/skyTest2.jpg' );
 var backgroundTexBlack = new THREE.TextureLoader().load( 'Assets/gradientB&W.jpg' );
 scene.background = backgroundTexBlack;
 
-var cameraPosition = datGUI.addFolder('CameraPos');
+// var cameraPosition = datGUI.addFolder('CameraPos');
 
-cameraPosition.add(guiControls, 'cameraPosX', -200, 100 ).onChange(function(value) {
-  camera.position.x = value;
-});
-cameraPosition.add(guiControls, 'cameraPosY', -200, 100 ).onChange(function(value) {
-  camera.position.y = value;
-});
-cameraPosition.add(guiControls, 'cameraPosZ', -100, 100 ).onChange(function(value) {
-  camera.position.z = value;
-});
+// cameraPosition.add(guiControls, 'cameraPosX', -200, 100 ).onChange(function(value) {
+//   camera.position.x = value;
+// });
+// cameraPosition.add(guiControls, 'cameraPosY', -200, 100 ).onChange(function(value) {
+//   camera.position.y = value;
+// });
+// cameraPosition.add(guiControls, 'cameraPosZ', -100, 100 ).onChange(function(value) {
+//   camera.position.z = value;
+// });
 
-var cameraRotation = datGUI.addFolder('CameraRotation');
+// var cameraRotation = datGUI.addFolder('CameraRotation');
 
-cameraRotation.add(guiControls, 'cameraRotationX', -200, 1000 ).onChange(function(value) {
-  camera.position.x = value;
-});
+// cameraRotation.add(guiControls, 'cameraRotationX', -200, 1000 ).onChange(function(value) {
+//   camera.position.x = value;
+// });
 
-cameraRotation.add(guiControls, 'cameraRotationY', -200, 1000 ).onChange(function(value) {
-  camera.position.y = value;
-});
+// cameraRotation.add(guiControls, 'cameraRotationY', -200, 1000 ).onChange(function(value) {
+//   camera.position.y = value;
+// });
 
-cameraRotation.add(guiControls, 'cameraRotationZ', -1000, 1000 ).onChange(function(value) {
-  camera.position.z = value;
-});
+// cameraRotation.add(guiControls, 'cameraRotationZ', -1000, 1000 ).onChange(function(value) {
+//   camera.position.z = value;
+// });
 
 var mat = new THREE.MeshMatcapMaterial({matcap:texCube});
 
@@ -164,6 +163,9 @@ function onWindowResize(){
     renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
+function repositionCubesOffset () {
+
+}
 
 function dispNumber () {
    countDiv.innerHTML="39811";

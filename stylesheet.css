@@ -9,7 +9,6 @@ body {
 .count {
   color:red;
   z-index:5;
-  color:white;
   position:fixed;
   font-size:5em;
   top: 15%;

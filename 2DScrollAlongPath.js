@@ -75,7 +75,7 @@ let _maxLoop = 5;
 let _prevF =0;
 let _currT =0;
 let totalCount = 0;
-let _speed = 1;
+let _speed = 2;
 var model;
 var _maxCount = 593;
 var progress = document.getElementById('progress');
@@ -83,6 +83,7 @@ var _progressWidth;
 let scrollContainer = document.getElementById('scrollableContainer');
 let _maxScroll = (scrollContainer.scrollHeight-scrollContainer.offsetHeight);
 let _f;
+var _straightPath = [];
 
 scrollContainer.addEventListener('scroll', onContainerScroll, false);
 
@@ -113,71 +114,71 @@ var dt = 0;
 var t;
 
 //UI
-// var datGUI = new dat.GUI();
-// var guiControls = new function () {
-//   this.orbitControlsEnabled = false;
-//   this.hideSpline = false;
-//   this.modelIsVisible = false;
-//   this.skyBackground = false;
-//   this.redDots = false;
-//   this.speed = 1;
-//   this.pathF = 0.50;
-//   this.cameraPosX = camera.position.x;
-//   this.cameraPosY = camera.position.y;
-//   this.cameraPosZ = camera.position.z;
-//   this.cameraRX = camera.rotation.x;
-//   this.cameraRY = camera.rotation.y;
-//   this.cameraRZ = camera.rotation.z;
-// }
+var datGUI = new dat.GUI();
+var guiControls = new function () {
+  this.orbitControlsEnabled = false;
+  this.hideSpline = false;
+  this.modelIsVisible = false;
+  this.skyBackground = false;
+  this.redDots = false;
+  this.speed = 1;
+  this.pathF = 0.50;
+  this.cameraPosX = camera.position.x;
+  this.cameraPosY = camera.position.y;
+  this.cameraPosZ = camera.position.z;
+  this.cameraRX = camera.rotation.x;
+  this.cameraRY = camera.rotation.y;
+  this.cameraRZ = camera.rotation.z;
+}
 
-// datGUI.add(guiControls, 'orbitControlsEnabled').onChange(function(value) {
-//   controls.enabled = value;
-// });
+datGUI.add(guiControls, 'orbitControlsEnabled').onChange(function(value) {
+  controls.enabled = value;
+});
 
-// datGUI.add(guiControls, 'hideSpline').onChange(function(value) {
-//   _splineObj.visible = value;
-// })
-// datGUI.add(guiControls, 'modelIsVisible').onChange(function(value) {
-//   matcapModel.visible = value;
-// });
+datGUI.add(guiControls, 'hideSpline').onChange(function(value) {
+  _splineObj.visible = value;
+})
+datGUI.add(guiControls, 'modelIsVisible').onChange(function(value) {
+  matcapModel.visible = value;
+});
 
-// datGUI.add(guiControls, 'skyBackground').onChange(function(value) {
-//   if(value === true) {
-//     scene.background = backgroundTexSky;
-//   } else {
-//     scene.background = backgroundTexBlack;
-//   }
-// });
+datGUI.add(guiControls, 'skyBackground').onChange(function(value) {
+  if(value === true) {
+    scene.background = backgroundTexSky;
+  } else {
+    scene.background = backgroundTexBlack;
+  }
+});
 
-// // datGUI.add(guiControls, 'lineThickness', 1, 10);
-// datGUI.add(guiControls, 'speed', 1, 10, 1);
-// datGUI.add(guiControls, 'pathF', 0,1);
+// datGUI.add(guiControls, 'lineThickness', 1, 10);
+datGUI.add(guiControls, 'speed', 1, 10, 1);
+datGUI.add(guiControls, 'pathF', 0,1);
 
-// var cameraPosition = datGUI.addFolder('CameraPos');
+var cameraPosition = datGUI.addFolder('CameraPos');
 
-// cameraPosition.add(guiControls, 'cameraPosX', -5, 5 ).onChange(function(value) {
-//   camera.position.x = value;
-// });
-// cameraPosition.add(guiControls, 'cameraPosY', -5, 5 ).onChange(function(value) {
-//   camera.position.y = value;
-// });
-// cameraPosition.add(guiControls, 'cameraPosZ', -5, 10 ).onChange(function(value) {
-//   camera.position.z = value;
-// });
+cameraPosition.add(guiControls, 'cameraPosX', -5, 5 ).onChange(function(value) {
+  camera.position.x = value;
+});
+cameraPosition.add(guiControls, 'cameraPosY', -5, 5 ).onChange(function(value) {
+  camera.position.y = value;
+});
+cameraPosition.add(guiControls, 'cameraPosZ', -5, 10 ).onChange(function(value) {
+  camera.position.z = value;
+});
 
-// cameraPosition.close();
-// var rotationFolder = datGUI.addFolder('CameraRotation');
-// rotationFolder.add(guiControls, 'cameraRX', -5, 5 ).onChange(function(value) {
-//   camera.rotation.x = value;
-// });
-// rotationFolder.add(guiControls, 'cameraRY', -5, 5 ).onChange(function(value) {
-//   camera.rotation.y = value;
-// });
-// rotationFolder.add(guiControls, 'cameraRZ', -5, 10 ).onChange(function(value) {
-//   camera.rotation.z = value;
-// });
+cameraPosition.close();
+var rotationFolder = datGUI.addFolder('CameraRotation');
+rotationFolder.add(guiControls, 'cameraRX', -5, 5 ).onChange(function(value) {
+  camera.rotation.x = value;
+});
+rotationFolder.add(guiControls, 'cameraRY', -5, 5 ).onChange(function(value) {
+  camera.rotation.y = value;
+});
+rotationFolder.add(guiControls, 'cameraRZ', -5, 10 ).onChange(function(value) {
+  camera.rotation.z = value;
+});
 
-// rotationFolder.close();
+rotationFolder.close();
 
 //MATCAP
 var testMat = new THREE.MeshNormalMaterial();
@@ -241,9 +242,11 @@ function onContainerScroll() {
 function init() {
   convertScale(_splinePoints);
   flipZ(_splinePoints);
-  _splinePath = new Spline(_splinePoints);
-  makeSplineCurve(_splinePoints);
+  // _splinePath = new Spline(_splinePoints);
+  // makeSplineCurve(_splinePoints);
   createObj();
+  straightPath();
+  _splinePath = new Spline(_straightPath);
   // loadModel();
 }
 
@@ -291,6 +294,23 @@ function createObj() {
   _unitArray.push(obj);
 
   }
+}
+
+function straightPath () {
+  var vec3Array = [];
+  for(var i = 0; i < 10; i++) {
+    var point = new THREE.Vector3(i-5, 0, 0);
+    // var testMesh = new THREE.Mesh(circleGeo, testMat);
+    // testMesh.position.copy(point);
+    _straightPath.push(i-5, 0, 0)
+    // scene.add(testMesh);
+    vec3Array.push(point);
+  }
+
+  // var path = new THREE.CatmullRomCurve3( vec3array );
+  // var tubeGeometry = new THREE.TubeGeometry( path, 256, 0.2, 5, false );
+  // var splineObj = new THREE.Mesh( tubeGeometry, testMatcap2 );
+  // scene.add( splineObj);
 }
 
 

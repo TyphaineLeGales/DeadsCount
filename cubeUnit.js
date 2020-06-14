@@ -201,9 +201,9 @@ function generateThousandCubes () {
       for(let k = 0; k < cubeSize; k++) {
         var cube = new THREE.Mesh(cubeGeoUnits, mat);
         cube.userData.unit = 1;
-        cube.position.x = j* offsetHundreds;
-        cube.position.y = i* offsetHundreds;
-        cube.position.z = k* offsetHundreds;
+        cube.position.x = (j- cubeSize/2)* offsetHundreds;
+        cube.position.y = (i  - cubeSize*2)* offsetHundreds;
+        cube.position.z = (k- cubeSize/2)* offsetHundreds;
         _cubesArray.push(cube);
       }
     }
@@ -214,9 +214,9 @@ function generateThousandCubes () {
     for(let k = 0; k<cubeSize; k++) {
       var cube = new THREE.Mesh(cubeGeoUnits, mat);
         cube.userData.unit = 1;
-        cube.position.x = j* offsetHundreds;
-        cube.position.y = hundreds* offsetHundreds;
-        cube.position.z = k* offsetHundreds;
+        cube.position.x = (j- cubeSize/2)* offsetHundreds;
+        cube.position.y = (hundreds-cubeSize*2)* offsetHundreds;
+        cube.position.z = (k- cubeSize/2)* offsetHundreds;
         _cubesArray.push(cube);
     }
   }
@@ -225,9 +225,9 @@ function generateThousandCubes () {
   for(let k = 0; k<units; k++) {
     var cube = new THREE.Mesh(cubeGeoUnits, mat);
     cube.userData.unit = 1;
-    cube.position.x = tens* offsetHundreds;
-    cube.position.y = hundreds* offsetHundreds;
-    cube.position.z = k* offsetHundreds;
+    cube.position.x = (tens- cubeSize/2)* offsetHundreds;
+    cube.position.y =( hundreds-cubeSize*2)* offsetHundreds;
+    cube.position.z = (k - cubeSize/2)* offsetHundreds;
     _cubesArray.push(cube);
   }
 

@@ -1,6 +1,6 @@
 var container = document.getElementById('pixelGridContainer');
-var gridSize = 10;
-var cellSize = 49;
+var gridSize = 100;
+var cellSize = 1;
 
 window.addEventListener("DOMContentLoaded", (event) => {
   console.log(container);

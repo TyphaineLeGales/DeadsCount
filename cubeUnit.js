@@ -4,7 +4,7 @@ var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000000 );
 scene.add(camera);
 var renderer = new THREE.WebGLRenderer({ alpha: true });
-renderer.setClearColor( 0xffffff, 0.0 );
+renderer.setClearColor( 0x000000, 1.0 );
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
@@ -17,7 +17,7 @@ controls.enableZoom = true;
 // controls.enablePan = false;
 // controls.enableRotate = false;
 camera.position.z = 27;
-camera.position.y = -3;
+camera.position.y = -9.6;
 camera.position.x = 0;
 
 var clock = new THREE.Clock(); //units a second
@@ -67,9 +67,6 @@ var _dispCount = 0;
 //   this.cameraRotationZ = camera.rotation.z;
 // }
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
 
 //Background
 var backgroundTexSky = new THREE.TextureLoader().load( 'Assets/skyTest2.jpg' );

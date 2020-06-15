@@ -3,8 +3,8 @@
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000000 );
 scene.add(camera);
-var renderer = new THREE.WebGLRenderer({ alpha: true });
-renderer.setClearColor( 0x000000, 1.0 );
+var renderer = new THREE.WebGLRenderer();
+
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
@@ -16,7 +16,7 @@ controls.enableZoom = true;
 // controls.enableKeys = false;
 // controls.enablePan = false;
 // controls.enableRotate = false;
-camera.position.z = -10;
+camera.position.z = 10;
 
 
 var texCube = new THREE.TextureLoader().load( 'Assets/matCap4.jpg' );
@@ -72,8 +72,8 @@ function generateCubes () {
     for(var j = 0; j < currNum; j++) {
 
       var mesh = new THREE.Mesh(geo, mat);
-      // mesh.scale.set(i, i, i);
-      mesh.position.set(i*spacing, j*spacing, 0);
+      mesh.scale.y += i*spacing;
+      mesh.position.set(_cubeArray.length*spacing, 0, 0);
       scene.add(mesh);
       _cubeArray.push(mesh);
 

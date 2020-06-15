@@ -161,7 +161,7 @@ function prev () {
     }
   }
   console.log(_count);
-  countContainer.innerHTMTL = _count;
+  countContainer.innerHTML = _count;
 }
 
 function mapRange(value, a, b, c, d) {

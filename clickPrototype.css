@@ -20,3 +20,7 @@ button {
 button:hover {
   transform:scale(1.2);
 }
+
+.count {
+  top: 30%;
+}

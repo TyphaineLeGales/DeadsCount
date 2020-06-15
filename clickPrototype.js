@@ -52,8 +52,12 @@ function init() {
 function render() {
   dt = clock.getDelta();
 
-  if(_animNext === true) {
+  if(_animNext === true && _animPrev === false) {
     animNavNext(dt);
+  }
+
+  if(_animPrev === true && _animNext === false ) {
+    animNavPrev(dt);
   }
 
   requestAnimationFrame( render );
@@ -105,6 +109,24 @@ function animNavNext (dt) {
 
     if(_animTimer > _animationCubeTime) {
       _animNext = false;
+      _animTimer = 0;
+    }
+}
+
+function animNavPrev(dt) {
+   var currUnit = _cubesArray[currIndex];
+    _animTimer += dt;
+    currUnit.position.x -= 0.1;
+    currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime, 0, 1 );
+
+    if(_cubesArray[currIndex+1]) {
+      var prevUnit = _cubesArray[currIndex+1];
+      prevUnit.position.x -= 0.1;
+      prevUnit.material.opacity = mapRange(_animTimer,0, _animationCubeTime,1, 0);
+    }
+
+    if(_animTimer > _animationCubeTime) {
+      _animPrev = false;
       _animTimer = 0;
     }
 }

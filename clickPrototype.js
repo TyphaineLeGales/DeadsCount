@@ -20,16 +20,18 @@ camera.position.z = 10;
 camera.position.y = 2.5;
 
 var texCube = new THREE.TextureLoader().load( 'Assets/matCap4.jpg' );
-var mat = new THREE.MeshMatcapMaterial({matcap:texCube});
 var geo = new THREE.BoxGeometry(1, 1, 1);
 
 var clock = new THREE.Clock(); //units a second
 var dt = 0;
-var _t = 0;
+var _animTimer = 0;
 var _placeholderString = "406913";
 var _cubeGroup = new THREE.Group();
 var _cubesArray = [];
 var currIndex = 0;
+var _animationCubeTime = 2;
+var _offsetPositionStart = -12.5;
+var _nextUnit = false;
 
 //Background
 var backgroundTexSky = new THREE.TextureLoader().load( 'Assets/skyTest2.jpg' );
@@ -47,8 +49,18 @@ function init() {
 }
 
 function render() {
-  // dt += clock.getDelta();
-  // _t = dt%1;
+  dt = clock.getDelta();
+
+  if(_nextUnit === true) {
+    var currUnit = _cubesArray[currIndex];
+    _animTimer += dt;
+    currUnit.position.x += 0.1;
+    currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime, 0, 1 );
+    if(_animTimer > _animationCubeTime) {
+      _nextUnit = false;
+      _animTimer = 0;
+    }
+  }
 
   requestAnimationFrame( render );
   renderer.render(scene, camera);
@@ -72,14 +84,15 @@ function generateCubes () {
 
     var currNum = parseInt(_placeholderString[i]);
     for(var j = 0; j < currNum; j++) {
+      var mat = new THREE.MeshMatcapMaterial({matcap:texCube, transparent: true});
+      mat.needsUpdate = true;
       var mesh = new THREE.Mesh(geo, mat);
       scaleY = length-i;
       mesh.scale.y += scaleY;
-      mesh.position.set(-_cubesArray.length*spacing, scaleY/2, 0);
+      mesh.position.set(_offsetPositionStart, scaleY/2, 0);
       mesh.visible = false;
       scene.add(mesh);
       _cubesArray.push(mesh);
-
     }
   }
 }
@@ -87,10 +100,11 @@ function generateCubes () {
 
 
 function next () {
-  if(currIndex < _cubesArray.length) {
+  if(currIndex < _cubesArray.length-1) {
     _cubesArray[currIndex].visible = false;
     currIndex += 1;
     _cubesArray[currIndex].visible = true;
+    _nextUnit = true;
   }
   console.log(currIndex);
 
@@ -103,4 +117,9 @@ function prev () {
     _cubesArray[currIndex].visible = true;
   }
   console.log(currIndex);
+}
+
+function mapRange(value, a, b, c, d) {
+  value = (value - a) / (b - a);
+  return c + value*(d-c);
 }

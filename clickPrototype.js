@@ -12,12 +12,12 @@ document.body.appendChild( renderer.domElement );
 controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.campingFactor = 0.25;
-controls.enableZoom = true;
+// controls.enableZoom = true;
 // controls.enableKeys = false;
 // controls.enablePan = false;
 // controls.enableRotate = false;
 camera.position.z = 10;
-
+camera.position.y = 2.5;
 
 var texCube = new THREE.TextureLoader().load( 'Assets/matCap4.jpg' );
 var mat = new THREE.MeshMatcapMaterial({matcap:texCube});
@@ -28,7 +28,8 @@ var dt = 0;
 var _t = 0;
 var _placeholderString = "406913";
 var _cubeGroup = new THREE.Group();
-var _cubeArray = [];
+var _cubesArray = [];
+var currIndex = 0;
 
 //Background
 var backgroundTexSky = new THREE.TextureLoader().load( 'Assets/skyTest2.jpg' );
@@ -65,18 +66,41 @@ function onWindowResize(){
 function generateCubes () {
   var length = _placeholderString.length;
   var spacing = 2;
+  var scaleY = 1;
 
   for(var i =0; i < length; i++) {
 
     var currNum = parseInt(_placeholderString[i]);
     for(var j = 0; j < currNum; j++) {
-
       var mesh = new THREE.Mesh(geo, mat);
-      mesh.scale.y += (length-i)*spacing;
-      mesh.position.set(_cubeArray.length*spacing, 0, 0);
+      scaleY = length-i;
+      mesh.scale.y += scaleY;
+      mesh.position.set(-_cubesArray.length*spacing, scaleY/2, 0);
+      mesh.visible = false;
       scene.add(mesh);
-      _cubeArray.push(mesh);
+      _cubesArray.push(mesh);
 
     }
   }
+}
+
+
+
+function next () {
+  if(currIndex < _cubesArray.length) {
+    _cubesArray[currIndex].visible = false;
+    currIndex += 1;
+    _cubesArray[currIndex].visible = true;
+  }
+  console.log(currIndex);
+
+}
+
+function prev () {
+  if(currIndex > 0) {
+     _cubesArray[currIndex].visible = false;
+    currIndex -= 1;
+    _cubesArray[currIndex].visible = true;
+  }
+  console.log(currIndex);
 }

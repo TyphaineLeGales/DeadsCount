@@ -1,0 +1,22 @@
+#arrowPrev {
+ left:30%;
+}
+
+#arrowNext {
+ left:60%;
+}
+.arrow {
+  position:fixed;
+  top:40%;
+  font-size:10em;
+  color:white;
+}
+
+button {
+  background:none;
+  border:none;
+}
+
+button:hover {
+  transform:scale(1.2);
+}

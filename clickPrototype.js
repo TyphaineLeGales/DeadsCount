@@ -31,7 +31,8 @@ var _cubesArray = [];
 var currIndex = 0;
 var _animationCubeTime = 2;
 var _offsetPositionStart = -12.5;
-var _nextUnit = false;
+var _animNext = false;
+var _animPrev= false;
 
 //Background
 var backgroundTexSky = new THREE.TextureLoader().load( 'Assets/skyTest2.jpg' );
@@ -51,15 +52,8 @@ function init() {
 function render() {
   dt = clock.getDelta();
 
-  if(_nextUnit === true) {
-    var currUnit = _cubesArray[currIndex];
-    _animTimer += dt;
-    currUnit.position.x += 0.1;
-    currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime, 0, 1 );
-    if(_animTimer > _animationCubeTime) {
-      _nextUnit = false;
-      _animTimer = 0;
-    }
+  if(_animNext === true) {
+    animNavNext(dt);
   }
 
   requestAnimationFrame( render );
@@ -97,14 +91,30 @@ function generateCubes () {
   }
 }
 
+function animNavNext (dt) {
+   var currUnit = _cubesArray[currIndex];
+    _animTimer += dt;
+    currUnit.position.x += 0.1;
+    currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime, 0, 1 );
+
+    if(_cubesArray[currIndex-1]) {
+      var prevUnit = _cubesArray[currIndex-1];
+      prevUnit.position.x += 0.1;
+      prevUnit.material.opacity = mapRange(_animTimer,0, _animationCubeTime,1, 0);
+    }
+
+    if(_animTimer > _animationCubeTime) {
+      _animNext = false;
+      _animTimer = 0;
+    }
+}
 
 
 function next () {
   if(currIndex < _cubesArray.length-1) {
-    _cubesArray[currIndex].visible = false;
     currIndex += 1;
     _cubesArray[currIndex].visible = true;
-    _nextUnit = true;
+    _animNext = true;
   }
   console.log(currIndex);
 
@@ -112,9 +122,9 @@ function next () {
 
 function prev () {
   if(currIndex > 0) {
-     _cubesArray[currIndex].visible = false;
     currIndex -= 1;
     _cubesArray[currIndex].visible = true;
+    _animPrev = true;
   }
   console.log(currIndex);
 }

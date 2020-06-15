@@ -46,8 +46,8 @@ function init() {
 }
 
 function render() {
-  dt += clock.getDelta();
-  _t = dt%1;
+  // dt += clock.getDelta();
+  // _t = dt%1;
 
   requestAnimationFrame( render );
   renderer.render(scene, camera);
@@ -72,7 +72,7 @@ function generateCubes () {
     for(var j = 0; j < currNum; j++) {
 
       var mesh = new THREE.Mesh(geo, mat);
-      mesh.scale.y += i*spacing;
+      mesh.scale.y += (length-i)*spacing;
       mesh.position.set(_cubeArray.length*spacing, 0, 0);
       scene.add(mesh);
       _cubeArray.push(mesh);

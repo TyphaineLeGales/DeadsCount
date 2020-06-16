@@ -50,12 +50,7 @@ var _f = 0;
 var datGUI = new dat.GUI();
 var guiControls = new function () {
   this.orbitControlsEnabled = false;
-  this.hideSpline = false;
-  this.modelIsVisible = false;
-  this.skyBackground = false;
-  this.redDots = false;
   this.speed = 1;
-  this.pathF = 0.50;
   this.cameraPosX = camera.position.x;
   this.cameraPosY = camera.position.y;
   this.cameraPosZ = camera.position.z;
@@ -68,24 +63,7 @@ datGUI.add(guiControls, 'orbitControlsEnabled').onChange(function(value) {
   controls.enabled = value;
 });
 
-datGUI.add(guiControls, 'hideSpline').onChange(function(value) {
-  _splineObj.visible = value;
-})
-datGUI.add(guiControls, 'modelIsVisible').onChange(function(value) {
-  matcapModel.visible = value;
-});
-
-datGUI.add(guiControls, 'skyBackground').onChange(function(value) {
-  if(value === true) {
-    scene.background = backgroundTexSky;
-  } else {
-    scene.background = backgroundTexBlack;
-  }
-});
-
-// datGUI.add(guiControls, 'lineThickness', 1, 10);
 datGUI.add(guiControls, 'speed', 1, 10, 1);
-datGUI.add(guiControls, 'pathF', 0,1);
 
 var cameraPosition = datGUI.addFolder('CameraPos');
 
@@ -113,17 +91,7 @@ rotationFolder.add(guiControls, 'cameraRZ', -5, 10 ).onChange(function(value) {
 
 rotationFolder.close();
 
-//MATCAP
-var testMat = new THREE.MeshNormalMaterial();
-var texture = new THREE.TextureLoader().load( 'Assets/matCapTest.jpg' );
-
-var testMat2 = new THREE.MeshNormalMaterial();
-var texture2 = new THREE.TextureLoader().load( 'Assets/matCap4.jpg' );
-var testMatcap2 = new THREE.MeshMatcapMaterial({matcap:texture2});
-var matcapModel= new THREE.MeshMatcapMaterial({matcap:texture2});
-
 //Background
-var backgroundTexSky = new THREE.TextureLoader().load( 'Assets/skyTest2.jpg' );
 var backgroundTexBlack = new THREE.TextureLoader().load( 'Assets/gradientB&W.jpg' );
 scene.background = backgroundTexBlack;
 
@@ -166,13 +134,14 @@ function render () {
     for(var i = 0; i<_unitArray.length; i++) {
       var obj = _unitArray[i];
       obj.userData.f = ((_f + obj.userData.offset))%1;
-      _splinePath.setObjectPath(obj, obj.userData.f);
+      _splinePath.setObjectPath(obj, ease(obj.userData.f));
       obj.lookAt(camera.position);
       opacityEase(obj.userData.f, obj);
       if(obj.userData.f< obj.userData.prevF ) {
         totalCount += 1;
       }
       obj.userData.prevF = obj.userData.f;
+      numberContainer.innerHTML = totalCount;
     }
   requestAnimationFrame( render );
   }
@@ -223,15 +192,6 @@ var _mat = new THREE.MeshBasicMaterial({color:0xffffff});
   }
 }
 
-
-function respawn() {
-
-  if(_f > 0.9){
-    scrollContainer.scrollTop = 0;
-    _loopCounter += 1;
-  }
-}
-
 function opacityEase(f, obj) {
 
   if(f < _OPACITYTHRESHOLDIN) {
@@ -244,9 +204,9 @@ function opacityEase(f, obj) {
 }
 
 
-function easePath(t) {
+function ease(t) {
     let easedT = t % guiControls.speed;
-    easedT = 0.5 + Math.cos(Math.pow(Math.exp(-easedT), 4) * Math.PI) * 0.5;
+    easedT = 0.5 + Math.cos(Math.pow(Math.exp(-easedT), 2) * Math.PI) * 0.5;
     return easedT
 }
 

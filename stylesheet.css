@@ -28,3 +28,12 @@ h1 {
   font-size:3vw;
 }
 
+a {
+  position:fixed;
+  width:100%;
+}
+
+a img {
+  padding: 1%;
+  object-fit: cover;
+}

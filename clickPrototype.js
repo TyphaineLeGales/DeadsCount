@@ -41,6 +41,8 @@ scene.background = backgroundTexBlack;
 
 var countContainer = document.querySelector('h1.count');
 
+
+
 window.addEventListener("DOMContentLoaded", (event) => {
   init();
 });
@@ -78,7 +80,7 @@ function onWindowResize(){
 function generateCubes () {
   var length = _placeholderString.length;
   var spacing = 2;
-  var scaleY = 1;
+  var scaleY = 10;
   var unit = 1;
   for(var i =0; i < length; i++) {
     var currNum = parseInt(_placeholderString[i]);
@@ -88,28 +90,31 @@ function generateCubes () {
       var mesh = new THREE.Mesh(geo, mat);
       mesh.userData.unit = unit;
       scaleY = length-i;
-      mesh.scale.y += scaleY;
-      mesh.position.set(_offsetPositionStart, scaleY/2, 0);
-      mesh.visible = false;
-      scene.add(mesh);
+      mesh.scale.y = scaleY;
+      mesh.position.set(_offsetPositionStart-i*spacing, scaleY/2, j*spacing);
+      // mesh.visible = false;
       _cubesArray.push(mesh);
+      _cubeGroup.add(mesh);
     }
+
+    scene.add(_cubeGroup);
     unit *= 10;
   }
 }
 
 function animNavNext (dt) {
-   var currUnit = _cubesArray[currIndex];
+  console.log(currIndex);
+   var currUnit = _cubesArray[currIndex-1];
     _animTimer += dt;
     var t = mapRange(_animTimer, 0, _animationCubeTime, 0, 1 );
     currUnit.position.x  = mapRange(_animTimer, 0, _animationCubeTime, _offsetPositionStart, 0 );
-    currUnit.material.opacity = ease(t);
+    currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime, 1, 0 );
 
-    if(_cubesArray[currIndex+1]) {
-      var prevUnit = _cubesArray[currIndex-1];
-      prevUnit.position.x += 0.1;
-      prevUnit.material.opacity = mapRange(_animTimer,0, _animationCubeTime,1, 0);
-    }
+    // if(_cubesArray[currIndex+1]) {
+    //   var prevUnit = _cubesArray[currIndex-1];
+    //   prevUnit.position.x += 0.1;
+    //   prevUnit.material.opacity = mapRange(_animTimer,0, _animationCubeTime,1, 0);
+    // }
 
     if(_animTimer > _animationCubeTime) {
       _animNext = false;
@@ -123,11 +128,11 @@ function animNavPrev(dt) {
     currUnit.position.x -= 0.1;
     currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime, 0, 1 );
 
-    if(_cubesArray[currIndex] !=0) {
-      var prevUnit = _cubesArray[currIndex+1];
-      prevUnit.position.x -= 0.1;
-      prevUnit.material.opacity = mapRange(_animTimer,0, _animationCubeTime,1, 0);
-    }
+    // if(_cubesArray[currIndex] !=0) {
+    //   var prevUnit = _cubesArray[currIndex+1];
+    //   prevUnit.position.x -= 0.1;
+    //   prevUnit.material.opacity = mapRange(_animTimer,0, _animationCubeTime,1, 0);
+    // }
 
     if(_animTimer > _animationCubeTime) {
       _animPrev = false;
@@ -141,9 +146,9 @@ function next () {
 
     if(currIndex < _cubesArray.length-1) {
       currIndex += 1;
+      _animNext = true;
       _count += _cubesArray[currIndex].userData.unit;
       _cubesArray[currIndex].visible = true;
-      _animNext = true;
     }
   }
   console.log(_count);
@@ -172,3 +177,72 @@ function ease (t) {
     sqt = t * t;
     return sqt / (2*(sqt-t)+1);
 }
+
+//UI
+var datGUI = new dat.GUI();
+var guiControls = new function () {
+  this.cubesPosX = _cubeGroup.position.x;
+  this.cubesPosY = _cubeGroup.position.y;
+  this.cubesPosZ = _cubeGroup.position.z;
+  this.cubesRotationX = _cubeGroup.rotation.x;
+  this.cubesRotationY = _cubeGroup.rotation.y;
+  this.cubesRotationZ = _cubeGroup.rotation.z;
+  this.cameraPosX = camera.position.x;
+  this.cameraPosY = camera.position.y;
+  this.cameraPosZ = camera.position.z;
+  this.cameraRotationX = camera.rotation.x;
+  this.cameraRotationY = camera.rotation.y;
+  this.cameraRotationZ = camera.rotation.z;
+}
+
+var cubesPosition = datGUI.addFolder('CubesPos');
+
+cubesPosition.add(guiControls, 'cubesPosX', -200, 100 ).onChange(function(value) {
+  _cubeGroup.position.x = value;
+});
+cubesPosition.add(guiControls, 'cubesPosY', -200, 100 ).onChange(function(value) {
+  _cubeGroup.position.y = value;
+});
+cubesPosition.add(guiControls, 'cubesPosZ', -100, 100 ).onChange(function(value) {
+  _cubeGroup.position.z = value;
+});
+
+var cubesRotation = datGUI.addFolder('CubesRotation');
+
+cubesRotation.add(guiControls, 'cubesRotationX', -200, 1000 ).onChange(function(value) {
+  _cubeGroup.position.x = value;
+});
+
+cubesRotation.add(guiControls, 'cubesRotationY', -200, 1000 ).onChange(function(value) {
+  _cubeGroup.position.y = value;
+});
+
+cubesRotation.add(guiControls, 'cubesRotationZ', -1000, 1000 ).onChange(function(value) {
+  _cubeGroup.position.z = value;
+});
+
+var cameraPosition = datGUI.addFolder('CameraPos');
+
+cameraPosition.add(guiControls, 'cameraPosX', -200, 100 ).onChange(function(value) {
+  camera.position.x = value;
+});
+cameraPosition.add(guiControls, 'cameraPosY', -200, 100 ).onChange(function(value) {
+  camera.position.y = value;
+});
+cameraPosition.add(guiControls, 'cameraPosZ', -100, 100 ).onChange(function(value) {
+  camera.position.z = value;
+});
+
+var cameraRotation = datGUI.addFolder('CameraRotation');
+
+cameraRotation.add(guiControls, 'cameraRotationX', -30, 0 ).onChange(function(value) {
+  camera.position.x = value;
+});
+
+cameraRotation.add(guiControls, 'cameraRotationY', -3, 0 ).onChange(function(value) {
+  camera.position.y = value;
+});
+
+cameraRotation.add(guiControls, 'cameraRotationZ', -30, 0 ).onChange(function(value) {
+  camera.position.z = value;
+});

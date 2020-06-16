@@ -137,8 +137,8 @@ function render() {
     }
   }
 
-    // _cubeGroup.rotation.y -= 0.001;
-    // _cubeGroup.rotation.x += 0.001;
+    _cubeGroup.rotation.y -= 0.001;
+    _cubeGroup.rotation.x += 0.001;
 
     if(_cubeGroup.children.length === _cubesArray.length) {
       _thousandIsDone = true;

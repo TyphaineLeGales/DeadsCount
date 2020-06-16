@@ -14,7 +14,7 @@ let _loopCounter = 0;
 let _maxLoop = 5;
 
 let totalCount = 0;
-let _speed = 2;
+let _speed = 1;
 var _maxCount = 593;
 var progress = document.getElementById('progress');
 var _progressWidth;
@@ -63,7 +63,7 @@ datGUI.add(guiControls, 'orbitControlsEnabled').onChange(function(value) {
   controls.enabled = value;
 });
 
-datGUI.add(guiControls, 'speed', 1, 10, 1);
+datGUI.add(guiControls, 'speed', 0.01, 5, 0.01);
 
 var cameraPosition = datGUI.addFolder('CameraPos');
 
@@ -119,13 +119,12 @@ function init() {
 
 }
 
-
 function render () {
 
   if(totalCount < _maxCount) {
     dt += clock.getDelta();
     console.log(totalCount);
-    _f = dt%1;
+    _f = (dt*guiControls.speed)%1;
 
     //progressBar
     _progressWidth = mapRange(totalCount, 0,_maxCount, 0, 50);
@@ -134,7 +133,7 @@ function render () {
     for(var i = 0; i<_unitArray.length; i++) {
       var obj = _unitArray[i];
       obj.userData.f = ((_f + obj.userData.offset))%1;
-      _splinePath.setObjectPath(obj, ease(obj.userData.f));
+      _splinePath.setObjectPath(obj, obj.userData.f);
       obj.lookAt(camera.position);
       opacityEase(obj.userData.f, obj);
       if(obj.userData.f< obj.userData.prevF ) {
@@ -176,22 +175,6 @@ function straightPath () {
   }
 }
 
-
-function instanceObjAlongSpline () {
-var _geo = new THREE.SphereGeometry( 0.03, 8, 8);
-var _mat = new THREE.MeshBasicMaterial({color:0xffffff});
-
-  for(var i = 0; i < _splinePoints.length-3; i+=3) {
-    var instance = new THREE.Mesh(_geo, _mat);
-    instance.position.x = _splinePoints[i];
-    instance.position.y = _splinePoints[i+1];
-    instance.position.z = _splinePoints[i+2];
-    var nextPoint = new THREE.Vector3(_splinePoints[i+3], _splinePoints[i+4], _splinePoints[i+5]);
-    instance.lookAt(nextPoint);
-    scene.add(instance);
-  }
-}
-
 function opacityEase(f, obj) {
 
   if(f < _OPACITYTHRESHOLDIN) {
@@ -220,4 +203,5 @@ function  clamp ( value, min, max ) {
   return Math.max( min, Math.min( max, value ) );
 
 }
+
 

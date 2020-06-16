@@ -15,7 +15,7 @@ controls.campingFactor = 0.25;
 controls.enableZoom = true;
 // controls.enableKeys = false;
 // controls.enablePan = false;
-// controls.enableRotate = false;
+controls.enableRotate = true;
 camera.position.z = 27;
 camera.position.y = -9.6;
 camera.position.x = 0;
@@ -137,8 +137,8 @@ function render() {
     }
   }
 
-    _cubeGroup.rotation.y -= 0.001;
-    _cubeGroup.rotation.x += 0.001;
+    // _cubeGroup.rotation.y -= 0.001;
+    // _cubeGroup.rotation.x += 0.001;
 
     if(_cubeGroup.children.length === _cubesArray.length) {
       _thousandIsDone = true;

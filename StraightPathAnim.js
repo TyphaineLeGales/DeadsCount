@@ -61,6 +61,7 @@ var guiControls = new function () {
 
 datGUI.add(guiControls, 'speed', 0.01, 5, 0.01);
 datGUI.add(guiControls, 'restart');
+datGUI.close();
 
 
 

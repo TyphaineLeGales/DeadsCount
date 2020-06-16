@@ -9,10 +9,10 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
 //Camera
-// controls = new THREE.OrbitControls(camera, renderer.domElement);
-// controls.enableDamping = true;
-// controls.campingFactor = 0.25;
-// controls.enableZoom = true;
+controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.campingFactor = 0.25;
+controls.enableZoom = true;
 // controls.enableKeys = false;
 // controls.enablePan = false;
 // controls.enableRotate = false;
@@ -36,7 +36,6 @@ var _animPrev= false;
 var _count = 0;
 
 //Background
-var backgroundTexSky = new THREE.TextureLoader().load( 'Assets/skyTest2.jpg' );
 var backgroundTexBlack = new THREE.TextureLoader().load( 'Assets/gradientB&W.jpg' );
 scene.background = backgroundTexBlack;
 
@@ -106,7 +105,7 @@ function animNavNext (dt) {
     currUnit.position.x  = mapRange(_animTimer, 0, _animationCubeTime, _offsetPositionStart, 0 );
     currUnit.material.opacity = ease(t);
 
-    if(_cubesArray[currIndex-1]) {
+    if(_cubesArray[currIndex+1]) {
       var prevUnit = _cubesArray[currIndex-1];
       prevUnit.position.x += 0.1;
       prevUnit.material.opacity = mapRange(_animTimer,0, _animationCubeTime,1, 0);
@@ -124,7 +123,7 @@ function animNavPrev(dt) {
     currUnit.position.x -= 0.1;
     currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime, 0, 1 );
 
-    if(_cubesArray[currIndex+1]) {
+    if(_cubesArray[currIndex] !=0) {
       var prevUnit = _cubesArray[currIndex+1];
       prevUnit.position.x -= 0.1;
       prevUnit.material.opacity = mapRange(_animTimer,0, _animationCubeTime,1, 0);

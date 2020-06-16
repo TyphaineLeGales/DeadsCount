@@ -242,9 +242,11 @@ function onContainerScroll() {
 function init() {
   convertScale(_splinePoints);
   flipZ(_splinePoints);
-  _splinePath = new Spline(_splinePoints);
-  makeSplineCurve(_splinePoints);
+  // _splinePath = new Spline(_splinePoints);
+  // makeSplineCurve(_splinePoints);
   createObj();
+  straightPath();
+  _splinePath = new Spline(_straightPath);
   // loadModel();
 }
 
@@ -260,6 +262,7 @@ function render () {
       // console.log(_f);
       obj.userData.f = ((_f+_loopCounter - obj.userData.offset))%1;
       _splinePath.setObjectPath(obj, obj.userData.f);
+      obj.lookAt(camera.position);
       opacityEase(obj.userData.f, obj);
 
       if(obj.userData.f === -_splinePoints[_splinePoints.length-1]*_unitConvert) {
@@ -273,11 +276,15 @@ function render () {
 
 function createObj() {
  for(var i = 0; i<_MAXOBJ; i++) {
-  var matcap = new THREE.MeshMatcapMaterial({matcap:texture, transparent: true});
-  matcap.needsUpdate = true;
-  matcap.opacity = 0;
+  var redMat = new THREE.MeshBasicMaterial({color:0xff0000, transparent:true});
+  redMat.needsUpdate = true;
+  redMat.opacity = 0;
+  // var matcap = new THREE.MeshMatcapMaterial({matcap:texture, transparent: true});
+  // matcap.needsUpdate = true;
+  // matcap.opacity = 0;
   var startPos = new THREE.Vector3(_splinePoints[0], _splinePoints[1], _splinePoints[2]);
-  var obj = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),matcap);
+  // var obj = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),matcap);
+  var obj = new THREE.Mesh(new THREE.CircleGeometry(0.2, 32), redMat);
 
   // var obj = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 2), personMat);
   obj.userData.offset = i*0.1;
@@ -289,6 +296,23 @@ function createObj() {
   _unitArray.push(obj);
 
   }
+}
+
+function straightPath () {
+  var vec3Array = [];
+  for(var i = 0; i < 10; i++) {
+    var point = new THREE.Vector3(i-5, 0, 0);
+    // var testMesh = new THREE.Mesh(circleGeo, testMat);
+    // testMesh.position.copy(point);
+    _straightPath.push(i-5, 0, 0)
+    // scene.add(testMesh);
+    vec3Array.push(point);
+  }
+
+  // var path = new THREE.CatmullRomCurve3( vec3array );
+  // var tubeGeometry = new THREE.TubeGeometry( path, 256, 0.2, 5, false );
+  // var splineObj = new THREE.Mesh( tubeGeometry, testMatcap2 );
+  // scene.add( splineObj);
 }
 
 

@@ -14,7 +14,7 @@ let _loopCounter = 0;
 let _maxLoop = 5;
 
 let totalCount = 0;
-let _speed = 1;
+let _speed = 0.1;
 var _maxCount = 593;
 var progress = document.getElementById('progress');
 var _progressWidth;
@@ -47,49 +47,22 @@ var dt = 0;
 var _f = 0;
 
 //UI
-var datGUI = new dat.GUI();
+var datGUI = new dat.GUI({ autoPlace: false });
+var GUIContainer = document.getElementById('guiContainer');
+GUIContainer.appendChild(datGUI.domElement);
+
 var guiControls = new function () {
-  this.orbitControlsEnabled = false;
   this.speed = 1;
-  this.cameraPosX = camera.position.x;
-  this.cameraPosY = camera.position.y;
-  this.cameraPosZ = camera.position.z;
-  this.cameraRX = camera.rotation.x;
-  this.cameraRY = camera.rotation.y;
-  this.cameraRZ = camera.rotation.z;
+  this.restart = function() {
+      totalCount = 0;
+   };
+
 }
 
-datGUI.add(guiControls, 'orbitControlsEnabled').onChange(function(value) {
-  controls.enabled = value;
-});
-
 datGUI.add(guiControls, 'speed', 0.01, 5, 0.01);
+datGUI.add(guiControls, 'restart');
 
-var cameraPosition = datGUI.addFolder('CameraPos');
 
-cameraPosition.add(guiControls, 'cameraPosX', -5, 5 ).onChange(function(value) {
-  camera.position.x = value;
-});
-cameraPosition.add(guiControls, 'cameraPosY', -5, 5 ).onChange(function(value) {
-  camera.position.y = value;
-});
-cameraPosition.add(guiControls, 'cameraPosZ', -5, 10 ).onChange(function(value) {
-  camera.position.z = value;
-});
-
-cameraPosition.close();
-var rotationFolder = datGUI.addFolder('CameraRotation');
-rotationFolder.add(guiControls, 'cameraRX', -5, 5 ).onChange(function(value) {
-  camera.rotation.x = value;
-});
-rotationFolder.add(guiControls, 'cameraRY', -5, 5 ).onChange(function(value) {
-  camera.rotation.y = value;
-});
-rotationFolder.add(guiControls, 'cameraRZ', -5, 10 ).onChange(function(value) {
-  camera.rotation.z = value;
-});
-
-rotationFolder.close();
 
 //Background
 var backgroundTexBlack = new THREE.TextureLoader().load( 'Assets/gradientB&W.jpg' );
@@ -123,7 +96,6 @@ function render () {
 
   if(totalCount < _maxCount) {
     dt += clock.getDelta();
-    console.log(totalCount);
     _f = (dt*guiControls.speed)%1;
 
     //progressBar
@@ -142,8 +114,8 @@ function render () {
       obj.userData.prevF = obj.userData.f;
       numberContainer.innerHTML = totalCount;
     }
-  requestAnimationFrame( render );
   }
+  requestAnimationFrame( render );
 
   renderer.render( scene, camera );
 };
@@ -186,12 +158,6 @@ function opacityEase(f, obj) {
   }
 }
 
-
-function ease(t) {
-    let easedT = t % guiControls.speed;
-    easedT = 0.5 + Math.cos(Math.pow(Math.exp(-easedT), 2) * Math.PI) * 0.5;
-    return easedT
-}
 
 function mapRange(value, a, b, c, d) {
   value = (value - a) / (b - a);

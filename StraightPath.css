@@ -1,0 +1,5 @@
+#guiContainer {
+  position:fixed;
+  top:20%;
+  z-index:100;
+}

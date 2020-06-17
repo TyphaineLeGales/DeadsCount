@@ -109,10 +109,11 @@ function generateCubes (str) {
 
 function deleteCubes() {
   _cubesArray = [];
-  var lengthOfGroup = _cubeGroup.children.length;
-  for(var i = 0; i<lengthOfGroup; i++) {
-    _cubeGroup.remove(_cubeGroup.children[i]);
-  }
+ _cubeGroup.children = [];
+  // var lengthOfGroup = _cubeGroup.children.length;
+  // for(var i = 0; i<lengthOfGroup; i++) {
+  //   _cubeGroup.remove(_cubeGroup.children[i]);
+  // }
 }
 
 function updateGridOfCubes(str) {
@@ -203,7 +204,7 @@ var guiControls = new function () {
 }
 datGUI.add(guiControls, "animationSpeed", 1, 5);
 
-datGUI.add(guiControls, 'number', 1, 1000000000, 1).onChange(function(value) {
+datGUI.add(guiControls, 'number', 1, 900000000, 1).onChange(function(value) {
   header.innerHTML = value;
   updateGridOfCubes(value.toString());
   // generateCubes(value.toString());

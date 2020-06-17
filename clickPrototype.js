@@ -26,6 +26,7 @@ var clock = new THREE.Clock(); //units a second
 var dt = 0;
 var _animTimer = 0;
 var _placeholderString = "406913";
+var _placeholderNumber = parseInt(_placeholderString);
 var _cubeGroup = new THREE.Group();
 var _cubesArray = [];
 var currIndex = 0;
@@ -41,6 +42,7 @@ var backgroundTexBlack = new THREE.TextureLoader().load( 'Assets/gradientB&W.jpg
 scene.background = backgroundTexBlack;
 
 var countContainer = document.querySelector('h1.count');
+var header = document.querySelector('h1.numberHeader');
 
 
 
@@ -50,7 +52,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
 function init() {
 
-  generateCubes();
+  generateCubes(_placeholderString);
   render();
 }
 
@@ -78,13 +80,14 @@ function onWindowResize(){
     renderer.setSize( window.innerWidth, window.innerHeight );
 }
 
-function generateCubes () {
-  var length = _placeholderString.length;
+function generateCubes (str) {
+
+  var length = str.length;
   var spacing = 2;
   var scaleY = 10;
   var unit = Math.pow(10, length-1);
   for(var i =0; i < length; i++) {
-    var currNum = parseInt(_placeholderString[i]);
+    var currNum = parseInt(str[i]);
     for(var j = 0; j < currNum; j++) {
       var mat = new THREE.MeshMatcapMaterial({matcap:texCube, transparent: true});
       mat.needsUpdate = true;
@@ -94,7 +97,6 @@ function generateCubes () {
       mesh.scale.y = scaleY;
       mesh.position.set(_offsetPositionStart-i*spacing, scaleY/2, j*spacing);
       mesh.userData.initialXPos = _offsetPositionStart-i*spacing;
-      // mesh.visible = false;
       _cubesArray.push(mesh);
       _cubeGroup.add(mesh);
     }
@@ -105,18 +107,25 @@ function generateCubes () {
   currIndex = _cubesArray.length-1;
 }
 
+function deleteCubes() {
+  _cubesArray = [];
+  var lengthOfGroup = _cubeGroup.children.length;
+  for(var i = 0; i<lengthOfGroup; i++) {
+    _cubeGroup.remove(_cubeGroup.children[i]);
+  }
+}
+
+function updateGridOfCubes(str) {
+  deleteCubes();
+  generateCubes(str);
+}
+
 function animNavNext (dt) {
-  // console.log(currIndex);
+
    var currUnit = _cubesArray[currIndex];
     _animTimer += dt*guiControls.animationSpeed;
     currUnit.position.x = mapRange(_animTimer, 0, _animationCubeTime, currUnit.userData.initialXPos,currUnit.userData.initialXPos-_XposAnim);
     currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime, 1, 0 );
-
-    // if(_cubesArray[currIndex+1]) {
-    //   var prevUnit = _cubesArray[currIndex-1];
-    //   prevUnit.position.x += 0.1;
-    //   prevUnit.material.opacity = mapRange(_animTimer,0, _animationCubeTime,1, 0);
-    // }
 
     if(_animTimer > _animationCubeTime) {
       _animNext = false;
@@ -134,18 +143,11 @@ function animNavPrev(dt) {
     currUnit.position.x = mapRange(_animTimer, 0, _animationCubeTime,currUnit.userData.initialXPos-_XposAnim, currUnit.userData.initialXPos);
     currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime, 0, 1 );
 
-    // if(_cubesArray[currIndex] !=0) {
-    //   var prevUnit = _cubesArray[currIndex+1];
-    //   prevUnit.position.x -= 0.1;
-    //   prevUnit.material.opacity = mapRange(_animTimer,0, _animationCubeTime,1, 0);
-    // }
-
     if(_animTimer > _animationCubeTime) {
       _animPrev = false;
       _animTimer = 0;
       _count -= _cubesArray[currIndex].userData.unit;
       countContainer.innerHTML = _count;
-      console.log(currIndex);
     }
 }
 
@@ -159,14 +161,11 @@ function next () {
 }
 
 function prev () {
-  console.log('prev is called');
 
   if(_animNext === false && _animPrev === false) {
     if(currIndex <_cubesArray.length-1) {
       currIndex += 1;
       _animPrev = true;
-      console.log("prev anim ");
-
     }
   }
 }
@@ -187,6 +186,7 @@ function lerp(a,  b,  c) {
 //UI
 var datGUI = new dat.GUI();
 var guiControls = new function () {
+  this.number = _placeholderNumber;
   this.animationSpeed = _animationCubeTime;
   this.cubesPosX = _cubeGroup.position.x;
   this.cubesPosY = _cubeGroup.position.y;
@@ -202,6 +202,16 @@ var guiControls = new function () {
   this.cameraRotationZ = camera.rotation.z;
 }
 datGUI.add(guiControls, "animationSpeed", 1, 5);
+
+datGUI.add(guiControls, 'number', 1, 1000000000, 1).onChange(function(value) {
+  header.innerHTML = value;
+  updateGridOfCubes(value.toString());
+  // generateCubes(value.toString());
+  //deleteCubes
+});
+
+
+
 var cubesPosition = datGUI.addFolder('CubesPos');
 
 cubesPosition.add(guiControls, 'cubesPosX', -200, 100 ).onChange(function(value) {

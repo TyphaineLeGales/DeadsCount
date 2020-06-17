@@ -28,7 +28,7 @@ var _t;
 var _testMesh;
 var _normalMat = new THREE.MeshNormalMaterial();
  _normalMat.visible = false;
-var texCube = new THREE.TextureLoader().load( 'Assets/matCap4.jpg' );
+var texCube = new THREE.TextureLoader().load( '../Assets/matCap4.jpg' );
 
 var _redMat = new THREE.MeshBasicMaterial({color:0xff0000});
 var _testGeo = new THREE.CubeGeometry( 5, 5, 5);
@@ -69,8 +69,7 @@ var _dispCount = 0;
 
 
 //Background
-var backgroundTexSky = new THREE.TextureLoader().load( 'Assets/skyTest2.jpg' );
-var backgroundTexBlack = new THREE.TextureLoader().load( 'Assets/gradientB&W.jpg' );
+var backgroundTexBlack = new THREE.TextureLoader().load( '../Assets/gradientB&W.jpg' );
 scene.background = backgroundTexBlack;
 
 // var cameraPosition = datGUI.addFolder('CameraPos');

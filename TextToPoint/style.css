@@ -1,0 +1,15 @@
+@font-face {
+  font-family: "SharpSans";
+  src: url("assets/Font/SharpSansNo1-BoldItalic.otf");
+}
+
+
+#canvasContainer{
+  position:relative;
+}
+h1 {
+  font-family: SharpSans;
+  position:absolute;
+  top: 0px;
+  left:0px;
+}

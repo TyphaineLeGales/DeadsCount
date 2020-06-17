@@ -9,10 +9,10 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
 //Camera
-controls = new THREE.OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.campingFactor = 0.25;
-controls.enableZoom = true;
+// controls = new THREE.OrbitControls(camera, renderer.domElement);
+// controls.enableDamping = true;
+// controls.campingFactor = 0.25;
+// controls.enableZoom = true;
 // controls.enableKeys = false;
 // controls.enablePan = false;
 // controls.enableRotate = false;
@@ -37,7 +37,12 @@ var _animNext = false;
 var _animPrev= false;
 var _count = 0;
 
-var _posCubeGroup = new THREE.Vector3(2, -1, -18);
+var target = new THREE.Vector3();
+var mouseX = 0, mouseY = 0;
+var windowHalfX = window.innerWidth / 2;
+var windowHalfY = window.innerHeight / 2;
+
+var _posCubeGroup = new THREE.Vector3(2, -1, -19);
 
 //Background
 var backgroundTexBlack = new THREE.TextureLoader().load( 'Assets/gradientB&W.jpg' );
@@ -46,7 +51,9 @@ scene.background = backgroundTexBlack;
 var countContainer = document.querySelector('h1.count');
 var header = document.querySelector('h1.numberHeader');
 
-
+// window.addEventListener("mousemove", (event) => {
+//   onDocumentMouseMove(event);
+// });
 
 window.addEventListener("DOMContentLoaded", (event) => {
   init();
@@ -61,6 +68,10 @@ function init() {
 function render() {
   dt = clock.getDelta();
 
+  // target.x += ( mouseX - target.x ) * .02;
+  // target.y += ( - mouseY - target.y ) * .02;
+  // target.z = camera.position.z;
+
   if(_animNext === true && _animPrev === false) {
     animNavNext(dt);
   }
@@ -68,6 +79,8 @@ function render() {
   if(_animPrev === true && _animNext === false ) {
     animNavPrev(dt);
   }
+
+  // _cubeGroup.lookAt( target );
 
   requestAnimationFrame( render );
   renderer.render(scene, camera);
@@ -81,6 +94,13 @@ function onWindowResize(){
     camera.updateProjectionMatrix();
     renderer.setSize( window.innerWidth, window.innerHeight );
 }
+
+function onDocumentMouseMove( event ) {
+    console.log(mouseX);
+    mouseX = ( event.clientX - windowHalfX );
+    mouseY = ( event.clientY - windowHalfY );
+}
+
 
 function generateCubes (str) {
 

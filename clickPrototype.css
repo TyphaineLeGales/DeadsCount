@@ -1,9 +1,9 @@
 #arrowPrev {
- left:30%;
+ left:20%;
 }
 
 #arrowNext {
- left:60%;
+ right:20%;
 }
 .arrow {
   position:fixed;

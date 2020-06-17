@@ -19,7 +19,7 @@ document.body.appendChild( renderer.domElement );
 camera.position.z = 10;
 camera.position.y = 2.5;
 
-var texCube = new THREE.TextureLoader().load( 'Assets/matCap4.jpg' );
+var texCube = new THREE.TextureLoader().load( '../Assets/matCap4.jpg' );
 var geo = new THREE.BoxGeometry(1, 1, 1);
 
 var clock = new THREE.Clock(); //units a second
@@ -45,7 +45,7 @@ var windowHalfY = window.innerHeight / 2;
 var _posCubeGroup = new THREE.Vector3(2, -1, -19);
 
 //Background
-var backgroundTexBlack = new THREE.TextureLoader().load( 'Assets/gradientB&W.jpg' );
+var backgroundTexBlack = new THREE.TextureLoader().load( '../Assets/gradientB&W.jpg' );
 scene.background = backgroundTexBlack;
 
 var countContainer = document.querySelector('h1.count');

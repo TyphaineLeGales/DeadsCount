@@ -182,16 +182,16 @@ rotationFolder.close();
 
 //MATCAP
 var testMat = new THREE.MeshNormalMaterial();
-var texture = new THREE.TextureLoader().load( 'Assets/matCapTest.jpg' );
+var texture = new THREE.TextureLoader().load( '../Assets/matCapTest.jpg' );
 
 var testMat2 = new THREE.MeshNormalMaterial();
-var texture2 = new THREE.TextureLoader().load( 'Assets/matCap4.jpg' );
+var texture2 = new THREE.TextureLoader().load( '../Assets/matCap4.jpg' );
 var testMatcap2 = new THREE.MeshMatcapMaterial({matcap:texture2});
 var matcapModel= new THREE.MeshMatcapMaterial({matcap:texture2});
 
 //Background
-var backgroundTexSky = new THREE.TextureLoader().load( 'Assets/skyTest2.jpg' );
-var backgroundTexBlack = new THREE.TextureLoader().load( 'Assets/gradientB&W.jpg' );
+var backgroundTexSky = new THREE.TextureLoader().load( '../Assets/skyTest2.jpg' );
+var backgroundTexBlack = new THREE.TextureLoader().load( '../Assets/gradientB&W.jpg' );
 scene.background = backgroundTexBlack;
 
 var circleGeo = new THREE.CircleGeometry(0.2, 32);

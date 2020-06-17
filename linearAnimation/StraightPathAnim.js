@@ -66,7 +66,7 @@ datGUI.close();
 
 
 //Background
-var backgroundTexBlack = new THREE.TextureLoader().load( 'Assets/gradientB&W.jpg' );
+var backgroundTexBlack = new THREE.TextureLoader().load( '../Assets/gradientB&W.jpg' );
 scene.background = backgroundTexBlack;
 
 var circleGeo = new THREE.CircleGeometry(0.2, 32);

@@ -100,14 +100,14 @@ function generateCubes () {
     scene.add(_cubeGroup);
     unit *= 0.1;
   }
-  currIndex = _cubesArray.length;
+  currIndex = _cubesArray.length-1;
 }
 
 function animNavNext (dt) {
   // console.log(currIndex);
    var currUnit = _cubesArray[currIndex];
     _animTimer += dt;
-    var t = mapRange(_animTimer, 0, _animationCubeTime, 0, 1 );
+    // var t = mapRange(_animTimer, 0, _animationCubeTime, 0, 1 );
     // currUnit.position.x  = mapRange(_animTimer, 0, _animationCubeTime, _offsetPositionStart, 0 );
     currUnit.position.x -= 0.1;
     currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime, 1, 0 );
@@ -121,6 +121,10 @@ function animNavNext (dt) {
     if(_animTimer > _animationCubeTime) {
       _animNext = false;
       _animTimer = 0;
+      _count += _cubesArray[currIndex].userData.unit;
+      countContainer.innerHTML = _count;
+      currIndex -= 1;
+      console.log(currIndex);
     }
 }
 
@@ -139,36 +143,32 @@ function animNavPrev(dt) {
     if(_animTimer > _animationCubeTime) {
       _animPrev = false;
       _animTimer = 0;
+      _count -= _cubesArray[currIndex].userData.unit;
+      countContainer.innerHTML = _count;
+      console.log(currIndex);
     }
 }
 
 
 function next () {
-  console.log(currIndex);
   if(_animNext === false && _animPrev === false) {
-
-    if(currIndex >= 1) {
-      console.log("next is called");
-      currIndex -= 1;
+    if(currIndex >= 0) {
       _animNext = true;
-      _count += _cubesArray[currIndex].userData.unit;
-      _cubesArray[currIndex].visible = true;
     }
   }
-  countContainer.innerHTML = _count;
 }
 
 function prev () {
-  console.log(currIndex);
+  console.log('prev is called');
+
   if(_animNext === false && _animPrev === false) {
-    if(currIndex <=_cubesArray.length) {
+    if(currIndex <_cubesArray.length-1) {
       currIndex += 1;
-      _count -= _cubesArray[currIndex].userData.unit;
-      _cubesArray[currIndex].visible = true;
       _animPrev = true;
+      console.log("prev anim ");
+
     }
   }
-  countContainer.innerHTML = _count;
 }
 
 function mapRange(value, a, b, c, d) {

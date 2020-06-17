@@ -81,7 +81,7 @@ function generateCubes () {
   var length = _placeholderString.length;
   var spacing = 2;
   var scaleY = 10;
-  var unit = 1;
+  var unit = Math.pow(10, length-1);
   for(var i =0; i < length; i++) {
     var currNum = parseInt(_placeholderString[i]);
     for(var j = 0; j < currNum; j++) {
@@ -98,11 +98,9 @@ function generateCubes () {
     }
 
     scene.add(_cubeGroup);
-    unit *= 10;
+    unit *= 0.1;
   }
   currIndex = _cubesArray.length;
-  // console.log(_cubesArray[currIndex]);
-  // _cubesArray[currIndex].material = new THREE.MeshNormalMaterial();
 }
 
 function animNavNext (dt) {
@@ -161,8 +159,9 @@ function next () {
 }
 
 function prev () {
+  console.log(currIndex);
   if(_animNext === false && _animPrev === false) {
-    if(currIndex >= 0) {
+    if(currIndex <=_cubesArray.length) {
       currIndex += 1;
       _count -= _cubesArray[currIndex].userData.unit;
       _cubesArray[currIndex].visible = true;

@@ -100,14 +100,18 @@ function generateCubes () {
     scene.add(_cubeGroup);
     unit *= 10;
   }
+  currIndex = _cubesArray.length;
+  // console.log(_cubesArray[currIndex]);
+  // _cubesArray[currIndex].material = new THREE.MeshNormalMaterial();
 }
 
 function animNavNext (dt) {
-  console.log(currIndex);
-   var currUnit = _cubesArray[currIndex-1];
+  // console.log(currIndex);
+   var currUnit = _cubesArray[currIndex];
     _animTimer += dt;
     var t = mapRange(_animTimer, 0, _animationCubeTime, 0, 1 );
-    currUnit.position.x  = mapRange(_animTimer, 0, _animationCubeTime, _offsetPositionStart, 0 );
+    // currUnit.position.x  = mapRange(_animTimer, 0, _animationCubeTime, _offsetPositionStart, 0 );
+    currUnit.position.x -= 0.1;
     currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime, 1, 0 );
 
     // if(_cubesArray[currIndex+1]) {
@@ -125,7 +129,7 @@ function animNavNext (dt) {
 function animNavPrev(dt) {
    var currUnit = _cubesArray[currIndex];
     _animTimer += dt;
-    currUnit.position.x -= 0.1;
+    currUnit.position.x += 0.1;
     currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime, 0, 1 );
 
     // if(_cubesArray[currIndex] !=0) {
@@ -142,29 +146,29 @@ function animNavPrev(dt) {
 
 
 function next () {
+  console.log(currIndex);
   if(_animNext === false && _animPrev === false) {
 
-    if(currIndex < _cubesArray.length-1) {
-      currIndex += 1;
+    if(currIndex >= 1) {
+      console.log("next is called");
+      currIndex -= 1;
       _animNext = true;
       _count += _cubesArray[currIndex].userData.unit;
       _cubesArray[currIndex].visible = true;
     }
   }
-  console.log(_count);
   countContainer.innerHTML = _count;
 }
 
 function prev () {
   if(_animNext === false && _animPrev === false) {
-    if(currIndex > 0) {
-      currIndex -= 1;
+    if(currIndex >= 0) {
+      currIndex += 1;
       _count -= _cubesArray[currIndex].userData.unit;
       _cubesArray[currIndex].visible = true;
       _animPrev = true;
     }
   }
-  console.log(_count);
   countContainer.innerHTML = _count;
 }
 

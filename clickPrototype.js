@@ -29,8 +29,9 @@ var _placeholderString = "406913";
 var _cubeGroup = new THREE.Group();
 var _cubesArray = [];
 var currIndex = 0;
-var _animationCubeTime = 2;
 var _offsetPositionStart = -13;
+var _animationCubeTime = 2;
+var _XposAnim = 10;
 var _animNext = false;
 var _animPrev= false;
 var _count = 0;
@@ -92,6 +93,7 @@ function generateCubes () {
       scaleY = length-i;
       mesh.scale.y = scaleY;
       mesh.position.set(_offsetPositionStart-i*spacing, scaleY/2, j*spacing);
+      mesh.userData.initialXPos = _offsetPositionStart-i*spacing;
       // mesh.visible = false;
       _cubesArray.push(mesh);
       _cubeGroup.add(mesh);
@@ -106,10 +108,8 @@ function generateCubes () {
 function animNavNext (dt) {
   // console.log(currIndex);
    var currUnit = _cubesArray[currIndex];
-    _animTimer += dt;
-    // var t = mapRange(_animTimer, 0, _animationCubeTime, 0, 1 );
-    // currUnit.position.x  = mapRange(_animTimer, 0, _animationCubeTime, _offsetPositionStart, 0 );
-    currUnit.position.x -= 0.1;
+    _animTimer += dt*guiControls.animationSpeed;
+    currUnit.position.x = mapRange(_animTimer, 0, _animationCubeTime, currUnit.userData.initialXPos,currUnit.userData.initialXPos-_XposAnim);
     currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime, 1, 0 );
 
     // if(_cubesArray[currIndex+1]) {
@@ -130,8 +130,8 @@ function animNavNext (dt) {
 
 function animNavPrev(dt) {
    var currUnit = _cubesArray[currIndex];
-    _animTimer += dt;
-    currUnit.position.x += 0.1;
+    _animTimer += dt*guiControls.animationSpeed;
+    currUnit.position.x = mapRange(_animTimer, 0, _animationCubeTime,currUnit.userData.initialXPos-_XposAnim, currUnit.userData.initialXPos);
     currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime, 0, 1 );
 
     // if(_cubesArray[currIndex] !=0) {
@@ -181,9 +181,13 @@ function ease (t) {
     return sqt / (2*(sqt-t)+1);
 }
 
+function lerp(a,  b,  c) {
+    return a + c * (b - a);
+}
 //UI
 var datGUI = new dat.GUI();
 var guiControls = new function () {
+  this.animationSpeed = _animationCubeTime;
   this.cubesPosX = _cubeGroup.position.x;
   this.cubesPosY = _cubeGroup.position.y;
   this.cubesPosZ = _cubeGroup.position.z;
@@ -197,7 +201,7 @@ var guiControls = new function () {
   this.cameraRotationY = camera.rotation.y;
   this.cameraRotationZ = camera.rotation.z;
 }
-
+datGUI.add(guiControls, "animationSpeed", 1, 5);
 var cubesPosition = datGUI.addFolder('CubesPos');
 
 cubesPosition.add(guiControls, 'cubesPosX', -200, 100 ).onChange(function(value) {

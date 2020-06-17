@@ -27,7 +27,7 @@ var dt = 0;
 var _animTimer = 0;
 var _placeholderString = "406913";
 var _placeholderNumber = parseInt(_placeholderString);
-var _cubeGroup = new THREE.Group();
+var _cubeGroup = new THREE.Object3D();
 var _cubesArray = [];
 var currIndex = 0;
 var _offsetPositionStart = -13;
@@ -36,6 +36,8 @@ var _XposAnim = 10;
 var _animNext = false;
 var _animPrev= false;
 var _count = 0;
+
+var _posCubeGroup = new THREE.Vector3(2, -1, -18);
 
 //Background
 var backgroundTexBlack = new THREE.TextureLoader().load( 'Assets/gradientB&W.jpg' );
@@ -95,16 +97,21 @@ function generateCubes (str) {
       mesh.userData.unit = unit;
       scaleY = length-i;
       mesh.scale.y = scaleY;
-      mesh.position.set(_offsetPositionStart-i*spacing, scaleY/2, j*spacing);
-      mesh.userData.initialXPos = _offsetPositionStart-i*spacing;
-      _cubesArray.push(mesh);
       _cubeGroup.add(mesh);
+      mesh.position.set(i*spacing, scaleY/2, j*spacing);
+      mesh.userData.initialXPos = i*spacing;
+      _cubesArray.push(mesh);
     }
 
     scene.add(_cubeGroup);
     unit *= 0.1;
   }
   currIndex = _cubesArray.length-1;
+
+  _cubeGroup.position.copy(_posCubeGroup);
+  _cubeGroup.rotation.y = -20;
+
+
 }
 
 function deleteCubes() {
@@ -119,13 +126,16 @@ function deleteCubes() {
 function updateGridOfCubes(str) {
   deleteCubes();
   generateCubes(str);
+  currIndex = _cubesArray.length-1;
+  _count = 0;
+  countContainer.innerHTML = _count;
 }
 
 function animNavNext (dt) {
 
    var currUnit = _cubesArray[currIndex];
     _animTimer += dt*guiControls.animationSpeed;
-    currUnit.position.x = mapRange(_animTimer, 0, _animationCubeTime, currUnit.userData.initialXPos,currUnit.userData.initialXPos-_XposAnim);
+    currUnit.position.x = mapRange(_animTimer, 0, _animationCubeTime, currUnit.userData.initialXPos,currUnit.userData.initialXPos+_XposAnim);
     currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime, 1, 0 );
 
     if(_animTimer > _animationCubeTime) {
@@ -134,14 +144,13 @@ function animNavNext (dt) {
       _count += _cubesArray[currIndex].userData.unit;
       countContainer.innerHTML = _count;
       currIndex -= 1;
-      console.log(currIndex);
     }
 }
 
 function animNavPrev(dt) {
    var currUnit = _cubesArray[currIndex];
     _animTimer += dt*guiControls.animationSpeed;
-    currUnit.position.x = mapRange(_animTimer, 0, _animationCubeTime,currUnit.userData.initialXPos-_XposAnim, currUnit.userData.initialXPos);
+    currUnit.position.x = mapRange(_animTimer, 0, _animationCubeTime,currUnit.userData.initialXPos+_XposAnim, currUnit.userData.initialXPos);
     currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime, 0, 1 );
 
     if(_animTimer > _animationCubeTime) {
@@ -184,23 +193,18 @@ function ease (t) {
 function lerp(a,  b,  c) {
     return a + c * (b - a);
 }
+
+function updateCubesMatrix(vec3) {
+  for(var i = 0; i< _cubeGroup.children.length; i++) {
+     _cubesArray[i].updateMatrix();
+  }
+}
 //UI
 var datGUI = new dat.GUI();
 var guiControls = new function () {
   this.number = _placeholderNumber;
   this.animationSpeed = _animationCubeTime;
-  this.cubesPosX = _cubeGroup.position.x;
-  this.cubesPosY = _cubeGroup.position.y;
-  this.cubesPosZ = _cubeGroup.position.z;
-  this.cubesRotationX = _cubeGroup.rotation.x;
-  this.cubesRotationY = _cubeGroup.rotation.y;
-  this.cubesRotationZ = _cubeGroup.rotation.z;
-  this.cameraPosX = camera.position.x;
-  this.cameraPosY = camera.position.y;
-  this.cameraPosZ = camera.position.z;
-  this.cameraRotationX = camera.rotation.x;
-  this.cameraRotationY = camera.rotation.y;
-  this.cameraRotationZ = camera.rotation.z;
+
 }
 datGUI.add(guiControls, "animationSpeed", 1, 5);
 
@@ -213,54 +217,3 @@ datGUI.add(guiControls, 'number', 1, 900000000, 1).onChange(function(value) {
 
 
 
-var cubesPosition = datGUI.addFolder('CubesPos');
-
-cubesPosition.add(guiControls, 'cubesPosX', -200, 100 ).onChange(function(value) {
-  _cubeGroup.position.x = value;
-});
-cubesPosition.add(guiControls, 'cubesPosY', -200, 100 ).onChange(function(value) {
-  _cubeGroup.position.y = value;
-});
-cubesPosition.add(guiControls, 'cubesPosZ', -100, 100 ).onChange(function(value) {
-  _cubeGroup.position.z = value;
-});
-
-var cubesRotation = datGUI.addFolder('CubesRotation');
-
-cubesRotation.add(guiControls, 'cubesRotationX', -200, 1000 ).onChange(function(value) {
-  _cubeGroup.position.x = value;
-});
-
-cubesRotation.add(guiControls, 'cubesRotationY', -200, 1000 ).onChange(function(value) {
-  _cubeGroup.position.y = value;
-});
-
-cubesRotation.add(guiControls, 'cubesRotationZ', -1000, 1000 ).onChange(function(value) {
-  _cubeGroup.position.z = value;
-});
-
-var cameraPosition = datGUI.addFolder('CameraPos');
-
-cameraPosition.add(guiControls, 'cameraPosX', -200, 100 ).onChange(function(value) {
-  camera.position.x = value;
-});
-cameraPosition.add(guiControls, 'cameraPosY', -200, 100 ).onChange(function(value) {
-  camera.position.y = value;
-});
-cameraPosition.add(guiControls, 'cameraPosZ', -100, 100 ).onChange(function(value) {
-  camera.position.z = value;
-});
-
-var cameraRotation = datGUI.addFolder('CameraRotation');
-
-cameraRotation.add(guiControls, 'cameraRotationX', -30, 0 ).onChange(function(value) {
-  camera.position.x = value;
-});
-
-cameraRotation.add(guiControls, 'cameraRotationY', -3, 0 ).onChange(function(value) {
-  camera.position.y = value;
-});
-
-cameraRotation.add(guiControls, 'cameraRotationZ', -30, 0 ).onChange(function(value) {
-  camera.position.z = value;
-});

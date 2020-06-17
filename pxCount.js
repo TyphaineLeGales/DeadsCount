@@ -24,7 +24,7 @@ var guiControls = new function () {
 }
 
 var _material;
-var _testCount = 1.0;
+var _testCount = 50.0;
 var  uniforms = {
                 u_countValue: { type: "f", value: _testCount }, // Time in seconds since load
                 u_resolution: { type: "v2", value: new THREE.Vector2() }, // Canvas size
@@ -42,6 +42,8 @@ function init() {
  _material = new THREE.ShaderMaterial( { uniforms:uniforms, vertexShader: document.getElementById( 'vertexShader' ).textContent, fragmentShader: document.getElementById( 'fragmentShader' ).textContent});
   _material.needsUpdate = true;
   console.log(_material.uniforms.u_countValue);
+
+  // calculate sizeOfTex
   var textureHeight = 256;
   var textureWidth = 256;
   maxCount = textureHeight*textureWidth;
@@ -62,7 +64,7 @@ function init() {
 }
 
 function render() {
-  requestAnimationFrame( render );
+  // requestAnimationFrame( render );
 
   renderer.render(scene, camera);
 }

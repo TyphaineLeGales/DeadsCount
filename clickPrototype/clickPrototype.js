@@ -51,9 +51,9 @@ scene.background = backgroundTexBlack;
 var countContainer = document.querySelector('h1.count');
 var header = document.querySelector('h1.numberHeader');
 
-// window.addEventListener("mousemove", (event) => {
-//   onDocumentMouseMove(event);
-// });
+window.addEventListener("mousemove", (event) => {
+  onDocumentMouseMove(event);
+});
 
 window.addEventListener("DOMContentLoaded", (event) => {
   init();
@@ -68,9 +68,9 @@ function init() {
 function render() {
   dt = clock.getDelta();
 
-  // target.x += ( mouseX - target.x ) * .02;
-  // target.y += ( - mouseY - target.y ) * .02;
-  // target.z = camera.position.z;
+  target.x = ( mouseX - target.x ) * .0002;
+  // target.y += ( - mouseY - target.y ) * .002;
+  // target.z = 0;
 
   if(_animNext === true && _animPrev === false) {
     animNavNext(dt);
@@ -80,7 +80,7 @@ function render() {
     animNavPrev(dt);
   }
 
-  // _cubeGroup.lookAt( target );
+  _cubeGroup.rotation.x = target.x;
 
   requestAnimationFrame( render );
   renderer.render(scene, camera);

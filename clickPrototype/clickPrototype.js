@@ -37,7 +37,6 @@ var _animNext = false;
 var _animPrev= false;
 var _count = 0;
 
-var target = new THREE.Vector3();
 var mouseX = 0, mouseY = 0;
 var windowHalfX = window.innerWidth / 2;
 var windowHalfY = window.innerHeight / 2;
@@ -68,9 +67,6 @@ function init() {
 function render() {
   dt = clock.getDelta();
 
-  target.x = ( mouseX - target.x ) * .0002;
-  // target.y += ( - mouseY - target.y ) * .002;
-  // target.z = 0;
 
   if(_animNext === true && _animPrev === false) {
     animNavNext(dt);
@@ -80,7 +76,8 @@ function render() {
     animNavPrev(dt);
   }
 
-  _cubeGroup.rotation.x = target.x;
+  _cubeGroup.rotation.x = mouseX* .0002;
+  _cubeGroup.rotation.y = ( - mouseY * .0002)-20;
 
   requestAnimationFrame( render );
   renderer.render(scene, camera);

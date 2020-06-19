@@ -15,7 +15,7 @@ function linearAnimationInit() {
   camera.rotation.y = -13.189*0.01;
 }
 
-function linearAnimationRender(scene, camera, maxCount, speed, progressBar, count) {
+function linearAnimationRender(dt, scene, camera, maxCount, speed, progressBar, count) {
 
   if(totalCount < maxCount) {
     _f = (dt*speed)%1;

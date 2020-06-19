@@ -61,3 +61,27 @@ a > img {
   opacity:1;
   display:none;
 }
+
+#arrowPrev {
+ left:20%;
+}
+
+#arrowNext {
+ right:20%;
+}
+.arrow {
+  position:fixed;
+  top:40%;
+  font-size:10em;
+  color:white;
+  display:none;
+}
+
+button {
+  background:none;
+  border:none;
+}
+
+button:hover {
+  transform:scale(1.2);
+}

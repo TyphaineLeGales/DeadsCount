@@ -3,6 +3,7 @@ let systemSelectedStr = "linearAnimation";
 let numberHeader = document.querySelector('h1.numberHeader');
 const countDiv = document.querySelector('h1.count');
 const progressBar = document.getElementById('progress');
+var arrows = document.querySelectorAll('button.arrow');
 
 let _unitArray = [];
 var clock = new THREE.Clock(); //units a second
@@ -36,7 +37,9 @@ function init() {
 function render () {
   dt += clock.getDelta();
   if(systemSelectedStr === "linearAnimation") {
-    linearAnimationRender(scene, camera, guiControls.number, guiControls.speed, progressBar, countDiv);
+    linearAnimationRender(dt, scene, camera, guiControls.number, guiControls.speed, progressBar, countDiv);
+  } else if(systemSelectedStr === "clickInteraction") {
+    clickInteractionRender(dt, scene, camera, guiControls.number, guiControls.speed);
   }
   requestAnimationFrame( render );
 
@@ -87,6 +90,17 @@ function resetScene() {
   camera.rotation.set(0, 0,0);
 
   countDiv.innerHTML = 0;
+
+  var progress = document.querySelectorAll('div.progressBar');
+  progress.forEach(function(e){
+      e.style.display = "none";
+  } );
+
+  arrows.forEach(function(e){
+      e.style.display = "none";
+  } );
+
+  dt = 0;
 }
 
 //UI
@@ -104,11 +118,11 @@ var typeOfVis = datGUI.addFolder('typeOfVisualization');
 
 typeOfVis.add(guiControls, "linearAnimation").listen().onChange(function(value){
 
-  var progress = document.querySelectorAll('div.progressBar');
+ var progress = document.querySelectorAll('div.progressBar');
 
   if(value) {
     systemSelectedStr = "linearAnimation";
-
+    resetScene();
     linearAnimationInit();
     progress.forEach(function(e){
       e.style.display = "block";
@@ -121,9 +135,6 @@ typeOfVis.add(guiControls, "linearAnimation").listen().onChange(function(value){
     systemSelectedStr = "";
     resetScene();
     //porgress bar display none
-    progress.forEach(function(e){
-      e.style.display = "none";
-    } );
   }
 })
 
@@ -141,8 +152,11 @@ typeOfVis.add(guiControls, "cubeFractal").listen().onChange(function(value){
 typeOfVis.add(guiControls, "clickInteraction").listen().onChange(function(value){
   if(value) {
     systemSelectedStr = "clickInteraction";
-
+    resetScene();
     clickInteractionInit(scene, guiControls.number);
+    arrows.forEach(function(e) {
+      e.style.display = "block";
+    })
 
     guiControls.linearAnimation = false;
     guiControls.cubeFractal = false;

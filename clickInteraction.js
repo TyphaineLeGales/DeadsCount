@@ -4,6 +4,9 @@ var _cubeGroup = new THREE.Object3D();
 var _posCubeGroup = new THREE.Vector3(2, -1, -19);
 var _cubesArray = [];
 
+var _animNext = false;
+var _animPrev = false;
+
 function clickInteractionInit(scene,number) {
   var str = number.toString();
   // console.log(str);
@@ -11,7 +14,14 @@ function clickInteractionInit(scene,number) {
 
 }
 
-function clickInteractionRender() {
+function clickInteractionRender(dt, scene, camera, number, speed) {
+  if(_animNext === true && _animPrev === false) {
+    animNavNext(dt);
+  }
+
+  if(_animPrev === true && _animNext === false ) {
+    animNavPrev(dt);
+  }
 
 }
 
@@ -43,6 +53,5 @@ function generateCubes (scene,str) {
 
   _cubeGroup.position.copy(_posCubeGroup);
   _cubeGroup.rotation.y = -20;
-
 
 }

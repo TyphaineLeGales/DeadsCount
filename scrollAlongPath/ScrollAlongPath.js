@@ -84,6 +84,7 @@ let scrollContainer = document.getElementById('scrollableContainer');
 let _maxScroll = (scrollContainer.scrollHeight-scrollContainer.offsetHeight);
 let _f;
 var _straightPath = [];
+var numberHeader = document.querySelector('h1.numberHeader');
 
 scrollContainer.addEventListener('scroll', onContainerScroll, false);
 
@@ -133,6 +134,14 @@ datGUI.add(guiControls, 'hideSpline').onChange(function(value) {
 
 // datGUI.add(guiControls, 'lineThickness', 1, 10);
 datGUI.add(guiControls, 'speed', 1, 10, 1);
+
+datGUI.add(guiControls, 'number').step(1).onChange(function(value) {
+
+  // header.innerHTML = value;
+  _maxCount = value;
+  numberHeader.innerHTML = value;
+ reset();
+})
 
 var cameraPosition = datGUI.addFolder('CameraPos');
 
@@ -250,6 +259,22 @@ function render () {
 
   renderer.render( scene, camera );
 };
+
+function reset () {
+
+  for(var i = 0; i<_unitArray.length; i++) {
+    var obj = _unitArray[i];
+    obj.userData.offset = i*0.1;
+    obj.userData.f = 0;
+    obj.userData.number = i;
+    obj.userData.prevF = 0;
+  }
+
+  totalCount = 0;
+
+  scrollContainer.scrollTop = 0;
+
+}
 
 function createObj() {
  for(var i = 0; i<_MAXOBJ; i++) {

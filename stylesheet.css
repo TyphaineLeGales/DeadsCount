@@ -53,9 +53,11 @@ a > img {
   z-index:5;
   border-radius:10px;
   opacity:0.3;
+  display:none;
 }
 
 #progress {
   width:0;
   opacity:1;
+  display:none;
 }

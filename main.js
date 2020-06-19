@@ -61,6 +61,16 @@ function  clamp ( value, min, max ) {
 
 }
 
+function clearScene() {
+  for( var i = scene.children.length - 1; i >= 0; i--) {
+    if(scene.children[i].type != "PerspectiveCamera") {
+      scene.remove(scene.children[i]);
+    }
+  }
+
+  countDiv.innerHTML = 0;
+}
+
 //UI
 var datGUI = new dat.GUI();
 var guiControls = new function () {
@@ -75,16 +85,27 @@ var guiControls = new function () {
 var typeOfVis = datGUI.addFolder('typeOfVisualization');
 
 typeOfVis.add(guiControls, "linearAnimation").listen().onChange(function(value){
+
+  var progress = document.querySelectorAll('div.progressBar');
+
   if(value) {
     systemSelectedStr = "linearAnimation";
-    //delete objects from scene appart from camera
 
     linearAnimationInit();
+    progress.forEach(function(e){
+      e.style.display = "block";
+    } );
+
     guiControls.cubeFractal = false;
     guiControls.clickInteraction = false;
     guiControls.scrollInteraction = false;
   } else {
     systemSelectedStr = "";
+    clearScene();
+    //porgress bar display none
+    progress.forEach(function(e){
+      e.style.display = "none";
+    } );
   }
 })
 

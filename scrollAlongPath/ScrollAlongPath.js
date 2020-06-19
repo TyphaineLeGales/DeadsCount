@@ -116,43 +116,23 @@ var t;
 //UI
 var datGUI = new dat.GUI();
 var guiControls = new function () {
-  this.orbitControlsEnabled = false;
   this.hideSpline = false;
-  this.modelIsVisible = false;
-  this.skyBackground = false;
-  this.redDots = false;
   this.speed = 1;
-  this.pathF = 0.50;
   this.cameraPosX = camera.position.x;
   this.cameraPosY = camera.position.y;
   this.cameraPosZ = camera.position.z;
   this.cameraRX = camera.rotation.x;
   this.cameraRY = camera.rotation.y;
   this.cameraRZ = camera.rotation.z;
+  this.number = 0;
 }
-
-datGUI.add(guiControls, 'orbitControlsEnabled').onChange(function(value) {
-  controls.enabled = value;
-});
 
 datGUI.add(guiControls, 'hideSpline').onChange(function(value) {
   _splineObj.visible = value;
 })
-datGUI.add(guiControls, 'modelIsVisible').onChange(function(value) {
-  matcapModel.visible = value;
-});
-
-datGUI.add(guiControls, 'skyBackground').onChange(function(value) {
-  if(value === true) {
-    scene.background = backgroundTexSky;
-  } else {
-    scene.background = backgroundTexBlack;
-  }
-});
 
 // datGUI.add(guiControls, 'lineThickness', 1, 10);
 datGUI.add(guiControls, 'speed', 1, 10, 1);
-datGUI.add(guiControls, 'pathF', 0,1);
 
 var cameraPosition = datGUI.addFolder('CameraPos');
 

@@ -93,7 +93,6 @@ function onWindowResize(){
 }
 
 function onDocumentMouseMove( event ) {
-    console.log(mouseX);
     mouseX = ( event.clientX - windowHalfX );
     mouseY = ( event.clientY - windowHalfY );
 }
@@ -225,12 +224,11 @@ var guiControls = new function () {
 }
 datGUI.add(guiControls, "animationSpeed", 1, 5);
 
-datGUI.add(guiControls, 'number', 1, 900000000, 1).onChange(function(value) {
+datGUI.add(guiControls, 'number').step(1).onChange(function(value) {
+
   header.innerHTML = value;
   updateGridOfCubes(value.toString());
-  // generateCubes(value.toString());
-  //deleteCubes
-});
+})
 
 
 

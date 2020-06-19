@@ -8,6 +8,9 @@ let _unitArray = [];
 var clock = new THREE.Clock(); //units a second
 var dt = 0;
 
+const _OPACITYTHRESHOLDIN = 0.1;
+const _OPACITYTHRESHOLDOUT = 0.9;
+
 var scene, camera, renderer ;
 
 window.addEventListener( 'resize', onWindowResize, false );
@@ -61,12 +64,27 @@ function  clamp ( value, min, max ) {
 
 }
 
-function clearScene() {
+function opacityEase(f, obj) {
+
+  if(f < _OPACITYTHRESHOLDIN) {
+    obj.material.opacity =  mapRange(f, 0,_OPACITYTHRESHOLDIN, 0, 1);
+  } else if (f > _OPACITYTHRESHOLDOUT) {
+    obj.material.opacity = mapRange(f,_OPACITYTHRESHOLDOUT,1, 1, 0);
+  } else {
+    obj.material.opacity = 1;
+  }
+}
+
+
+function resetScene() {
   for( var i = scene.children.length - 1; i >= 0; i--) {
     if(scene.children[i].type != "PerspectiveCamera") {
       scene.remove(scene.children[i]);
     }
   }
+
+  camera.position.set(0,0,10);
+  camera.rotation.set(0, 0,0);
 
   countDiv.innerHTML = 0;
 }
@@ -101,7 +119,7 @@ typeOfVis.add(guiControls, "linearAnimation").listen().onChange(function(value){
     guiControls.scrollInteraction = false;
   } else {
     systemSelectedStr = "";
-    clearScene();
+    resetScene();
     //porgress bar display none
     progress.forEach(function(e){
       e.style.display = "none";

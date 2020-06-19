@@ -1,0 +1,7 @@
+function clickInteractionInit() {
+
+}
+
+function clickInteractionRender() {
+
+}

@@ -1,8 +1,6 @@
 const _MAXOBJ = 10;
 var _straightPath = [];
 let totalCount = 0;
-const _OPACITYTHRESHOLDIN = 0.1;
-const _OPACITYTHRESHOLDOUT = 0.9;
 var _progressWidth;
 
 function linearAnimationInit() {
@@ -65,17 +63,6 @@ function straightPath () {
     var point = new THREE.Vector3(i-5, 0, 0);
     _straightPath.push(i-5, 0, 0)
     vec3Array.push(point);
-  }
-}
-
-function opacityEase(f, obj) {
-
-  if(f < _OPACITYTHRESHOLDIN) {
-    obj.material.opacity =  mapRange(f, 0,_OPACITYTHRESHOLDIN, 0, 1);
-  } else if (f > _OPACITYTHRESHOLDOUT) {
-    obj.material.opacity = mapRange(f,_OPACITYTHRESHOLDOUT,1, 1, 0);
-  } else {
-    obj.material.opacity = 1;
   }
 }
 

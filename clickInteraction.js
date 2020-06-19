@@ -7,6 +7,15 @@ var _cubesArray = [];
 var _animNext = false;
 var _animPrev = false;
 
+var _animTimer = 0;
+var _cubeGroup = new THREE.Object3D();
+var _cubesArray = [];
+var currIndex = 0;
+var _offsetPositionStart = -13;
+var _animationCubeTime = 2;
+var _XposAnim = 10;
+var _count = 0;
+
 function clickInteractionInit(scene,number) {
   var str = number.toString();
   // console.log(str);
@@ -14,15 +23,15 @@ function clickInteractionInit(scene,number) {
 
 }
 
-function clickInteractionRender(dt, scene, camera, number, speed) {
+function clickInteractionRender(dt, scene, camera, number, speed, count) {
+  console.log(_animNext);
   if(_animNext === true && _animPrev === false) {
-    animNavNext(dt);
+    animNavNext(dt, speed, count);
   }
 
   if(_animPrev === true && _animNext === false ) {
-    animNavPrev(dt);
+    animNavPrev(dt, speed, count);
   }
-
 }
 
 function generateCubes (scene,str) {
@@ -54,4 +63,52 @@ function generateCubes (scene,str) {
   _cubeGroup.position.copy(_posCubeGroup);
   _cubeGroup.rotation.y = -20;
 
+}
+
+function animNavNext (dt, speed, count) {
+   var currUnit = _cubesArray[currIndex];
+    _animTimer = (dt*speed)%_animationCubeTime;
+    currUnit.position.x = mapRange(_animTimer, 0, _animationCubeTime -0.1, currUnit.userData.initialXPos,currUnit.userData.initialXPos+_XposAnim);
+    currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime -0.1, 1, 0 );
+
+    if(_animTimer >_animationCubeTime-0.1) {
+      _animNext = false;
+      _animTimer = 0;
+      _count += _cubesArray[currIndex].userData.unit;
+      count.innerHTML = _count;
+      currIndex -= 1;
+    }
+}
+
+function animNavPrev(dt, speed, count) {
+   var currUnit = _cubesArray[currIndex];
+    _animTimer =(dt*speed)%_animationCubeTime;
+    currUnit.position.x = mapRange(_animTimer, 0, _animationCubeTime - 0.1,currUnit.userData.initialXPos+_XposAnim, currUnit.userData.initialXPos);
+    currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime -0.1, 0, 1 );
+
+    if(_animTimer > _animationCubeTime -0.1) {
+      _animPrev = false;
+      _animTimer = 0;
+      _count -= _cubesArray[currIndex].userData.unit;
+      count.innerHTML = _count;
+    }
+}
+
+
+function next () {
+  if(_animNext === false && _animPrev === false) {
+    if(currIndex >= 0) {
+      _animNext = true;
+    }
+  }
+}
+
+function prev () {
+
+  if(_animNext === false && _animPrev === false) {
+    if(currIndex <_cubesArray.length-1) {
+      currIndex += 1;
+      _animPrev = true;
+    }
+  }
 }

@@ -39,7 +39,7 @@ function render () {
   if(systemSelectedStr === "linearAnimation") {
     linearAnimationRender(dt, scene, camera, guiControls.number, guiControls.speed, progressBar, countDiv);
   } else if(systemSelectedStr === "clickInteraction") {
-    clickInteractionRender(dt, scene, camera, guiControls.number, guiControls.speed);
+    clickInteractionRender(dt, scene, camera, guiControls.number, guiControls.speed, countDiv);
   }
   requestAnimationFrame( render );
 

@@ -65,6 +65,21 @@ function generateCubes (scene,str) {
 
 }
 
+function updateGridOfCubes(scene, str, count) {
+
+  deleteCubes();
+  generateCubes(scene, str);
+  currIndex = _cubesArray.length-1;
+  _count = 0;
+  count.innerHTML = _count;
+}
+
+function deleteCubes() {
+  _cubesArray = [];
+ _cubeGroup.children = [];
+
+}
+
 function animNavNext (dt, speed, count) {
    var currUnit = _cubesArray[currIndex];
     _animTimer = (dt*speed)%_animationCubeTime;

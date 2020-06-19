@@ -141,11 +141,15 @@ typeOfVis.add(guiControls, "cubeFractal").listen().onChange(function(value){
 typeOfVis.add(guiControls, "clickInteraction").listen().onChange(function(value){
   if(value) {
     systemSelectedStr = "clickInteraction";
+
+    clickInteractionInit(scene, guiControls.number);
+
     guiControls.linearAnimation = false;
     guiControls.cubeFractal = false;
     guiControls.scrollInteraction = false;
   }else {
     systemSelectedStr = "";
+    resetScene();
   }
 })
 

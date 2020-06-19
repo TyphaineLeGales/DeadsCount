@@ -247,7 +247,7 @@ function render () {
     for(var i = 0; i<_unitArray.length; i++) {
       var obj = _unitArray[i];
       // console.log(_f);
-      obj.userData.f = ((_f+_loopCounter - obj.userData.offset))%1;
+      obj.userData.f = ((_f*guiControls.speed+_loopCounter - obj.userData.offset))%1;
       _splinePath.setObjectPath(obj, obj.userData.f);
       opacityEase(obj.userData.f, obj);
 

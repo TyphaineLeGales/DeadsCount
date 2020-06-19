@@ -26,14 +26,14 @@ function init() {
   document.body.appendChild( renderer.domElement );
   var backgroundTexBlack = new THREE.TextureLoader().load( '../Assets/gradientB&W.jpg' );
   scene.background = backgroundTexBlack;
-  //linearAnim
+  console.log(scene);
 }
 
 
 function render () {
   dt += clock.getDelta();
   if(systemSelectedStr === "linearAnimation") {
-    linearAnimationRender(scene, camera, guiControls.number, guiControls.speed, progressBar);
+    linearAnimationRender(scene, camera, guiControls.number, guiControls.speed, progressBar, countDiv);
   }
   requestAnimationFrame( render );
 
@@ -77,11 +77,14 @@ var typeOfVis = datGUI.addFolder('typeOfVisualization');
 typeOfVis.add(guiControls, "linearAnimation").listen().onChange(function(value){
   if(value) {
     systemSelectedStr = "linearAnimation";
+    //delete objects from scene appart from camera
+
     linearAnimationInit();
-    console.log(scene);
     guiControls.cubeFractal = false;
     guiControls.clickInteraction = false;
     guiControls.scrollInteraction = false;
+  } else {
+    systemSelectedStr = "";
   }
 })
 
@@ -91,6 +94,8 @@ typeOfVis.add(guiControls, "cubeFractal").listen().onChange(function(value){
     guiControls.linearAnimation = false;
     guiControls.clickInteraction = false;
     guiControls.scrollInteraction = false;
+  }else {
+    systemSelectedStr = "";
   }
 })
 
@@ -100,6 +105,8 @@ typeOfVis.add(guiControls, "clickInteraction").listen().onChange(function(value)
     guiControls.linearAnimation = false;
     guiControls.cubeFractal = false;
     guiControls.scrollInteraction = false;
+  }else {
+    systemSelectedStr = "";
   }
 })
 
@@ -109,6 +116,8 @@ typeOfVis.add(guiControls, "scrollInteraction").listen().onChange(function(value
     guiControls.linearAnimation = false;
     guiControls.cubeFractal = false;
     guiControls.clickInteraction = false;
+  }else {
+    systemSelectedStr = "";
   }
 })
 

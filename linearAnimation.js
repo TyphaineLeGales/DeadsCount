@@ -10,9 +10,14 @@ function linearAnimationInit() {
   createObj();
   straightPath();
   _splinePath = new Spline(_straightPath);
+  camera.position.x = -1.2;
+  camera.position.y = 2.3;
+  camera.position.z = 7.3;
+  camera.rotation.x = -18.175*0.01;
+  camera.rotation.y = -13.189*0.01;
 }
 
-function linearAnimationRender(scene, camera, maxCount, speed, progressBar) {
+function linearAnimationRender(scene, camera, maxCount, speed, progressBar, count) {
 
   if(totalCount < maxCount) {
     _f = (dt*speed)%1;
@@ -33,8 +38,7 @@ function linearAnimationRender(scene, camera, maxCount, speed, progressBar) {
       obj.userData.prevF = obj.userData.f;
     }
   }
-  // requestAnimationFrame( render );
-  // renderer.render( scene, camera );
+  count.innerHTML = totalCount;
 }
 
 function createObj() {

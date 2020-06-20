@@ -236,6 +236,7 @@ typeOfVis.add(guiControls, "clickInteraction").listen().onChange(function(value)
     guiControls.scrollInteraction = false;
     systemSelectedStr = "clickInteraction";
     resetScene();
+    resetCountClickInteraction();
     clickInteractionInit(scene, guiControls.number);
     arrows.forEach(function(e) {
       e.style.display = "block";

@@ -44,6 +44,7 @@ function clickInteractionRender(dt, scene, camera, number, speed, count) {
   _cubeGroupClickInteraction.rotation.y = ( - mouseY * .0003)-20;
 }
 
+
 function generateCubes (scene,str) {
 
   var length = str.length;
@@ -79,6 +80,12 @@ function updateGridOfCubes(scene, str, count) {
 
   deleteCubes();
   generateCubes(scene, str);
+  currIndex = _cubesArrayClickInteraction.length-1;
+  _count = 0;
+  count.innerHTML = _count;
+}
+
+function resetCountClickInteraction () {
   currIndex = _cubesArrayClickInteraction.length-1;
   _count = 0;
   count.innerHTML = _count;

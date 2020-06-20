@@ -24,7 +24,7 @@ h1 {
 
 #guiContainer{
   position:fixed;
-  top:1.5%;
+  top:2vw;
   right:0;
   transform:scale(1.2);
   z-index:100;

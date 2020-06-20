@@ -97,7 +97,6 @@ button:hover {
   -ms-overflow-style: none;
   scrollbar-width: none;
   cursor:default;
-  display:none;
 }
 
 #scrollableContainer::-webkit-scrollbar {

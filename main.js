@@ -39,6 +39,7 @@ function init() {
   document.body.appendChild( renderer.domElement );
   var backgroundTexBlack = new THREE.TextureLoader().load( '../Assets/gradientB&W.jpg' );
   scene.background = backgroundTexBlack;
+  scrollContainer.style.display="none";
 }
 
 

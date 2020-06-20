@@ -1,5 +1,5 @@
 let number = 0;
-let systemSelectedStr = "linearAnimation";
+let systemSelectedStr = "";
 let numberHeader = document.querySelector('h1.numberHeader');
 const countDiv = document.querySelector('h1.count');
 const progressBar = document.getElementById('progress');
@@ -8,6 +8,7 @@ var scrollContainer = document.getElementById('scrollableContainer');
 scrollContainer.addEventListener('scroll', onContainerScroll, false);
 let _maxScroll;
 var texCube = new THREE.TextureLoader().load( '../Assets/matCap4.jpg' );
+let orbitControlIsEnabled = false;
 
 let _unitArray = [];
 var clock = new THREE.Clock(); //units a second
@@ -30,11 +31,8 @@ function init() {
   scene.add(camera);
   renderer = new THREE.WebGLRenderer();
   renderer.setSize( window.innerWidth, window.innerHeight );
-  // controls = new THREE.OrbitControls(camera, renderer.domElement);
-  // controls.enableDamping = true;
-  // controls.campingFactor = 0.25;
-  // controls.enableZoom = true;
-  // controls.enableRotate = false;
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enabled = false;
   document.body.appendChild( renderer.domElement );
   var backgroundTexBlack = new THREE.TextureLoader().load( '../Assets/gradientB&W.jpg' );
   scene.background = backgroundTexBlack;
@@ -43,18 +41,23 @@ function init() {
 
 
 function render () {
-  dt = clock.getDelta();
-  if(systemSelectedStr === "linearAnimation") {
-    linearAnimationRender(dt, scene, camera, guiControls.number, guiControls.speed, progressBar, countDiv);
-  } else if(systemSelectedStr === "clickInteraction") {
-    clickInteractionRender(dt, scene, camera, guiControls.number, guiControls.speed, countDiv);
-  } else if(systemSelectedStr === "scrollInteraction") {
-    scrollInteractionRender(guiControls.number, countDiv);
-  } else if(systemSelectedStr === "cubeFractal") {
-    cubeFractalRender(guiControls.speed, countDiv);
-  }
-  requestAnimationFrame( render );
 
+  dt = clock.getDelta();
+  if(systemSelectedStr != "") {
+    if(systemSelectedStr === "linearAnimation") {
+      linearAnimationRender(dt, scene, camera, guiControls.number, guiControls.speed, progressBar, countDiv);
+    } else if(systemSelectedStr === "clickInteraction") {
+      clickInteractionRender(dt, scene, camera, guiControls.number, guiControls.speed, countDiv);
+    } else if(systemSelectedStr === "scrollInteraction") {
+      scrollInteractionRender(guiControls.number, countDiv);
+    } else if(systemSelectedStr === "cubeFractal") {
+      cubeFractalRender(guiControls.speed, countDiv);
+    }
+  } else {
+    //text
+  }
+
+  requestAnimationFrame( render );
   renderer.render( scene, camera );
 };
 
@@ -153,14 +156,16 @@ typeOfVis.add(guiControls, "linearAnimation").listen().onChange(function(value){
 typeOfVis.add(guiControls, "cubeFractal").listen().onChange(function(value){
   if(value) {
     systemSelectedStr = "cubeFractal";
-
+    resetScene();
+    controls.enabled = true;
     cubeFractalInit(guiControls.number);
-    console.log(scene);
 
     guiControls.linearAnimation = false;
     guiControls.clickInteraction = false;
     guiControls.scrollInteraction = false;
   }else {
+    controls.enabled = false;
+    resetScene();
     systemSelectedStr = "";
   }
 })
@@ -202,12 +207,14 @@ typeOfVis.add(guiControls, "scrollInteraction").listen().onChange(function(value
   }
 })
 
-datGUI.add(guiControls, 'speed', 0.1, 10, 0.1);
+datGUI.add(guiControls, 'speed', 0.1, 20, 0.1);
 
 datGUI.add(guiControls, 'number').min(0).step(1).onChange(function(value) {
     if(systemSelectedStr === "clickInteraction") {
       updateGridOfCubes(scene, value.toString(), countDiv);
       // console.log(value.toString())
+    } else if (systemSelectedStr === "cubeFractal") {
+      resetCubeFractal(value);
     }
 
   // header.innerHTML = value;

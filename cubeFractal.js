@@ -4,14 +4,17 @@ var mat = new THREE.MeshMatcapMaterial({matcap:tex});
 var _cubesArray = [];
 var _thousandIsDone = false;
 var _offsetTimer = 0;
-var _animCubeOffset = 3;
+var _animCubeOffset = 1;
 var _cubeCounter = 0;
 var count = 0;
 
 function cubeFractalInit(number) {
-  camera.position.z = 27;
-  camera.position.y = -9.6;
+  camera.position.z = 70;
   camera.position.x = 0;
+  _cubeGroup.rotation.y = 0.5;
+  _cubeGroup.rotation.x = 0.5;
+  _cubeGroup.position.y = 10;
+
 
   scene.add(_cubeGroup);
   generateThousandCubes(number);
@@ -20,7 +23,7 @@ function cubeFractalInit(number) {
 }
 
 function cubeFractalRender(speed, countDiv) {
-  _offsetTimer += dt*speed;
+  _offsetTimer += dt*speed*3;
 
   // thousand units
   if(_thousandIsDone != true) {
@@ -36,13 +39,21 @@ function cubeFractalRender(speed, countDiv) {
     }
   }
 
-    // _cubeGroup.rotation.y -= 0.001;
-    // _cubeGroup.rotation.x += 0.001;
-
     if(_cubeGroup.children.length === _cubesArray.length) {
       _thousandIsDone = true;
     }
 
+}
+
+function resetCubeFractal(number) {
+  _cubeGroup.children = [];
+  _cubesArray = [];
+  _offsetTimer = 0;
+  _cubeCounter = 0;
+  count = 0;
+  countDiv.innerHTML = count;
+  _thousandIsDone = false;
+  generateThousandCubes(number);
 }
 
 function generateThousandCubes (number) {
@@ -133,4 +144,5 @@ function generateThousandCubes (number) {
     cube.position.z = k*offsetThousands;
     _cubesArray.push(cube);
   }
+
 }

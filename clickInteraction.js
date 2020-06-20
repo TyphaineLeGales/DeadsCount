@@ -27,7 +27,6 @@ window.addEventListener("mousemove", (event) => {
 
 function clickInteractionInit(scene,number) {
   var str = number.toString();
-  // console.log(str);
   generateCubes(scene, str);
 
 }
@@ -42,8 +41,8 @@ function clickInteractionRender(dt, scene, camera, number, speed, count) {
     animNavPrev(dt, speed, count);
   }
 
-  _cubeGroup.rotation.x = mouseX* .0002;
-  _cubeGroup.rotation.y = ( - mouseY * .0002)-20;
+  _cubeGroup.rotation.x = mouseX* .0003;
+  _cubeGroup.rotation.y = ( - mouseY * .0003)-20;
 }
 
 function generateCubes (scene,str) {
@@ -95,11 +94,11 @@ function deleteCubes() {
 function animNavNext (dt, speed, count) {
   _t += dt;
    var currUnit = _cubesArray[currIndex];
-    _animTimer = (_t*speed)%_animationCubeTime;
-    currUnit.position.x = mapRange(_animTimer, 0, _animationCubeTime -0.1, currUnit.userData.initialXPos,currUnit.userData.initialXPos+_XposAnim);
-    currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime -0.1, 1, 0 );
+    _animTimer = _t*speed;
+    currUnit.position.x = mapRange(_animTimer, 0, _animationCubeTime, currUnit.userData.initialXPos,currUnit.userData.initialXPos+_XposAnim);
+    currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime, 1, 0 );
 
-    if(_animTimer >_animationCubeTime-0.1) {
+    if(_animTimer >_animationCubeTime) {
       _animNext = false;
       _animTimer = 0;
       _t = 0;
@@ -112,11 +111,11 @@ function animNavNext (dt, speed, count) {
 function animNavPrev(dt, speed, count) {
   _t += dt;
    var currUnit = _cubesArray[currIndex];
-    _animTimer =(_t*speed)%_animationCubeTime;
-    currUnit.position.x = mapRange(_animTimer, 0, _animationCubeTime - 0.1,currUnit.userData.initialXPos+_XposAnim, currUnit.userData.initialXPos);
-    currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime -0.1, 0, 1 );
+    _animTimer =_t*speed;
+    currUnit.position.x = mapRange(_animTimer, 0, _animationCubeTime ,currUnit.userData.initialXPos+_XposAnim, currUnit.userData.initialXPos);
+    currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime, 0, 1 );
 
-    if(_animTimer > _animationCubeTime -0.1) {
+    if(_animTimer > _animationCubeTime) {
       _animPrev = false;
       _animTimer = 0;
       _t = 0;

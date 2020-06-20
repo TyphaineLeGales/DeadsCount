@@ -30,7 +30,6 @@ function init() {
   document.body.appendChild( renderer.domElement );
   var backgroundTexBlack = new THREE.TextureLoader().load( '../Assets/gradientB&W.jpg' );
   scene.background = backgroundTexBlack;
-  console.log(scene);
 }
 
 
@@ -170,11 +169,14 @@ typeOfVis.add(guiControls, "clickInteraction").listen().onChange(function(value)
 typeOfVis.add(guiControls, "scrollInteraction").listen().onChange(function(value){
   if(value) {
     systemSelectedStr = "scrollInteraction";
+    resetScene();
+    scrollInteractionInit(scene, guiControls.number);
     guiControls.linearAnimation = false;
     guiControls.cubeFractal = false;
     guiControls.clickInteraction = false;
   }else {
     systemSelectedStr = "";
+    resetScene();
   }
 })
 

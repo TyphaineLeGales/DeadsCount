@@ -1,5 +1,5 @@
 var _cubeGroup = new THREE.Group();
-var tex = new THREE.TextureLoader().load( '../Assets/matCap4.jpg' );
+var tex = new THREE.TextureLoader().load( 'Assets/matCap4.jpg' );
 var mat = new THREE.MeshMatcapMaterial({matcap:tex});
 var _cubesArray = [];
 var _thousandIsDone = false;

@@ -7,7 +7,7 @@ var arrows = document.querySelectorAll('button.arrow');
 var scrollContainer = document.getElementById('scrollableContainer');
 scrollContainer.addEventListener('scroll', onContainerScroll, false);
 let _maxScroll;
-var texCube = new THREE.TextureLoader().load( '../Assets/matCap4.jpg' );
+var texCube = new THREE.TextureLoader().load( 'Assets/matCap4.jpg' );
 let orbitControlIsEnabled = false;
 
 let _unitArray = [];
@@ -34,7 +34,7 @@ function init() {
   controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.enabled = false;
   document.body.appendChild( renderer.domElement );
-  var backgroundTexBlack = new THREE.TextureLoader().load( '../Assets/gradientB&W.jpg' );
+  var backgroundTexBlack = new THREE.TextureLoader().load( 'Assets/gradientB&W.jpg' );
   scene.background = backgroundTexBlack;
   scrollContainer.style.display="none";
 }
@@ -103,6 +103,7 @@ function resetScene() {
 
   camera.position.set(0,0,0);
   camera.rotation.set(0, 0,0);
+  controls.enabled = false;
 
   countDiv.innerHTML = 0;
 

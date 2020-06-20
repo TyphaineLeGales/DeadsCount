@@ -5,9 +5,9 @@ const countDiv = document.querySelector('h1.count');
 const progressBar = document.getElementById('progress');
 var arrows = document.querySelectorAll('button.arrow');
 var scrollContainer = document.getElementById('scrollableContainer');
+var GUIContainer = document.getElementById('guiContainer');
 scrollContainer.addEventListener('scroll', onContainerScroll, false);
 let _maxScroll;
-var texCube = new THREE.TextureLoader().load( 'Assets/matCap4.jpg' );
 let orbitControlIsEnabled = false;
 
 let _unitArray = [];
@@ -96,6 +96,7 @@ function opacityEase(f, obj) {
 function resetScene() {
   for( var i = scene.children.length - 1; i >= 0; i--) {
     if(scene.children[i].type != "PerspectiveCamera") {
+      scene.children[i].children = [];
       scene.remove(scene.children[i]);
     }
   }
@@ -105,6 +106,7 @@ function resetScene() {
   controls.enabled = false;
   countDiv.innerHTML = 0;
   countDiv.style.display = "block";
+  _unitArray = [];
 
   var progress = document.querySelectorAll('div.progressBar');
   progress.forEach(function(e){
@@ -116,10 +118,12 @@ function resetScene() {
   } );
 
   scrollContainer.style.display = "none";
+
 }
 
 //UI
 var datGUI = new dat.GUI();
+GUIContainer.appendChild(datGUI.domElement);
 var guiControls = new function () {
   this.number = 593;
   this.linearAnimation = false;
@@ -130,7 +134,9 @@ var guiControls = new function () {
   this.speed = 0.1;
 }
 
-datGUI.add(guiControls, 'number').min(0).step(1).onChange(function(value) {
+var inputNumber = datGUI.addFolder('Input Number');
+
+inputNumber.add(guiControls, 'number').min(0).step(1).onChange(function(value) {
     if(systemSelectedStr === "clickInteraction") {
       updateGridOfCubes(scene, value.toString(), countDiv);
       // console.log(value.toString())
@@ -153,6 +159,8 @@ datGUI.add(guiControls, 'number').min(0).step(1).onChange(function(value) {
   numberHeader.innerHTML = value;
 
 })
+
+inputNumber.open();
 
 var typeOfVis = datGUI.addFolder('Type Of Visualization');
 
@@ -203,16 +211,18 @@ typeOfVis.add(guiControls, "particlesScatter").listen().onChange(function(value)
 typeOfVis.add(guiControls, "cubeFractal").listen().onChange(function(value){
   if(value) {
     systemSelectedStr = "cubeFractal";
-    resetScene();
-    controls.enabled = true;
-    cubeFractalInit(guiControls.number);
-
     guiControls.particlesScatter = false;
     guiControls.linearAnimation = false;
     guiControls.clickInteraction = false;
     guiControls.scrollInteraction = false;
+    resetCubeFractal(value);
+    resetScene();
+    controls.enabled = true;
+    cubeFractalInit(guiControls.number);
   }else {
+
     controls.enabled = false;
+    resetCubeFractal(value);
     resetScene();
     systemSelectedStr = "";
   }
@@ -220,6 +230,10 @@ typeOfVis.add(guiControls, "cubeFractal").listen().onChange(function(value){
 
 typeOfVis.add(guiControls, "clickInteraction").listen().onChange(function(value){
   if(value) {
+    guiControls.particlesScatter = false;
+    guiControls.linearAnimation = false;
+    guiControls.cubeFractal = false;
+    guiControls.scrollInteraction = false;
     systemSelectedStr = "clickInteraction";
     resetScene();
     clickInteractionInit(scene, guiControls.number);
@@ -227,10 +241,6 @@ typeOfVis.add(guiControls, "clickInteraction").listen().onChange(function(value)
       e.style.display = "block";
     })
 
-    guiControls.particlesScatter = false;
-    guiControls.linearAnimation = false;
-    guiControls.cubeFractal = false;
-    guiControls.scrollInteraction = false;
   }else {
     systemSelectedStr = "";
     resetScene();

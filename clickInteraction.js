@@ -1,21 +1,20 @@
 
 var geo = new THREE.BoxGeometry(1, 1, 1);
-var _cubeGroup = new THREE.Object3D();
 var _posCubeGroup = new THREE.Vector3(5, -1, -25);
-var _cubesArray = [];
 
 var _animNext = false;
 var _animPrev = false;
 
 var _animTimer = 0;
-var _cubeGroup = new THREE.Object3D();
-var _cubesArray = [];
+var _cubeGroupClickInteraction = new THREE.Object3D();
+var _cubesArrayClickInteraction = [];
 var currIndex = 0;
 var _offsetPositionStart = -13;
 var _animationCubeTime = 2;
 var _XposAnim = 10;
 var _count = 0;
 var _t = 0;
+var texCube = new THREE.TextureLoader().load( 'Assets/matCap4.jpg' );
 
 var mouseX = 0, mouseY = 0;
 var windowHalfX = window.innerWidth / 2;
@@ -41,8 +40,8 @@ function clickInteractionRender(dt, scene, camera, number, speed, count) {
     animNavPrev(dt, speed, count);
   }
 
-  _cubeGroup.rotation.x = mouseX* .0003;
-  _cubeGroup.rotation.y = ( - mouseY * .0003)-20;
+  _cubeGroupClickInteraction.rotation.x = mouseX* .0003;
+  _cubeGroupClickInteraction.rotation.y = ( - mouseY * .0003)-20;
 }
 
 function generateCubes (scene,str) {
@@ -63,13 +62,13 @@ function generateCubes (scene,str) {
       _cubeGroup.add(mesh);
       mesh.position.set(i*spacing, scaleY/2, j*spacing);
       mesh.userData.initialXPos = i*spacing;
-      _cubesArray.push(mesh);
+      _cubesArrayClickInteraction.push(mesh);
     }
 
     scene.add(_cubeGroup);
     unit *= 0.1;
   }
-  currIndex = _cubesArray.length-1;
+  currIndex = _cubesArrayClickInteraction.length-1;
 
   _cubeGroup.position.copy(_posCubeGroup);
   _cubeGroup.rotation.y = -20;
@@ -80,20 +79,20 @@ function updateGridOfCubes(scene, str, count) {
 
   deleteCubes();
   generateCubes(scene, str);
-  currIndex = _cubesArray.length-1;
+  currIndex = _cubesArrayClickInteraction.length-1;
   _count = 0;
   count.innerHTML = _count;
 }
 
 function deleteCubes() {
-  _cubesArray = [];
+  _cubesArrayClickInteraction = [];
  _cubeGroup.children = [];
 
 }
 
 function animNavNext (dt, speed, count) {
   _t += dt;
-   var currUnit = _cubesArray[currIndex];
+   var currUnit = _cubesArrayClickInteraction[currIndex];
     _animTimer = _t*speed;
     currUnit.position.x = mapRange(_animTimer, 0, _animationCubeTime, currUnit.userData.initialXPos,currUnit.userData.initialXPos+_XposAnim);
     currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime, 1, 0 );
@@ -102,7 +101,7 @@ function animNavNext (dt, speed, count) {
       _animNext = false;
       _animTimer = 0;
       _t = 0;
-      _count += _cubesArray[currIndex].userData.unit;
+      _count += _cubesArrayClickInteraction[currIndex].userData.unit;
       count.innerHTML = _count;
       currIndex -= 1;
     }
@@ -110,7 +109,7 @@ function animNavNext (dt, speed, count) {
 
 function animNavPrev(dt, speed, count) {
   _t += dt;
-   var currUnit = _cubesArray[currIndex];
+   var currUnit = _cubesArrayClickInteraction[currIndex];
     _animTimer =_t*speed;
     currUnit.position.x = mapRange(_animTimer, 0, _animationCubeTime ,currUnit.userData.initialXPos+_XposAnim, currUnit.userData.initialXPos);
     currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime, 0, 1 );
@@ -119,7 +118,7 @@ function animNavPrev(dt, speed, count) {
       _animPrev = false;
       _animTimer = 0;
       _t = 0;
-      _count -= _cubesArray[currIndex].userData.unit;
+      _count -= _cubesArrayClickInteraction[currIndex].userData.unit;
       count.innerHTML = _count;
     }
 }
@@ -136,7 +135,7 @@ function next () {
 function prev () {
 
   if(_animNext === false && _animPrev === false) {
-    if(currIndex <_cubesArray.length-1) {
+    if(currIndex <_cubesArrayClickInteraction.length-1) {
       currIndex += 1;
       _animPrev = true;
     }

@@ -45,15 +45,16 @@ function cubeFractalRender(speed, countDiv) {
 
 }
 
-function resetCubeFractal(number) {
+function resetCubeFractal() {
+
   _cubeGroup.children = [];
   _cubesArray = [];
   _offsetTimer = 0;
   _cubeCounter = 0;
   count = 0;
   countDiv.innerHTML = count;
+  console.log(count);
   _thousandIsDone = false;
-  generateThousandCubes(number);
 }
 
 function generateThousandCubes (number) {

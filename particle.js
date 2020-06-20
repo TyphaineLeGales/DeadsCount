@@ -7,7 +7,7 @@ function particleScatterInit(number) {
 
 
   var distance = 100;
-  camera.position.z = 250;
+  camera.position.z = 700;
 
   for (var i = 0; i < number; i++) {
 

@@ -16,6 +16,14 @@ var _animationCubeTime = 2;
 var _XposAnim = 10;
 var _count = 0;
 
+var mouseX = 0, mouseY = 0;
+var windowHalfX = window.innerWidth / 2;
+var windowHalfY = window.innerHeight / 2;
+
+window.addEventListener("mousemove", (event) => {
+  onDocumentMouseMove(event);
+});
+
 function clickInteractionInit(scene,number) {
   var str = number.toString();
   // console.log(str);
@@ -24,7 +32,7 @@ function clickInteractionInit(scene,number) {
 }
 
 function clickInteractionRender(dt, scene, camera, number, speed, count) {
-  console.log(_animNext);
+
   if(_animNext === true && _animPrev === false) {
     animNavNext(dt, speed, count);
   }
@@ -32,6 +40,9 @@ function clickInteractionRender(dt, scene, camera, number, speed, count) {
   if(_animPrev === true && _animNext === false ) {
     animNavPrev(dt, speed, count);
   }
+
+  _cubeGroup.rotation.x = mouseX* .0002;
+  _cubeGroup.rotation.y = ( - mouseY * .0002)-20;
 }
 
 function generateCubes (scene,str) {
@@ -126,4 +137,9 @@ function prev () {
       _animPrev = true;
     }
   }
+}
+
+function onDocumentMouseMove( event ) {
+    mouseX = ( event.clientX - windowHalfX );
+    mouseY = ( event.clientY - windowHalfY );
 }

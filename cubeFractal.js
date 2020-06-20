@@ -2,6 +2,11 @@ var _cubeGroup = new THREE.Group();
 var tex = new THREE.TextureLoader().load( '../Assets/matCap4.jpg' );
 var mat = new THREE.MeshMatcapMaterial({matcap:tex});
 var _cubesArray = [];
+var _thousandIsDone = false;
+var _offsetTimer = 0;
+var _animCubeOffset = 3;
+var _cubeCounter = 0;
+var count = 0;
 
 function cubeFractalInit(number) {
   camera.position.z = 27;
@@ -14,7 +19,29 @@ function cubeFractalInit(number) {
 
 }
 
-function cubeFractalRender() {
+function cubeFractalRender(speed, countDiv) {
+  _offsetTimer += dt*speed;
+
+  // thousand units
+  if(_thousandIsDone != true) {
+    for(var i = 0; i <  _cubesArray.length; i++) {
+      if(_offsetTimer > _animCubeOffset) {
+       _cubeGroup.add( _cubesArray[_cubeCounter]);
+       count += _cubesArray[_cubeCounter].userData.unit;
+       countDiv.innerHTML = count;
+        _cubeCounter += 1;
+        _offsetTimer = 0;
+        // camera.rotation.x += 0.01;
+      }
+    }
+  }
+
+    // _cubeGroup.rotation.y -= 0.001;
+    // _cubeGroup.rotation.x += 0.001;
+
+    if(_cubeGroup.children.length === _cubesArray.length) {
+      _thousandIsDone = true;
+    }
 
 }
 

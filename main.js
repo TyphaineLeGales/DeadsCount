@@ -50,8 +50,8 @@ function render () {
     clickInteractionRender(dt, scene, camera, guiControls.number, guiControls.speed, countDiv);
   } else if(systemSelectedStr === "scrollInteraction") {
     scrollInteractionRender(guiControls.number, countDiv);
-  } else {
-
+  } else if(systemSelectedStr === "cubeFractal") {
+    cubeFractalRender(guiControls.speed, countDiv);
   }
   requestAnimationFrame( render );
 

@@ -52,8 +52,6 @@ function render () {
       scrollInteractionRender(guiControls.number, countDiv);
     } else if(systemSelectedStr === "cubeFractal") {
       cubeFractalRender(guiControls.speed, countDiv);
-    } else if(systemSelectedStr === "particlesScatter") {
-      // particleScatterRender();
     }
     //text
   }
@@ -105,7 +103,6 @@ function resetScene() {
   camera.position.set(0,0,0);
   camera.rotation.set(0, 0,0);
   controls.enabled = false;
-
   countDiv.innerHTML = 0;
   countDiv.style.display = "block";
 
@@ -140,11 +137,18 @@ datGUI.add(guiControls, 'number').min(0).step(1).onChange(function(value) {
     } else if (systemSelectedStr === "cubeFractal") {
       resetCubeFractal(value);
     } else if(systemSelectedStr === "particlesScatter") {
-      // console.log("condition is working");
       resetScene();
       controls.enabled = true;
       countDiv.style.display = "none";
       particleScatterReset(value);
+    } else if(systemSelectedStr === "linearAnimation") {
+      resetScene();
+      var progress = document.querySelectorAll('div.progressBar');
+      progress.forEach(function(e){
+      e.style.display = "block";
+    } );
+      linearAnimationInit();
+
     }
   numberHeader.innerHTML = value;
 

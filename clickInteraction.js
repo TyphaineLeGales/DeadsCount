@@ -42,6 +42,9 @@ function clickInteractionRender(dt, scene, camera, number, speed, count) {
 
   _cubeGroupClickInteraction.rotation.x = mouseX* .0003;
   _cubeGroupClickInteraction.rotation.y = ( - mouseY * .0003)-20;
+
+  console.log(mouseX, mouseY);
+
 }
 
 
@@ -60,19 +63,19 @@ function generateCubes (scene,str) {
       mesh.userData.unit = unit;
       scaleY = length-i;
       mesh.scale.y = scaleY;
-      _cubeGroup.add(mesh);
+      _cubeGroupClickInteraction.add(mesh);
       mesh.position.set(i*spacing, scaleY/2, j*spacing);
       mesh.userData.initialXPos = i*spacing;
       _cubesArrayClickInteraction.push(mesh);
     }
 
-    scene.add(_cubeGroup);
+    scene.add(_cubeGroupClickInteraction);
     unit *= 0.1;
   }
   currIndex = _cubesArrayClickInteraction.length-1;
 
-  _cubeGroup.position.copy(_posCubeGroup);
-  _cubeGroup.rotation.y = -20;
+  _cubeGroupClickInteraction.position.copy(_posCubeGroup);
+  _cubeGroupClickInteraction.rotation.y = -20;
 
 }
 
@@ -93,7 +96,7 @@ function resetCountClickInteraction () {
 
 function deleteCubes() {
   _cubesArrayClickInteraction = [];
- _cubeGroup.children = [];
+ _cubeGroupClickInteraction.children = [];
 
 }
 

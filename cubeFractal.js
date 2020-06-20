@@ -53,6 +53,7 @@ function resetCubeFractal() {
   _cubeCounter = 0;
   count = 0;
   countDiv.innerHTML = count;
+
   _thousandIsDone = false;
 }
 
@@ -74,75 +75,137 @@ function generateThousandCubes (number) {
   var offsetHundreds = scale* spacing;
   var offsetThousands = scale* spacing*cubeSize + cubeSize;
 
-
   //HUNDREDS
-   for(let i = 0; i<hundreds; i++) {
-    for(let j = 0; j< cubeSize; j++) {
-      for(let k = 0; k < cubeSize; k++) {
+  if(number > 100) {
+     for(let i = 0; i<hundreds; i++) {
+      for(let j = 0; j< cubeSize; j++) {
+        for(let k = 0; k < cubeSize; k++) {
+          var cube = new THREE.Mesh(cubeGeoUnits, mat);
+          cube.userData.unit = 1;
+          cube.position.x = (j- cubeSize/2)* offsetHundreds;
+          cube.position.y = (i  - cubeSize*2)* offsetHundreds;
+          cube.position.z = (k- cubeSize/2)* offsetHundreds;
+          _cubesArray.push(cube);
+        }
+      }
+    }
+    //TENS
+    for(let j = 0;j<tens;j++) {
+      for(let k = 0; k<cubeSize; k++) {
         var cube = new THREE.Mesh(cubeGeoUnits, mat);
-        cube.userData.unit = 1;
-        cube.position.x = (j- cubeSize/2)* offsetHundreds;
-        cube.position.y = (i  - cubeSize*2)* offsetHundreds;
-        cube.position.z = (k- cubeSize/2)* offsetHundreds;
-        _cubesArray.push(cube);
+          cube.userData.unit = 1;
+          cube.position.x = (j- cubeSize/2)* offsetHundreds;
+          cube.position.y = (hundreds-cubeSize*2)* offsetHundreds;
+          cube.position.z = (k- cubeSize/2)* offsetHundreds;
+          _cubesArray.push(cube);
       }
     }
-  }
 
-  //TENS
-  for(let j = 0;j<tens;j++) {
-    for(let k = 0; k<cubeSize; k++) {
+  //UNITS
+    for(let k = 0; k<units; k++) {
       var cube = new THREE.Mesh(cubeGeoUnits, mat);
-        cube.userData.unit = 1;
-        cube.position.x = (j- cubeSize/2)* offsetHundreds;
-        cube.position.y = (hundreds-cubeSize*2)* offsetHundreds;
-        cube.position.z = (k- cubeSize/2)* offsetHundreds;
-        _cubesArray.push(cube);
+      cube.userData.unit = 1;
+      cube.position.x = (tens- cubeSize/2)* offsetHundreds;
+      cube.position.y =( hundreds-cubeSize*2)* offsetHundreds;
+      cube.position.z = (k - cubeSize/2)* offsetHundreds;
+      _cubesArray.push(cube);
     }
-  }
 
-//UNITS
-  for(let k = 0; k<units; k++) {
-    var cube = new THREE.Mesh(cubeGeoUnits, mat);
-    cube.userData.unit = 1;
-    cube.position.x = (tens- cubeSize/2)* offsetHundreds;
-    cube.position.y =( hundreds-cubeSize*2)* offsetHundreds;
-    cube.position.z = (k - cubeSize/2)* offsetHundreds;
-    _cubesArray.push(cube);
-  }
+  } else if(number > 10) {
 
-
-   for(let i = 0; i< hundredThousands; i++) {
-    for(let j= 0; j < cubeSize; j++) {
-      for(let k= 0; k < cubeSize; k++) {
-        var cube = new THREE.Mesh(cubeGeoThousands, mat);
-        cube.userData.unit = 1000;
-        cube.position.x = j*offsetThousands;
-        cube.position.y = i*offsetThousands;
-        cube.position.z = k*offsetThousands ;
-        _cubesArray.push(cube);
+    for(let j = 0;j<tens;j++) {
+      for(let k = 0; k<cubeSize; k++) {
+        var cube = new THREE.Mesh(cubeGeoUnits, mat);
+          cube.userData.unit = 1;
+          cube.position.x = (j- cubeSize/2)* offsetHundreds;
+          cube.position.y = -cubeSize*2;
+          cube.position.z = (k- cubeSize/2)* offsetHundreds;
+          _cubesArray.push(cube);
       }
     }
-  }
 
-  for(let j = 0; j< tenThousands; j++) {
-    for(let k= 0; k < cubeSize; k++) {
-    var cube = new THREE.Mesh(cubeGeoThousands, mat);
-    cube.userData.unit = 1000;
-    cube.position.x = j*offsetThousands;
-    cube.position.y = hundredThousands*offsetThousands;
-    cube.position.z = k*offsetThousands;
-    _cubesArray.push(cube);
+    for(let k = 0; k<units; k++) {
+      var cube = new THREE.Mesh(cubeGeoUnits, mat);
+      cube.userData.unit = 1;
+      cube.position.x = (tens- cubeSize/2)* offsetHundreds;
+      cube.position.y = -cubeSize*2;
+      cube.position.z = (k - cubeSize/2)* offsetHundreds;
+      _cubesArray.push(cube);
     }
+
   }
 
-  for(let k = 0; k< thousands; k++) {
-    var cube = new THREE.Mesh(cubeGeoThousands, mat);
-    cube.userData.unit = 1000;
-    cube.position.x = tenThousands*offsetThousands;
-    cube.position.y = hundredThousands*offsetThousands;
-    cube.position.z = k*offsetThousands;
-    _cubesArray.push(cube);
+
+
+  if(number > 100000) {
+
+    for(let i = 0; i< hundredThousands; i++) {
+      for(let j= 0; j < cubeSize; j++) {
+        for(let k= 0; k < cubeSize; k++) {
+          var cube = new THREE.Mesh(cubeGeoThousands, mat);
+          cube.userData.unit = 1000;
+          cube.position.x = j*offsetThousands;
+          cube.position.y = i*offsetThousands;
+          cube.position.z = k*offsetThousands ;
+          _cubesArray.push(cube);
+        }
+      }
+    }
+
+    for(let j = 0; j< tenThousands; j++) {
+      for(let k= 0; k < cubeSize; k++) {
+      var cube = new THREE.Mesh(cubeGeoThousands, mat);
+      cube.userData.unit = 1000;
+      cube.position.x = j*offsetThousands;
+      cube.position.y = hundredThousands*offsetThousands;
+      cube.position.z = k*offsetThousands;
+      _cubesArray.push(cube);
+      }
+    }
+
+    for(let k = 0; k< thousands; k++) {
+      var cube = new THREE.Mesh(cubeGeoThousands, mat);
+      cube.userData.unit = 1000;
+      cube.position.x = tenThousands*offsetThousands;
+      cube.position.y = hundredThousands*offsetThousands;
+      cube.position.z = k*offsetThousands;
+      _cubesArray.push(cube);
+    }
+
+  } else if (number > 10000) {
+
+    for(let j = 0; j< tenThousands; j++) {
+      for(let k= 0; k < cubeSize; k++) {
+      var cube = new THREE.Mesh(cubeGeoThousands, mat);
+      cube.userData.unit = 1000;
+      cube.position.x = j*offsetThousands;
+      cube.position.y = -cubeSize/2;
+      cube.position.z = k*offsetThousands;
+      _cubesArray.push(cube);
+      }
+    }
+
+    for(let k = 0; k< thousands; k++) {
+      var cube = new THREE.Mesh(cubeGeoThousands, mat);
+      cube.userData.unit = 1000;
+      cube.position.x = tenThousands*offsetThousands;
+      cube.position.y = -cubeSize/2;
+      cube.position.z = k*offsetThousands;
+      _cubesArray.push(cube);
+    }
+
+  } else {
+
+    for(let k = 0; k< thousands; k++) {
+      var cube = new THREE.Mesh(cubeGeoThousands, mat);
+      cube.userData.unit = 1000;
+      cube.position.x = -cubeSize*2;
+      cube.position.y = -cubeSize/2;
+      cube.position.z = k*offsetThousands;
+      _cubesArray.push(cube);
+    }
+
   }
+
 
 }

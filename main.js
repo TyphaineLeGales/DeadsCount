@@ -202,7 +202,7 @@ typeOfVis.add(guiControls, "scrollInteraction").listen().onChange(function(value
 datGUI.add(guiControls, 'speed', 1, 10, 1);
 
 datGUI.add(guiControls, 'number').min(0).step(1).onChange(function(value) {
-    if(systemSelectedStr = "clickInteraction") {
+    if(systemSelectedStr === "clickInteraction") {
       updateGridOfCubes(scene, value.toString(), countDiv);
       // console.log(value.toString())
     }

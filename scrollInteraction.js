@@ -13,7 +13,6 @@ let _unitArrayScrollCubes = [];
 // console.log(_maxScroll);
 
 function scrollInteractionInit(camera) {
-  scrollContainer.addEventListener('scroll', onContainerScroll, false);
   convertScale(_splinePoints);
   flipZ(_splinePoints);
   _splinePath = new Spline(_splinePoints);

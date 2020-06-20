@@ -1,7 +1,6 @@
 let _unitConvert = 0.01;
 const _MAXOBJ_ON_PATH = 10;
 const _ADD_OFFSET = 10;
-var texture;
 let _heightOffsetCurve = 0.45;
 let matCapSpline;
 
@@ -11,8 +10,12 @@ function scrollInteractionInit() {
   _splinePath = new Spline(_splinePoints);
   makeSplineCurve(_splinePoints);
   createObj();
-  texture = new THREE.TextureLoader().load( 'Assets/matCap4.jpg' );
   // console.log(texture);
+  camera.position.x = -1.2;
+  camera.position.y = 2.3;
+  camera.position.z = 7.3;
+  camera.rotation.x = -18.175*_unitConvert;
+  camera.rotation.y = -13.189*_unitConvert;
 }
 
 function convertScale (array) {
@@ -29,7 +32,7 @@ function flipZ (array) {
 
 function makeSplineCurve (array) {
   var vec3array = [];
-  matCapSpline = new THREE.MeshMatcapMaterial({matcap:texture});
+  matCapSpline = new THREE.MeshMatcapMaterial({matcap:texCube});
 
   for(var i = 0; i < array.length; i+= 3) {
     var vecPos = new THREE.Vector3(array[i], array[i+1]-_heightOffsetCurve, array[i+2]);
@@ -44,7 +47,7 @@ function makeSplineCurve (array) {
 
 function createObj() {
  for(var i = 0; i<_MAXOBJ_ON_PATH; i++) {
-  var matcap = new THREE.MeshMatcapMaterial({matcap:texture, transparent: true});
+  var matcap = new THREE.MeshMatcapMaterial({matcap:texCube, transparent: true});
   matcap.needsUpdate = true;
   matcap.opacity = 0;
   var startPos = new THREE.Vector3(_splinePoints[0], _splinePoints[1], _splinePoints[2]);

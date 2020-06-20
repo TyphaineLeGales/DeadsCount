@@ -4,6 +4,8 @@ let numberHeader = document.querySelector('h1.numberHeader');
 const countDiv = document.querySelector('h1.count');
 const progressBar = document.getElementById('progress');
 var arrows = document.querySelectorAll('button.arrow');
+var texCube = new THREE.TextureLoader().load( '../Assets/matCap4.jpg' );
+var scrollContainer = document.getElementById('scrollableContainer');
 
 let _unitArray = [];
 var clock = new THREE.Clock(); //units a second
@@ -85,7 +87,7 @@ function resetScene() {
     }
   }
 
-  camera.position.set(0,0,10);
+  camera.position.set(0,0,0);
   camera.rotation.set(0, 0,0);
 
   countDiv.innerHTML = 0;
@@ -171,12 +173,14 @@ typeOfVis.add(guiControls, "scrollInteraction").listen().onChange(function(value
     systemSelectedStr = "scrollInteraction";
     resetScene();
     scrollInteractionInit(scene, guiControls.number);
+    scrollContainer.style.display = "block";
     guiControls.linearAnimation = false;
     guiControls.cubeFractal = false;
     guiControls.clickInteraction = false;
   }else {
     systemSelectedStr = "";
     resetScene();
+    scrollContainer.style.display = "none";
   }
 })
 

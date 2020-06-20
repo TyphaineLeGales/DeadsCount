@@ -1,4 +1,4 @@
-var texCube = new THREE.TextureLoader().load( '../Assets/matCap4.jpg' );
+
 var geo = new THREE.BoxGeometry(1, 1, 1);
 var _cubeGroup = new THREE.Object3D();
 var _posCubeGroup = new THREE.Vector3(2, -1, -19);

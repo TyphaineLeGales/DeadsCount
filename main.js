@@ -25,7 +25,6 @@ window.addEventListener("DOMContentLoaded", (event) => {
 });
 
 function init() {
-  guiControls.linearAnimation = true;
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 1000 );
   scene.add(camera);
@@ -124,7 +123,7 @@ var guiControls = new function () {
   this.clickInteraction = false;
   this.scrollInteraction = false;
   this.number = 593;
-  this.speed = 1;
+  this.speed = 0.1;
 }
 
 var typeOfVis = datGUI.addFolder('typeOfVisualization');
@@ -199,7 +198,7 @@ typeOfVis.add(guiControls, "scrollInteraction").listen().onChange(function(value
   }
 })
 
-datGUI.add(guiControls, 'speed', 1, 10, 1);
+datGUI.add(guiControls, 'speed', 0.1, 10, 0.1);
 
 datGUI.add(guiControls, 'number').min(0).step(1).onChange(function(value) {
     if(systemSelectedStr === "clickInteraction") {

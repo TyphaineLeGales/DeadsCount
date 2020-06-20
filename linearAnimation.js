@@ -9,11 +9,8 @@ function linearAnimationInit() {
   createObjCircle();
   straightPath();
   _splinePath = new Spline(_straightPath);
-  camera.position.x = -1.2;
-  camera.position.y = 2.3;
+  camera.position.y = 0.5;
   camera.position.z = 7.3;
-  camera.rotation.x = -18.175*0.01;
-  camera.rotation.y = -13.189*0.01;
 }
 
 function linearAnimationRender(dt, scene, camera, maxCount, speed, progressBar, count) {

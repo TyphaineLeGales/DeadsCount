@@ -81,6 +81,7 @@ var _maxCount = 593;
 var progress = document.getElementById('progress');
 var _progressWidth;
 let scrollContainer = document.getElementById('scrollableContainer');
+scrollContainer.addEventListener('scroll', onContainerScroll, false);
 let _maxScroll = (scrollContainer.scrollHeight-scrollContainer.offsetHeight);
 let _f;
 var _straightPath = [];

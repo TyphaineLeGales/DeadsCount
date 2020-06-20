@@ -4,6 +4,9 @@ let numberHeader = document.querySelector('h1.numberHeader');
 const countDiv = document.querySelector('h1.count');
 const progressBar = document.getElementById('progress');
 var arrows = document.querySelectorAll('button.arrow');
+var scrollContainer = document.getElementById('scrollableContainer');
+scrollContainer.addEventListener('scroll', onContainerScroll, false);
+let _maxScroll;
 var texCube = new THREE.TextureLoader().load( '../Assets/matCap4.jpg' );
 
 let _unitArray = [];
@@ -45,9 +48,9 @@ function render () {
     linearAnimationRender(dt, scene, camera, guiControls.number, guiControls.speed, progressBar, countDiv);
   } else if(systemSelectedStr === "clickInteraction") {
     clickInteractionRender(dt, scene, camera, guiControls.number, guiControls.speed, countDiv);
-  // } else if(systemSelectedStr === "scrollInteraction") {
-  //   scrollInteractionRender(guiControls.number, countDiv);
-  // } else {
+  } else if(systemSelectedStr === "scrollInteraction") {
+    scrollInteractionRender(guiControls.number, countDiv);
+  } else {
 
   }
   requestAnimationFrame( render );
@@ -180,8 +183,9 @@ typeOfVis.add(guiControls, "scrollInteraction").listen().onChange(function(value
   if(value) {
     systemSelectedStr = "scrollInteraction";
     resetScene();
-    scrollInteractionInit(camera, scrollContainer);
     scrollContainer.style.display = "block";
+    _maxScroll = (scrollContainer.scrollHeight-scrollContainer.offsetHeight);
+    scrollInteractionInit(camera, scrollContainer);
 
     guiControls.linearAnimation = false;
     guiControls.cubeFractal = false;

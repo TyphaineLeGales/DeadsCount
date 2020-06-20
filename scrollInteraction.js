@@ -3,15 +3,17 @@ const _MAXOBJ_ON_PATH = 10;
 const _ADD_OFFSET = 10;
 let _heightOffsetCurve = 0.45;
 let matCapSpline;
-let _maxScroll;
 var _prevOffsetTop = 0;
 var _currOffsetTop = 0;
 let _maxCount;
 let _loopCounter = 0;
 let _unitArrayScrollCubes = [];
-var scrollContainer = document.getElementById('scrollableContainer');
+
+// let _maxScroll = (scrollContainer.scrollHeight-scrollContainer.offsetHeight);
+// console.log(_maxScroll);
 
 function scrollInteractionInit(camera) {
+  scrollContainer.addEventListener('scroll', onContainerScroll, false);
   convertScale(_splinePoints);
   flipZ(_splinePoints);
   _splinePath = new Spline(_splinePoints);
@@ -23,18 +25,17 @@ function scrollInteractionInit(camera) {
   camera.position.z = 7.3;
   camera.rotation.x = -18.175*_unitConvert;
   camera.rotation.y = -13.189*_unitConvert;
-  scrollContainer.addEventListener('scroll', onContainerScroll, false);
-  _maxScroll = (scrollContainer.scrollHeight-scrollContainer.offsetHeight);
 }
 
 function scrollInteractionRender(count, countDiv) {
-  console.log("scrollInteractionRender is called");
+
   _maxCount = count;
   if(totalCount < _maxCount) {
 
     _f = clamp(mapRange(scrollContainer.scrollTop, 0, _maxScroll,0,  1), 0, 1);
-    // console.log(_currOffsetTop);
-
+    if(_f > 0.9) {
+      respawn();
+    }
     for(var i = 0; i<_unitArrayScrollCubes.length; i++) {
       var obj = _unitArrayScrollCubes[i];
       // console.log(_f);
@@ -47,11 +48,84 @@ function scrollInteractionRender(count, countDiv) {
       }
     }
   }
-  console.log(count);
+  // console.log(count);
   countDiv.innerHTML = totalCount;
 }
 
- function scrollInteractionResetSpline () {
+
+
+function onContainerScroll() {
+
+  _currOffsetTop = scrollContainer.scrollTop;
+  if(_currOffsetTop >= _prevOffsetTop) {
+    for(var i = 0; i<_MAXOBJ; i++) {
+      var obj = _unitArrayScrollCubes[i];
+      //update count when object respawn
+      if(obj.userData.f< obj.userData.prevF) {
+        totalCount += 1;
+         // _progressWidth = mapRange(totalCount, 0,_maxCount, 0, 50);
+         // progress.style.width = _progressWidth + "%";
+      }
+      obj.userData.prevF = obj.userData.f;
+    }
+  }
+
+  _prevOffsetTop = _currOffsetTop;
+}
+
+function respawn() {
+
+    scrollContainer.scrollTop = 0;
+    _loopCounter += 1;
+}
+
+function convertScale (array) {
+    for(let i=0; i< array.length; i++) {
+       array[i] *= _unitConvert;
+    }
+}
+
+function flipZ (array) {
+    for(let i=2; i< array.length; i+=3) {
+       array[i] = - array[i];
+    }
+}
+
+function makeSplineCurve (array) {
+  var vec3array = [];
+  matCapSpline = new THREE.MeshMatcapMaterial({matcap:texCube});
+
+  for(var i = 0; i < array.length; i+= 3) {
+    var vecPos = new THREE.Vector3(array[i], array[i+1]-_heightOffsetCurve, array[i+2]);
+    vec3array.push(vecPos);
+  }
+  var path = new THREE.CatmullRomCurve3( vec3array );
+  var tubeGeometry = new THREE.TubeGeometry( path, 256, 0.2, 5, false );
+  _splineObj = new THREE.Mesh( tubeGeometry, matCapSpline );
+  scene.add( _splineObj);
+
+}
+
+function createObj() {
+ for(var i = 0; i<_MAXOBJ_ON_PATH; i++) {
+  var matcap = new THREE.MeshMatcapMaterial({matcap:texCube, transparent: true});
+  matcap.needsUpdate = true;
+  matcap.opacity = 1;
+  var startPos = new THREE.Vector3(_splinePoints[0], _splinePoints[1], _splinePoints[2]);
+  var obj = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),matcap);
+
+  obj.userData.offset = i*0.1;
+  obj.userData.f = 0;
+  obj.userData.number = i;
+  obj.userData.prevF = 0;
+  obj.position.copy(startPos);
+  scene.add(obj);
+  _unitArrayScrollCubes.push(obj);
+
+  }
+}
+
+function scrollInteractionResetSpline () {
   _splinePoints = [-71.12163543701172,5.02753353118896,-92.73057556152344,
 -57.63454818725586,5.46526622772217,-103.41516876220703,
 -44.14746475219727,5.90299892425537,-114.09976196289062,
@@ -110,79 +184,6 @@ function scrollInteractionRender(count, countDiv) {
 13.83610343933105,128.72129821777344,-572.71551513671875,
 6.53896760940552,134.75184631347656,-558.4759521484375];
  }
-
-function onContainerScroll() {
-  respawn();
-  _currOffsetTop = scrollContainer.scrollTop;
-  if(_currOffsetTop >= _prevOffsetTop) {
-    for(var i = 0; i<_MAXOBJ; i++) {
-      var obj = _unitArrayScrollCubes[i];
-      //update count when object respawn
-      if(obj.userData.f< obj.userData.prevF) {
-        totalCount += 1;
-         // _progressWidth = mapRange(totalCount, 0,_maxCount, 0, 50);
-         // progress.style.width = _progressWidth + "%";
-      }
-      obj.userData.prevF = obj.userData.f;
-    }
-  }
-
-  _prevOffsetTop = _currOffsetTop;
-}
-
-function respawn() {
-
-  if(_f > 0.9){
-    scrollContainer.scrollTop = 0;
-    _loopCounter += 1;
-  }
-}
-
-function convertScale (array) {
-    for(let i=0; i< array.length; i++) {
-       array[i] *= _unitConvert;
-    }
-}
-
-function flipZ (array) {
-    for(let i=2; i< array.length; i+=3) {
-       array[i] = - array[i];
-    }
-}
-
-function makeSplineCurve (array) {
-  var vec3array = [];
-  matCapSpline = new THREE.MeshMatcapMaterial({matcap:texCube});
-
-  for(var i = 0; i < array.length; i+= 3) {
-    var vecPos = new THREE.Vector3(array[i], array[i+1]-_heightOffsetCurve, array[i+2]);
-    vec3array.push(vecPos);
-  }
-  var path = new THREE.CatmullRomCurve3( vec3array );
-  var tubeGeometry = new THREE.TubeGeometry( path, 256, 0.2, 5, false );
-  _splineObj = new THREE.Mesh( tubeGeometry, matCapSpline );
-  scene.add( _splineObj);
-
-}
-
-function createObj() {
- for(var i = 0; i<_MAXOBJ_ON_PATH; i++) {
-  var matcap = new THREE.MeshMatcapMaterial({matcap:texCube, transparent: true});
-  matcap.needsUpdate = true;
-  matcap.opacity = 1;
-  var startPos = new THREE.Vector3(_splinePoints[0], _splinePoints[1], _splinePoints[2]);
-  var obj = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),matcap);
-
-  obj.userData.offset = i*0.1;
-  obj.userData.f = 0;
-  obj.userData.number = i;
-  obj.userData.prevF = 0;
-  obj.position.copy(startPos);
-  scene.add(obj);
-  _unitArray.push(obj);
-
-  }
-}
 
 var _splinePoints = [-71.12163543701172,5.02753353118896,-92.73057556152344,
 -57.63454818725586,5.46526622772217,-103.41516876220703,

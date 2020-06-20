@@ -139,7 +139,9 @@ inputNumber.add(guiControls, 'number').min(0).step(1).onChange(function(value) {
       updateGridOfCubes(scene, value.toString(), countDiv);
       // console.log(value.toString())
     } else if (systemSelectedStr === "cubeFractal") {
-      resetCubeFractal(value);
+      resetCubeFractal();
+       cubeFractalInit(value);
+
     } else if(systemSelectedStr === "particlesScatter") {
       resetScene();
       controls.enabled = true;
@@ -210,7 +212,7 @@ typeOfVis.add(guiControls, "cubeFractal").listen().onChange(function(value){
     guiControls.linearAnimation = false;
     guiControls.clickInteraction = false;
     guiControls.scrollInteraction = false;
-    resetCubeFractal(value);
+    resetCubeFractal();
     resetScene();
     controls.enabled = true;
     cubeFractalInit(guiControls.number);

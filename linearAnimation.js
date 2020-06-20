@@ -6,7 +6,7 @@ var _t = 0;
 
 function linearAnimationInit() {
 
-  createObj();
+  createObjCircle();
   straightPath();
   _splinePath = new Spline(_straightPath);
   camera.position.x = -1.2;
@@ -40,7 +40,7 @@ function linearAnimationRender(dt, scene, camera, maxCount, speed, progressBar, 
   count.innerHTML = totalCount;
 }
 
-function createObj() {
+function createObjCircle() {
  for(var i = 0; i<_MAXOBJ; i++) {
   var redMat = new THREE.MeshBasicMaterial({color:0xff0000, transparent:true});
   redMat.needsUpdate = true;

@@ -5,7 +5,6 @@ const countDiv = document.querySelector('h1.count');
 const progressBar = document.getElementById('progress');
 var arrows = document.querySelectorAll('button.arrow');
 var texCube = new THREE.TextureLoader().load( '../Assets/matCap4.jpg' );
-var scrollContainer = document.getElementById('scrollableContainer');
 
 let _unitArray = [];
 var clock = new THREE.Clock(); //units a second
@@ -14,7 +13,7 @@ var dt = 0;
 const _OPACITYTHRESHOLDIN = 0.1;
 const _OPACITYTHRESHOLDOUT = 0.9;
 
-var scene, camera, renderer ;
+var scene, camera, controls, renderer ;
 
 window.addEventListener( 'resize', onWindowResize, false );
 window.addEventListener("DOMContentLoaded", (event) => {
@@ -29,6 +28,11 @@ function init() {
   scene.add(camera);
   renderer = new THREE.WebGLRenderer();
   renderer.setSize( window.innerWidth, window.innerHeight );
+  // controls = new THREE.OrbitControls(camera, renderer.domElement);
+  // controls.enableDamping = true;
+  // controls.campingFactor = 0.25;
+  // controls.enableZoom = true;
+  // controls.enableRotate = false;
   document.body.appendChild( renderer.domElement );
   var backgroundTexBlack = new THREE.TextureLoader().load( '../Assets/gradientB&W.jpg' );
   scene.background = backgroundTexBlack;
@@ -41,6 +45,10 @@ function render () {
     linearAnimationRender(dt, scene, camera, guiControls.number, guiControls.speed, progressBar, countDiv);
   } else if(systemSelectedStr === "clickInteraction") {
     clickInteractionRender(dt, scene, camera, guiControls.number, guiControls.speed, countDiv);
+  // } else if(systemSelectedStr === "scrollInteraction") {
+  //   scrollInteractionRender(guiControls.number, countDiv);
+  // } else {
+
   }
   requestAnimationFrame( render );
 
@@ -101,7 +109,7 @@ function resetScene() {
       e.style.display = "none";
   } );
 
-  dt = 0;
+  scrollContainer.style.display = "none";
 }
 
 //UI
@@ -172,8 +180,9 @@ typeOfVis.add(guiControls, "scrollInteraction").listen().onChange(function(value
   if(value) {
     systemSelectedStr = "scrollInteraction";
     resetScene();
-    scrollInteractionInit(scene, guiControls.number);
+    scrollInteractionInit(camera, scrollContainer);
     scrollContainer.style.display = "block";
+
     guiControls.linearAnimation = false;
     guiControls.cubeFractal = false;
     guiControls.clickInteraction = false;

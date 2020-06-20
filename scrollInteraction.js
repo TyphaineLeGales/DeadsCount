@@ -3,19 +3,78 @@ const _MAXOBJ_ON_PATH = 10;
 const _ADD_OFFSET = 10;
 let _heightOffsetCurve = 0.45;
 let matCapSpline;
+let _maxScroll;
+var _prevOffsetTop = 0;
+var _currOffsetTop = 0;
+let _maxCount;
+let _loopCounter = 0;
+var scrollContainer = document.getElementById('scrollableContainer');
 
-function scrollInteractionInit() {
+function scrollInteractionInit(camera) {
   convertScale(_splinePoints);
   flipZ(_splinePoints);
   _splinePath = new Spline(_splinePoints);
   makeSplineCurve(_splinePoints);
   createObj();
-  // console.log(texture);
+  totalCount = 0;
   camera.position.x = -1.2;
   camera.position.y = 2.3;
   camera.position.z = 7.3;
   camera.rotation.x = -18.175*_unitConvert;
   camera.rotation.y = -13.189*_unitConvert;
+  scrollContainer.addEventListener('scroll', onContainerScroll, false);
+  _maxScroll = (scrollContainer.scrollHeight-scrollContainer.offsetHeight);
+}
+
+function scrollInteractionRender(count, countDiv) {
+  console.log("scrollInteractionRender is called");
+  _maxCount = count;
+  if(totalCount < _maxCount) {
+
+    _f = clamp(mapRange(scrollContainer.scrollTop, 0, _maxScroll,0,  1), 0, 1);
+    // console.log(_currOffsetTop);
+
+    for(var i = 0; i<_unitArray.length; i++) {
+      var obj = _unitArray[i];
+      // console.log(_f);
+      obj.userData.f = ((_f*guiControls.speed+_loopCounter - obj.userData.offset))%1;
+      _splinePath.setObjectPath(obj, obj.userData.f);
+      opacityEase(obj.userData.f, obj);
+
+      if(obj.userData.f === -_splinePoints[_splinePoints.length-1]*_unitConvert) {
+        obj.userData.number += 1;
+      }
+    }
+  }
+  console.log(count);
+  countDiv.innerHTML = totalCount;
+}
+
+function onContainerScroll() {
+  respawn();
+  _currOffsetTop = scrollContainer.scrollTop;
+  if(_currOffsetTop >= _prevOffsetTop) {
+    for(var i = 0; i<_MAXOBJ; i++) {
+      var obj = _unitArray[i];
+      //update count when object respawn
+      if(obj.userData.f< obj.userData.prevF) {
+        totalCount += 1;
+         _progressWidth = mapRange(totalCount, 0,_maxCount, 0, 50);
+         progress.style.width = _progressWidth + "%";
+      }
+      obj.userData.prevF = obj.userData.f;
+    }
+  }
+
+  _prevOffsetTop = _currOffsetTop;
+}
+
+function respawn() {
+
+  if(_f > 0.9){
+    scrollContainer.scrollTop = 0;
+    _loopCounter += 1;
+  }
 }
 
 function convertScale (array) {
@@ -49,7 +108,7 @@ function createObj() {
  for(var i = 0; i<_MAXOBJ_ON_PATH; i++) {
   var matcap = new THREE.MeshMatcapMaterial({matcap:texCube, transparent: true});
   matcap.needsUpdate = true;
-  matcap.opacity = 0;
+  matcap.opacity = 1;
   var startPos = new THREE.Vector3(_splinePoints[0], _splinePoints[1], _splinePoints[2]);
   var obj = new THREE.Mesh(new THREE.CubeGeometry( 0.5, 0.5, 0.5),matcap);
 

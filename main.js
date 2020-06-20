@@ -53,7 +53,6 @@ function render () {
     } else if(systemSelectedStr === "cubeFractal") {
       cubeFractalRender(guiControls.speed, countDiv);
     }
-  } else {
     //text
   }
 
@@ -122,15 +121,33 @@ function resetScene() {
 //UI
 var datGUI = new dat.GUI();
 var guiControls = new function () {
+  this.number = 593;
   this.linearAnimation = false;
+  this.particlesScatter = false;
   this.cubeFractal = false;
   this.clickInteraction = false;
   this.scrollInteraction = false;
-  this.number = 593;
   this.speed = 0.1;
 }
 
-var typeOfVis = datGUI.addFolder('typeOfVisualization');
+datGUI.add(guiControls, 'number').min(0).step(1).onChange(function(value) {
+    if(systemSelectedStr === "clickInteraction") {
+      updateGridOfCubes(scene, value.toString(), countDiv);
+      // console.log(value.toString())
+    } else if (systemSelectedStr === "cubeFractal") {
+      resetCubeFractal(value);
+    } else if(systemSelectedStr ==="particlesScatter") {
+      particleScatterReset(value);
+    }
+
+  // header.innerHTML = value;
+  // number = value;
+  numberHeader.innerHTML = value;
+
+})
+
+var typeOfVis = datGUI.addFolder('Type Of Visualization');
+
 
 typeOfVis.add(guiControls, "linearAnimation").listen().onChange(function(value){
 
@@ -144,6 +161,7 @@ typeOfVis.add(guiControls, "linearAnimation").listen().onChange(function(value){
       e.style.display = "block";
     } );
 
+    guiControls.particlesScatter = false;
     guiControls.cubeFractal = false;
     guiControls.clickInteraction = false;
     guiControls.scrollInteraction = false;
@@ -154,6 +172,25 @@ typeOfVis.add(guiControls, "linearAnimation").listen().onChange(function(value){
   }
 })
 
+typeOfVis.add(guiControls, "particlesScatter").listen().onChange(function(value) {
+  if(value) {
+    systemSelectedStr = "particlesScatter";
+    resetScene();
+    controls.enabled = true;
+    particleScatterInit(guiControls.number);
+
+    guiControls.cubeFractal = false;
+    guiControls.linearAnimation = false;
+    guiControls.clickInteraction = false;
+    guiControls.scrollInteraction = false;
+  } else {
+    controls.enabled = false;
+    resetScene();
+    systemSelectedStr = "";
+  }
+
+})
+
 typeOfVis.add(guiControls, "cubeFractal").listen().onChange(function(value){
   if(value) {
     systemSelectedStr = "cubeFractal";
@@ -161,6 +198,7 @@ typeOfVis.add(guiControls, "cubeFractal").listen().onChange(function(value){
     controls.enabled = true;
     cubeFractalInit(guiControls.number);
 
+    guiControls.particlesScatter = false;
     guiControls.linearAnimation = false;
     guiControls.clickInteraction = false;
     guiControls.scrollInteraction = false;
@@ -180,6 +218,7 @@ typeOfVis.add(guiControls, "clickInteraction").listen().onChange(function(value)
       e.style.display = "block";
     })
 
+    guiControls.particlesScatter = false;
     guiControls.linearAnimation = false;
     guiControls.cubeFractal = false;
     guiControls.scrollInteraction = false;
@@ -197,6 +236,7 @@ typeOfVis.add(guiControls, "scrollInteraction").listen().onChange(function(value
     _maxScroll = (scrollContainer.scrollHeight-scrollContainer.offsetHeight);
     scrollInteractionInit(camera, scrollContainer);
 
+    guiControls.particlesScatter = false;
     guiControls.linearAnimation = false;
     guiControls.cubeFractal = false;
     guiControls.clickInteraction = false;
@@ -208,21 +248,12 @@ typeOfVis.add(guiControls, "scrollInteraction").listen().onChange(function(value
   }
 })
 
-datGUI.add(guiControls, 'speed', 0.1, 20, 0.1);
+typeOfVis.open();
 
-datGUI.add(guiControls, 'number').min(0).step(1).onChange(function(value) {
-    if(systemSelectedStr === "clickInteraction") {
-      updateGridOfCubes(scene, value.toString(), countDiv);
-      // console.log(value.toString())
-    } else if (systemSelectedStr === "cubeFractal") {
-      resetCubeFractal(value);
-    }
+var animSpeed = datGUI.addFolder('Animation Speed');
+animSpeed.add(guiControls, 'speed', 0.1, 20, 0.1);
+animSpeed.open();
 
-  // header.innerHTML = value;
-  // number = value;
-  numberHeader.innerHTML = value;
-
-})
 
 
 

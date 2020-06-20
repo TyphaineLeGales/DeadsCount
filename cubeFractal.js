@@ -53,7 +53,6 @@ function resetCubeFractal() {
   _cubeCounter = 0;
   count = 0;
   countDiv.innerHTML = count;
-  console.log(count);
   _thousandIsDone = false;
 }
 

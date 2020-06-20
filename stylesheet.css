@@ -12,9 +12,10 @@ body {
   z-index:5;
   position:fixed;
   font-size:5em;
-  top: 40%;
-  left: 40%;
+  top: 5%;
+  left: 5%;
 }
+
 h1 {
   z-index:5;
   color:white;

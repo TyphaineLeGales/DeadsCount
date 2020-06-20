@@ -1,6 +1,5 @@
 let number = 0;
 let systemSelectedStr = "";
-let numberHeader = document.querySelector('h1.numberHeader');
 const countDiv = document.querySelector('h1.count');
 const progressBar = document.getElementById('progress');
 var arrows = document.querySelectorAll('button.arrow');
@@ -105,7 +104,6 @@ function resetScene() {
   camera.rotation.set(0, 0,0);
   controls.enabled = false;
   countDiv.innerHTML = 0;
-  countDiv.style.display = "block";
   _unitArray = [];
 
   var progress = document.querySelectorAll('div.progressBar');
@@ -145,7 +143,6 @@ inputNumber.add(guiControls, 'number').min(0).step(1).onChange(function(value) {
     } else if(systemSelectedStr === "particlesScatter") {
       resetScene();
       controls.enabled = true;
-      countDiv.style.display = "none";
       particleScatterReset(value);
     } else if(systemSelectedStr === "linearAnimation") {
       resetScene();
@@ -156,8 +153,6 @@ inputNumber.add(guiControls, 'number').min(0).step(1).onChange(function(value) {
       linearAnimationInit();
 
     }
-  numberHeader.innerHTML = value;
-
 })
 
 inputNumber.open();
@@ -193,7 +188,7 @@ typeOfVis.add(guiControls, "particlesScatter").listen().onChange(function(value)
     systemSelectedStr = "particlesScatter";
     resetScene();
     controls.enabled = true;
-    countDiv.style.display = "none";
+    countDiv.innerHTML = guiControls.number;
     particleScatterInit(guiControls.number);
 
     guiControls.cubeFractal = false;

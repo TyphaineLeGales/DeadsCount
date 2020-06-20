@@ -1,7 +1,7 @@
 
 var geo = new THREE.BoxGeometry(1, 1, 1);
 var _cubeGroup = new THREE.Object3D();
-var _posCubeGroup = new THREE.Vector3(2, -1, -19);
+var _posCubeGroup = new THREE.Vector3(5, -1, -25);
 var _cubesArray = [];
 
 var _animNext = false;

@@ -241,6 +241,7 @@ typeOfVis.add(guiControls, "scrollInteraction").listen().onChange(function(value
   if(value) {
     systemSelectedStr = "scrollInteraction";
     resetScene();
+    scrollInteractionResetSpline();
     scrollContainer.style.display = "block";
     _maxScroll = (scrollContainer.scrollHeight-scrollContainer.offsetHeight);
     scrollInteractionInit(camera, scrollContainer);

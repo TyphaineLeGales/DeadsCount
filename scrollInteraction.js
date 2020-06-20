@@ -8,6 +8,7 @@ var _currOffsetTop = 0;
 let _maxCount;
 let _loopCounter = 0;
 let _unitArrayScrollCubes = [];
+var _splinePath;
 
 // let _maxScroll = (scrollContainer.scrollHeight-scrollContainer.offsetHeight);
 // console.log(_maxScroll);

@@ -41,13 +41,6 @@ function linearAnimationRender(dt, scene, camera, maxCount, speed, progressBar, 
   count.innerHTML = totalCount;
 }
 
-// function resetLinearAnimation() {
-//   _unitArray = [];
-//   totalCount = 0;
-//   _t = 0;
-//   _f = 0;
-// }
-
 function createObjCircle() {
  for(var i = 0; i<_MAXOBJ; i++) {
   var redMat = new THREE.MeshBasicMaterial({color:0xff0000, transparent:true});

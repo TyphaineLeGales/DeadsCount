@@ -179,7 +179,7 @@ function generateThousandCubes () {
   var cubeSize = 10;
   var cubeGeoUnits = new THREE.CubeGeometry(scale, scale, scale);
   var cubeGeoThousands = new THREE.CubeGeometry(scale*cubeSize, scale*cubeSize, scale*cubeSize);
-  var Geometr
+  // var Geometr
 
   var numberOfDigits = countString.length;
   var units = countString[numberOfDigits-1];

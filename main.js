@@ -153,6 +153,10 @@ typeOfVis.add(guiControls, "linearAnimation").listen().onChange(function(value){
 typeOfVis.add(guiControls, "cubeFractal").listen().onChange(function(value){
   if(value) {
     systemSelectedStr = "cubeFractal";
+
+    cubeFractalInit(guiControls.number);
+    console.log(scene);
+
     guiControls.linearAnimation = false;
     guiControls.clickInteraction = false;
     guiControls.scrollInteraction = false;

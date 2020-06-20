@@ -189,6 +189,7 @@ typeOfVis.add(guiControls, "scrollInteraction").listen().onChange(function(value
   }else {
     systemSelectedStr = "";
     resetScene();
+    scrollInteractionResetSpline();
     scrollContainer.style.display = "none";
   }
 })

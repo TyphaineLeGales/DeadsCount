@@ -15,6 +15,7 @@ var _offsetPositionStart = -13;
 var _animationCubeTime = 2;
 var _XposAnim = 10;
 var _count = 0;
+var _t = 0;
 
 var mouseX = 0, mouseY = 0;
 var windowHalfX = window.innerWidth / 2;
@@ -92,14 +93,16 @@ function deleteCubes() {
 }
 
 function animNavNext (dt, speed, count) {
+  _t += dt;
    var currUnit = _cubesArray[currIndex];
-    _animTimer = (dt*speed)%_animationCubeTime;
+    _animTimer = (_t*speed)%_animationCubeTime;
     currUnit.position.x = mapRange(_animTimer, 0, _animationCubeTime -0.1, currUnit.userData.initialXPos,currUnit.userData.initialXPos+_XposAnim);
     currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime -0.1, 1, 0 );
 
     if(_animTimer >_animationCubeTime-0.1) {
       _animNext = false;
       _animTimer = 0;
+      _t = 0;
       _count += _cubesArray[currIndex].userData.unit;
       count.innerHTML = _count;
       currIndex -= 1;
@@ -107,14 +110,16 @@ function animNavNext (dt, speed, count) {
 }
 
 function animNavPrev(dt, speed, count) {
+  _t += dt;
    var currUnit = _cubesArray[currIndex];
-    _animTimer =(dt*speed)%_animationCubeTime;
+    _animTimer =(_t*speed)%_animationCubeTime;
     currUnit.position.x = mapRange(_animTimer, 0, _animationCubeTime - 0.1,currUnit.userData.initialXPos+_XposAnim, currUnit.userData.initialXPos);
     currUnit.material.opacity = mapRange(_animTimer, 0, _animationCubeTime -0.1, 0, 1 );
 
     if(_animTimer > _animationCubeTime -0.1) {
       _animPrev = false;
       _animTimer = 0;
+      _t = 0;
       _count -= _cubesArray[currIndex].userData.unit;
       count.innerHTML = _count;
     }

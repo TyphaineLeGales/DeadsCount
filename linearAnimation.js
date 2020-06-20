@@ -2,6 +2,7 @@ const _MAXOBJ = 10;
 var _straightPath = [];
 let totalCount = 0;
 var _progressWidth;
+var _t = 0;
 
 function linearAnimationInit() {
 
@@ -16,9 +17,9 @@ function linearAnimationInit() {
 }
 
 function linearAnimationRender(dt, scene, camera, maxCount, speed, progressBar, count) {
-
+  _t += dt;
   if(totalCount < maxCount) {
-    _f = (dt*speed)%1;
+    _f = (_t*speed)%1;
 
     //progressBar
     _progressWidth = mapRange(totalCount, 0,maxCount, 0, 50);

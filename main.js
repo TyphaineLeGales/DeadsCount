@@ -35,7 +35,7 @@ function init() {
 
 
 function render () {
-  dt += clock.getDelta();
+  dt = clock.getDelta();
   if(systemSelectedStr === "linearAnimation") {
     linearAnimationRender(dt, scene, camera, guiControls.number, guiControls.speed, progressBar, countDiv);
   } else if(systemSelectedStr === "clickInteraction") {

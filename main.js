@@ -46,11 +46,11 @@ function render () {
   dt = clock.getDelta();
   if(systemSelectedStr != "") {
     if(systemSelectedStr === "linearAnimation") {
-      linearAnimationRender(dt, scene, camera, guiControls.number, guiControls.speed, progressBar, countDiv);
+      linearAnimationRender(dt, scene, camera, guiControls.inputNumber, guiControls.speed, progressBar, countDiv);
     } else if(systemSelectedStr === "clickInteraction") {
-      clickInteractionRender(dt, scene, camera, guiControls.number, guiControls.speed, countDiv);
+      clickInteractionRender(dt, scene, camera, guiControls.inputNumber, guiControls.speed, countDiv);
     } else if(systemSelectedStr === "scrollInteraction") {
-      scrollInteractionRender(guiControls.number, countDiv);
+      scrollInteractionRender(guiControls.inputNumber, countDiv);
     } else if(systemSelectedStr === "cubeFractal") {
       cubeFractalRender(guiControls.speed, countDiv);
     }
@@ -125,7 +125,7 @@ function resetScene() {
 var datGUI = new dat.GUI();
 GUIContainer.appendChild(datGUI.domElement);
 var guiControls = new function () {
-  this.number = 593;
+  this.inputNumber = 593;
   this.linearAnimation = false;
   this.particlesScatter = false;
   this.cubeFractal = false;
@@ -136,7 +136,7 @@ var guiControls = new function () {
 
 }
 var title = datGUI.addFolder("WHO'S COUNTING ?");
-title.add(guiControls, 'number').min(0).step(1).onChange(function(value) {
+title.add(guiControls, 'inputNumber').min(0).step(1).onChange(function(value) {
     if(systemSelectedStr === "clickInteraction") {
       updateGridOfCubes(scene, value.toString(), countDiv);
       // console.log(value.toString())
@@ -159,6 +159,8 @@ title.add(guiControls, 'number').min(0).step(1).onChange(function(value) {
 
     }
 })
+
+title.open();
 
 
 var typeOfVis = title.addFolder('Type Of Visualization');
@@ -192,8 +194,8 @@ typeOfVis.add(guiControls, "particlesScatter").listen().onChange(function(value)
     systemSelectedStr = "particlesScatter";
     resetScene();
     controls.enabled = true;
-    countDiv.innerHTML = guiControls.number;
-    particleScatterInit(guiControls.number);
+    countDiv.innerHTML = guiControls.inputNumber;
+    particleScatterInit(guiControls.inputNumber);
 
     guiControls.cubeFractal = false;
     guiControls.linearAnimation = false;
@@ -217,7 +219,7 @@ typeOfVis.add(guiControls, "cubeFractal").listen().onChange(function(value){
     resetCubeFractal();
     resetScene();
     controls.enabled = true;
-    cubeFractalInit(guiControls.number);
+    cubeFractalInit(guiControls.inputNumber);
   }else {
 
     controls.enabled = false;
@@ -236,7 +238,7 @@ typeOfVis.add(guiControls, "clickInteraction").listen().onChange(function(value)
     systemSelectedStr = "clickInteraction";
     resetScene();
     resetCountClickInteraction();
-    clickInteractionInit(scene, guiControls.number);
+    clickInteractionInit(scene, guiControls.inputNumber);
     arrows.forEach(function(e) {
       e.style.display = "block";
     })

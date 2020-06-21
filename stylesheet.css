@@ -50,9 +50,11 @@ h1 {
   position:fixed;
   color:white;
   top:50%;
-  left:50%;
+  left:30vw;
   font-weight:normal;
-  width:20vw;
+  width:25vw;
+  font-size:1vw;
+  line-height:2em;
 }
 
 a {

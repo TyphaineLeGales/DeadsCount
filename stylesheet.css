@@ -61,6 +61,30 @@ h1 {
   transform:scale(1.2);
 }
 
+#startingPoint {
+  position:fixed;
+  display:none;
+  top:20vw;
+  left:20vw;
+}
+
+#startingPoint p {
+  position:fixed;
+  color:white;
+  top:30%;
+  left:10vw;
+  font-weight:normal;
+  width:25vw;
+  font-size:1.5vw;
+  line-height:1.4em;
+}
+
+#startingPoint img {
+  position:fixed;
+  top:19.5vw;
+  left:40vw;
+}
+
 a {
   width:100%;
 }

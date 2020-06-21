@@ -8,6 +8,7 @@ var GUIContainer = document.getElementById('guiContainer');
 scrollContainer.addEventListener('scroll', onContainerScroll, false);
 var aboutP = document.querySelector('div.about');
 var references = document.getElementById('references');
+var startRefDashboard = document.getElementById('startingPoint');
 let _maxScroll;
 let orbitControlIsEnabled = false;
 
@@ -135,6 +136,7 @@ var guiControls = new function () {
   this.speed = 0.1;
   this.hideAbout = false;
   this.showReferences = false;
+  this.showStartingPoint = false;
 
 }
 datGUI.open();
@@ -280,7 +282,7 @@ animSpeed.add(guiControls, 'speed', 0.1, 20, 0.1);
 animSpeed.open();
 
 var about = title.addFolder('Project Story');
-about.add(guiControls, 'hideAbout').onChange(function(value) {
+about.add(guiControls, 'hideAbout').listen().onChange(function(value) {
   if(value) {
     aboutP.style.display = "none";
   } else {
@@ -288,9 +290,21 @@ about.add(guiControls, 'hideAbout').onChange(function(value) {
   }
 });
 
+about.add(guiControls, "showStartingPoint").onChange(function(value){
+  if(value) {
+    startRefDashboard.style.display="block";
+    guiControls.hideAbout = true;
+    aboutP.style.display = "none";
+
+  } else {
+    startRefDashboard.style.display="none";
+  }
+})
+
 about.add(guiControls, 'showReferences').onChange(function(value) {
   if(value) {
     references.style.display="block";
+
   } else {
     references.style.display="none";
   }

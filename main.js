@@ -7,6 +7,7 @@ var scrollContainer = document.getElementById('scrollableContainer');
 var GUIContainer = document.getElementById('guiContainer');
 scrollContainer.addEventListener('scroll', onContainerScroll, false);
 var aboutP = document.querySelector('div.about');
+var references = document.getElementById('references');
 let _maxScroll;
 let orbitControlIsEnabled = false;
 
@@ -125,7 +126,7 @@ function resetScene() {
 var datGUI = new dat.GUI();
 GUIContainer.appendChild(datGUI.domElement);
 var guiControls = new function () {
-  this.inputNumber = 593;
+  this.inputNumber = 119719;
   this.linearAnimation = false;
   this.particlesScatter = false;
   this.cubeFractal = false;
@@ -133,6 +134,7 @@ var guiControls = new function () {
   this.scrollInteraction = false;
   this.speed = 0.1;
   this.hideAbout = false;
+  this.showReferences = false;
 
 }
 datGUI.open();
@@ -285,6 +287,14 @@ about.add(guiControls, 'hideAbout').onChange(function(value) {
     aboutP.style.display = "block";
   }
 });
+
+about.add(guiControls, 'showReferences').onChange(function(value) {
+  if(value) {
+    references.style.display="block";
+  } else {
+    references.style.display="none";
+  }
+})
 
 about.open();
 

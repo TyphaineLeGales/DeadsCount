@@ -24,6 +24,15 @@ h1 {
 
 }
 
+#references {
+  position:fixed;
+  display:none;
+}
+
+.refImg {
+  position:fixed;
+}
+
 #guiContainer{
   position:fixed;
   top:0;

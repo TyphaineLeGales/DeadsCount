@@ -278,7 +278,7 @@ typeOfVis.add(guiControls, "scrollInteraction").listen().onChange(function(value
 typeOfVis.open();
 
 var animSpeed = title.addFolder('Animation Speed');
-animSpeed.add(guiControls, 'speed', 0.1, 20, 0.1);
+animSpeed.add(guiControls, 'speed', 0.1, 30, 0.1);
 animSpeed.open();
 
 var about = title.addFolder('Project Story');

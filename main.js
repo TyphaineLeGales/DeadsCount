@@ -6,7 +6,7 @@ var arrows = document.querySelectorAll('button.arrow');
 var scrollContainer = document.getElementById('scrollableContainer');
 var GUIContainer = document.getElementById('guiContainer');
 scrollContainer.addEventListener('scroll', onContainerScroll, false);
-var about = document.querySelector('p.about');
+var aboutP = document.querySelector('div.about');
 let _maxScroll;
 let orbitControlIsEnabled = false;
 
@@ -37,6 +37,7 @@ function init() {
   var backgroundTexBlack = new THREE.TextureLoader().load( 'Assets/gradientB&W.jpg' );
   scene.background = backgroundTexBlack;
   scrollContainer.style.display="none";
+  console.log('about');
 }
 
 
@@ -131,7 +132,7 @@ var guiControls = new function () {
   this.clickInteraction = false;
   this.scrollInteraction = false;
   this.speed = 0.1;
-  this.showAbout = false;
+  this.hideAbout = false;
 
 }
 var title = datGUI.addFolder("WHO'S COUNTING ?");
@@ -146,6 +147,7 @@ title.add(guiControls, 'number').min(0).step(1).onChange(function(value) {
     } else if(systemSelectedStr === "particlesScatter") {
       resetScene();
       controls.enabled = true;
+      countDiv.innerHTML = value;
       particleScatterReset(value);
     } else if(systemSelectedStr === "linearAnimation") {
       resetScene();
@@ -273,9 +275,11 @@ animSpeed.add(guiControls, 'speed', 0.1, 20, 0.1);
 animSpeed.open();
 
 var about = title.addFolder('Project Story');
-about.add(guiControls, 'showAbout').onChange(function(value) {
+about.add(guiControls, 'hideAbout').onChange(function(value) {
   if(value) {
-    // about.style.
+    aboutP.style.display = "none";
+  } else {
+    aboutP.style.display = "block";
   }
 });
 

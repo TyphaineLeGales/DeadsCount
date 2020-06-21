@@ -39,6 +39,10 @@ h1 {
 .about {
   position:fixed;
   color:white;
+  top:50%;
+  left:50%;
+  font-weight:normal;
+  width:20vw;
 }
 
 a {

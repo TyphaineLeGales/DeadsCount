@@ -49,12 +49,16 @@ h1 {
 .about {
   position:fixed;
   color:white;
-  top:50%;
+  top:30%;
   left:30vw;
   font-weight:normal;
   width:25vw;
-  font-size:1vw;
-  line-height:2em;
+  font-size:1.5vw;
+  line-height:1.4em;
+}
+
+.refImg:hover {
+  transform:scale(1.2);
 }
 
 a {

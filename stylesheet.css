@@ -4,6 +4,7 @@ body {
   font-weight:bold;
   background-image:url(Assets/gradientB&W.jpg);
   background-size:cover;
+  overflow:hidden;
 /*  overflow:hidden;*/
 }
 

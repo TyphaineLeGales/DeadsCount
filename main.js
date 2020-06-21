@@ -135,6 +135,7 @@ var guiControls = new function () {
   this.hideAbout = false;
 
 }
+datGUI.open();
 var title = datGUI.addFolder("WHO'S COUNTING ?");
 title.add(guiControls, 'inputNumber').min(0).step(1).onChange(function(value) {
     if(systemSelectedStr === "clickInteraction") {

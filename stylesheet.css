@@ -57,6 +57,9 @@ h1 {
   line-height:1.4em;
 }
 
+.refImg {
+  transition:all 1s;
+}
 .refImg:hover {
   transform:scale(1.2);
 }

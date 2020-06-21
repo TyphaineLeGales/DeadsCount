@@ -6,6 +6,7 @@ var arrows = document.querySelectorAll('button.arrow');
 var scrollContainer = document.getElementById('scrollableContainer');
 var GUIContainer = document.getElementById('guiContainer');
 scrollContainer.addEventListener('scroll', onContainerScroll, false);
+var about = document.querySelector('p.about');
 let _maxScroll;
 let orbitControlIsEnabled = false;
 
@@ -130,11 +131,11 @@ var guiControls = new function () {
   this.clickInteraction = false;
   this.scrollInteraction = false;
   this.speed = 0.1;
+  this.showAbout = false;
+
 }
-
-var inputNumber = datGUI.addFolder('Input Number');
-
-inputNumber.add(guiControls, 'number').min(0).step(1).onChange(function(value) {
+var title = datGUI.addFolder("WHO'S COUNTING ?");
+title.add(guiControls, 'number').min(0).step(1).onChange(function(value) {
     if(systemSelectedStr === "clickInteraction") {
       updateGridOfCubes(scene, value.toString(), countDiv);
       // console.log(value.toString())
@@ -157,9 +158,8 @@ inputNumber.add(guiControls, 'number').min(0).step(1).onChange(function(value) {
     }
 })
 
-inputNumber.open();
 
-var typeOfVis = datGUI.addFolder('Type Of Visualization');
+var typeOfVis = title.addFolder('Type Of Visualization');
 
 
 typeOfVis.add(guiControls, "linearAnimation").listen().onChange(function(value){
@@ -268,9 +268,19 @@ typeOfVis.add(guiControls, "scrollInteraction").listen().onChange(function(value
 
 typeOfVis.open();
 
-var animSpeed = datGUI.addFolder('Animation Speed');
+var animSpeed = title.addFolder('Animation Speed');
 animSpeed.add(guiControls, 'speed', 0.1, 20, 0.1);
 animSpeed.open();
+
+var about = title.addFolder('Project Story');
+about.add(guiControls, 'showAbout').onChange(function(value) {
+  if(value) {
+    // about.style.
+  }
+});
+
+about.open();
+
 
 
 
